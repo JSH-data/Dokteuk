@@ -138,6 +138,7 @@ const ChatText = styled.li`
   height: 60px;
   margin: 15px 0;
   border-radius: 20px;
+  box-shadow: 0px 1px 1px 0 #00000036;
   &.mine {
     background: #b762c1;
     margin-left: auto;

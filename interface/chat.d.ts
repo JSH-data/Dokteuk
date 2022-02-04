@@ -13,7 +13,7 @@ interface ChatRoom {
   lastVisited: Timestamp;
 }
 
-interface chatText {
+interface ChatText {
   id?: string;
   user: string;
   msg: string;
