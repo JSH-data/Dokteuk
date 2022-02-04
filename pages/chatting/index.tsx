@@ -27,7 +27,7 @@ const Chatting = () => {
 
       querySnapshot.forEach((result) => {
         const { users, lastChat, updateAt, lastVisited } = result.data();
-        const other = users.find((me: Person) => me.nickName !== '김희진');
+        const other = users.find((me: Person) => me.nickName !== 'User1');
         newChat.push({
           id: result.id,
           other,
@@ -50,7 +50,9 @@ const Chatting = () => {
               <ChatWrapperDiv>
                 <ChatInfo>
                   <div>{other.nickName}</div>
-                  <ChatText>{lastChat}</ChatText>
+                  <ChatText>
+                    {lastChat ? lastChat : '아직 나눈 대화가 없습니다.'}
+                  </ChatText>
                 </ChatInfo>
                 <div>
                   <div>{`${updateAt.toDate().getMonth() + 1}월 ${updateAt

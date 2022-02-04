@@ -82,7 +82,7 @@ const ChatRoom = () => {
       <ChatList>
         <ChatBox>
           {messages.map(({ id, user, msg }) => (
-            <ChatText className={user === 'User2' ? 'mine' : ''} key={id}>
+            <ChatText className={user === 'User1' ? 'mine' : ''} key={id}>
               {msg}
             </ChatText>
           ))}

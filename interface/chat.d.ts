@@ -7,7 +7,7 @@ interface ChatRoom {
   id?: string;
   users?: person[];
   other?: person;
-  lastChat: string;
+  lastChat: string | undefined;
   createAt?: Timestamp;
   updateAt: Timestamp;
   lastVisited: Timestamp;
