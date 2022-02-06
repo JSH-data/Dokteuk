@@ -1,36 +1,52 @@
-import Button from '@mui/material/Button';
+import React, { useState, useRef } from 'react';
 import styled from '@emotion/styled';
-import dynamic from 'next/dynamic';
-import { EditorProps } from '@toast-ui/react-editor';
-import '@toast-ui/editor/dist/toastui-editor.css';
-
-const Editor = dynamic<EditorProps>(
-  () => import('@toast-ui/react-editor').then((m) => m.Editor),
-  { ssr: false },
-);
+import setCurrentDate from '@utils/setCurrentDate';
+import { addOriginComment, addNestedComment } from '@utils/commentUtils';
+import InputComponent from '@components/items/InputComponent';
+import ButtonComponent from '@components/items/ButtonComponent';
 
 const CommentEditorSection = styled.section`
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 25px;
   & button {
-    margin-top: 30px;
-    align-self: flex-end;
+    min-width: 90px;
   }
 `;
 
-const CommentEditor: React.FC = () => {
+type CommentEditorProps = {
+  bundleId?: number;
+};
+
+const CommentEditor: React.FC<CommentEditorProps> = ({ bundleId }) => {
+  const [comment, setComment] = useState<string>('');
+
+  const inputRef = useRef<HTMLElement>(null);
+
+  const addComment = async () => {
+    const timeStamp = new Date();
+
+    const detailTimeStamp = timeStamp.getTime();
+
+    const currentDate = setCurrentDate(timeStamp);
+
+    if (!bundleId) {
+      bundleId = detailTimeStamp;
+      addOriginComment(comment, currentDate, bundleId);
+    } else {
+      addNestedComment(comment, bundleId, currentDate, detailTimeStamp);
+    }
+    setComment('');
+  };
+
   return (
     <CommentEditorSection>
-      <Editor
-        initialValue=""
-        previewStyle="vertical"
-        height="600px"
-        initialEditType="markdown"
-        useCommandShortcut={true}
+      <InputComponent
+        defaultValue={comment}
+        placeholder="댓글을 입력하세요"
+        changeFn={setComment}
       />
-      <Button variant="contained" size="medium" color="secondary">
-        답변하기
-      </Button>
+      <ButtonComponent text="답변하기" activeFn={addComment}></ButtonComponent>
     </CommentEditorSection>
   );
 };

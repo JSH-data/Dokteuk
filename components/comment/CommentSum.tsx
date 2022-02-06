@@ -11,12 +11,18 @@ const CommentHeader = styled.h1`
   margin-bottom: 10px;
 `;
 
-const CommentSum: React.FC = () => {
+type CommentSumProps = {
+  sum: number;
+};
+
+const CommentSum: React.FC<CommentSumProps> = ({ sum }) => {
   return (
-    <CommentHeader>
-      149
-      <span>{` `}개의 답변</span>
-    </CommentHeader>
+    <>
+      <CommentHeader>
+        {sum}
+        <span>{` `}개의 답변</span>
+      </CommentHeader>
+    </>
   );
 };
 

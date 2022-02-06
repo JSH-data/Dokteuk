@@ -1,36 +1,67 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Comment from './CommentComponent';
 import styled from '@emotion/styled';
+import { query, where, onSnapshot, orderBy } from 'firebase/firestore';
+import { commentRef } from '@firebase/firebase';
 
 const CommentListDiv = styled.div`
   width: 100%;
 `;
 
-const CommentList: React.FC = () => {
-  const fakeData = {
-    comments:
-      '반갑습니다. 나는 이러이러한 질문이 있습니다 제발 정답을 알려주실분을 구하고 있습나니다ㅓ 정말 어려운 작업입니다 우리모두 힘을 합쳐!',
-    likes: 200,
-    author: '하얀천과굵은소금',
-  };
+type CommentListProps = {
+  setSum(s: number): void;
+};
+
+const CommentList: React.FC<CommentListProps> = ({ setSum }) => {
+  const [comments, setComments] = useState<any>([]); // todo: 타입 지정
+  const [userId, setUserId] = useState('user'); // 추후 전역으로 들고 있어야할 user의 아이디, 추가적으로 닉네임, job등등...
+
+  useEffect(() => {
+    const q = query(
+      commentRef,
+      where('post_id', '==', '0oGtTqPmk7wS4Zisc7Iy'),
+      orderBy('bundle_id'),
+      orderBy('bundle_order'),
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const newData = snapshot.docs.map((value) => ({
+        id: value.id,
+        ...value.data(),
+      }));
+      setComments(newData);
+      setSum(newData.length);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const isClicked = (arr: any) => (arr.indexOf(userId) === -1 ? false : true); // todo: 타입 지정
 
   return (
     <CommentListDiv>
-      <Comment
-        comments={fakeData.comments}
-        likes={fakeData.likes}
-        author={fakeData.author}
-      />
-      <Comment
-        comments={fakeData.comments}
-        likes={fakeData.likes}
-        author={fakeData.author}
-      />
-      <Comment
-        comments={fakeData.comments}
-        likes={fakeData.likes}
-        author={fakeData.author}
-      />
+      {comments.length == 0 ? (
+        <>댓글이 아직 등록되지 않았습니다. 댓글을 입력해주세요</>
+      ) : (
+        comments.map((data: any) => {
+          // todo: 타입 지정
+          return (
+            <Comment
+              key={data.id}
+              text={data.text}
+              likes={data.likes}
+              nickname={data.nickname}
+              job={data.job}
+              date={data.created_at}
+              isClicked={isClicked(data.pressed_person)}
+              id={data.id}
+              isNested={data.origin}
+              bundleId={data.bundle_id}
+              isDeleted={data.is_deleted}
+            />
+          );
+        })
+      )}
     </CommentListDiv>
   );
 };
