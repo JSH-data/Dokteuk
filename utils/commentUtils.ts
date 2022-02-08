@@ -5,6 +5,7 @@ import setCurrentDate from './setCurrentDate';
 export const addOriginComment = async (
   content: string,
   currentDate: string,
+  postId: string,
   bundleId?: number,
 ) => {
   await addDoc(collection(db, 'comment'), {
@@ -14,7 +15,7 @@ export const addOriginComment = async (
     nickname: '닉네임입니다',
     job: '직군',
     user_id: 'user',
-    post_id: '0oGtTqPmk7wS4Zisc7Iy',
+    post_id: postId,
     bundle_id: bundleId,
     bundle_order: bundleId,
     created_at: currentDate,
@@ -30,6 +31,7 @@ export const addNestedComment = async (
   bundleId: number,
   currentDate: string,
   detailTimeStamp: number,
+  postId: string,
 ) => {
   await addDoc(collection(db, 'comment'), {
     text: content,
@@ -38,7 +40,7 @@ export const addNestedComment = async (
     nickname: '닉네임입니다',
     job: '직군',
     user_id: 'user',
-    post_id: '0oGtTqPmk7wS4Zisc7Iy',
+    post_id: postId,
     bundle_id: bundleId,
     bundle_order: detailTimeStamp,
     created_at: currentDate,

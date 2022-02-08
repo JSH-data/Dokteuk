@@ -21,10 +21,11 @@ import {
 } from 'firebase/firestore';
 import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
-import { db } from '../../firebase';
+import { db } from '@firebase/firebase';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { useAuth } from '../../Auth';
+import { useAuth } from '@hooks/Auth';
+import Comment from '@components/comment/Comment';
 
 const Detail = ({ postProps, postId }) => {
   const post = JSON.parse(postProps);
@@ -95,6 +96,7 @@ const Detail = ({ postProps, postId }) => {
           </Card>
         </Grid>
       </Grid>
+      <Comment id={postId} />
     </>
   );
 };

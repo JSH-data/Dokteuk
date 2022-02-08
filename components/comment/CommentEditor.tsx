@@ -16,9 +16,10 @@ const CommentEditorSection = styled.section`
 
 type CommentEditorProps = {
   bundleId?: number;
+  postId: string;
 };
 
-const CommentEditor: React.FC<CommentEditorProps> = ({ bundleId }) => {
+const CommentEditor: React.FC<CommentEditorProps> = ({ bundleId, postId }) => {
   const [comment, setComment] = useState<string>('');
 
   const inputRef = useRef<HTMLElement>(null);
@@ -32,9 +33,9 @@ const CommentEditor: React.FC<CommentEditorProps> = ({ bundleId }) => {
 
     if (!bundleId) {
       bundleId = detailTimeStamp;
-      addOriginComment(comment, currentDate, bundleId);
+      addOriginComment(comment, currentDate, postId, bundleId);
     } else {
-      addNestedComment(comment, bundleId, currentDate, detailTimeStamp);
+      addNestedComment(comment, bundleId, currentDate, detailTimeStamp, postId);
     }
     setComment('');
   };

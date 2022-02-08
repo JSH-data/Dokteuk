@@ -10,16 +10,17 @@ const CommentListDiv = styled.div`
 
 type CommentListProps = {
   setSum(s: number): void;
+  id: string;
 };
 
-const CommentList: React.FC<CommentListProps> = ({ setSum }) => {
+const CommentList: React.FC<CommentListProps> = ({ setSum, id }) => {
   const [comments, setComments] = useState<any>([]); // todo: 타입 지정
   const [userId, setUserId] = useState('user'); // 추후 전역으로 들고 있어야할 user의 아이디, 추가적으로 닉네임, job등등...
 
   useEffect(() => {
     const q = query(
       commentRef,
-      where('post_id', '==', '0oGtTqPmk7wS4Zisc7Iy'),
+      where('post_id', '==', `${id}`),
       orderBy('bundle_id'),
       orderBy('bundle_order'),
     );
@@ -29,6 +30,7 @@ const CommentList: React.FC<CommentListProps> = ({ setSum }) => {
         id: value.id,
         ...value.data(),
       }));
+      console.log(newData);
       setComments(newData);
       setSum(newData.length);
     });
@@ -58,6 +60,7 @@ const CommentList: React.FC<CommentListProps> = ({ setSum }) => {
               isNested={data.origin}
               bundleId={data.bundle_id}
               isDeleted={data.is_deleted}
+              postId={id}
             />
           );
         })

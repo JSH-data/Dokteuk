@@ -6,7 +6,6 @@ import CommentAuthorComponent from './CommentAuthorComponent';
 import MenuIcon from '@mui/icons-material/Menu';
 import CommentDropBox from './CommentDropBoxComponent';
 import CommentEditor from './CommentEditor';
-import CommentUpdateEditor from './CommentUpdateEditor';
 
 type CommentProps = {
   text: string;
@@ -19,6 +18,7 @@ type CommentProps = {
   isNested: boolean;
   bundleId: number;
   isDeleted: boolean;
+  postId: string;
 };
 
 const CommentDiv = styled.div<{ isClicked: boolean }>`
@@ -51,6 +51,7 @@ const Comment: React.FC<CommentProps> = ({
   isNested,
   bundleId,
   isDeleted,
+  postId,
 }) => {
   const [menu, setMenu] = useState(false);
 
@@ -93,7 +94,9 @@ const Comment: React.FC<CommentProps> = ({
             job={job}
             date={date}
           ></CommentAuthorComponent>
-          {nestedReplyEditor && <CommentEditor bundleId={bundleId} />}
+          {nestedReplyEditor && (
+            <CommentEditor bundleId={bundleId} postId={postId} />
+          )}
         </CommentDiv>
       ) : (
         <NestedCommentDiv isClicked={isClicked}>
