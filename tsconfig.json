@@ -18,14 +18,13 @@
     "paths": {
       "@components/*": ["components/*"],
       "@firebase/*": ["firebase/*"],
-      "@interface": ["interface/*"],
       "@layouts/*": ["layouts/*"],
       "@pages/*": ["pages/*"],
       "@public/*": ["public/*"],
       "@styles/*": ["styles/*"],
       "@utils/*": ["utils/*"],
       "@hooks/*": ["hooks/*"],
-      "typeRoots": ["./interface"]
+      "@interface/*": ["interface/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
