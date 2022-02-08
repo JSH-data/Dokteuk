@@ -3,6 +3,8 @@ import { chatList } from '../api/chat';
 import Link from 'next/link';
 import styled from '@emotion/styled';
 import Layout from '@layouts/Layout';
+import { getAuth } from '@firebase/auth';
+import { app } from '@firebase/firebase';
 
 const Chatting = () => {
   const [myChats, setMyChats] = useState<ChatRoom[]>([]);
@@ -57,7 +59,7 @@ export default Chatting;
 const ChatWrapperDiv = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 90%;
+  width: clamp(0px, 80%, 680px);
   height: 60px;
   margin: 10px auto;
   cursor: pointer;

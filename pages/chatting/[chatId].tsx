@@ -146,8 +146,14 @@ const ChatHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 60px;
-  background: #8946a6;
+  background: ${({ theme }: any) =>
+    theme.customTheme.defaultMode.headerMenuBackgroundColor};
   padding: 0 20px;
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) =>
+      theme.customTheme.darkMode.headerMenuBackgroundColor};
+  }
 `;
 
 const ChatList = styled.div`
@@ -163,6 +169,8 @@ const ChatBox = styled.ul`
 `;
 
 const ChatText = styled.li`
+  color: ${({ theme }: any) =>
+    theme.customTheme.defaultMode.searchInputTextColor};
   list-style: none;
   background: #f0f0f0;
   padding: 20px;
@@ -175,6 +183,10 @@ const ChatText = styled.li`
     background: #b762c1;
     margin-left: auto;
   }
+
+  @media (prefers-color-scheme: dark) {
+    color: white;
+  }
 `;
 
 const ChatInputWrapper = styled.div`
@@ -182,8 +194,14 @@ const ChatInputWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 60px;
-  background: #8946a6;
+  background: ${({ theme }: any) =>
+    theme.customTheme.defaultMode.footerMenuBackgroundColor};
   padding: 0 20px;
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) =>
+      theme.customTheme.darkMode.footerMenuBackgroundColor};
+  }
 `;
 
 const InputBox = styled.input`

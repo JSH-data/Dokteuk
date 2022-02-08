@@ -14,7 +14,7 @@ const ImgPreviewModal = ({
         <Image src={fileSrc as string} alt="preview-image" />
         <ButtonWrapper>
           <button onClick={onFileReset}>취소</button>
-          <button>전송</button>
+          <button className="send">전송</button>
         </ButtonWrapper>
       </Modal>
     </Background>
@@ -43,7 +43,7 @@ to {
 
 const Modal = styled.div`
   margin: 0 auto;
-  width: clamp(0px, 80%, 860px);
+  width: clamp(0px, 80%, 680px);
   height: 80%;
   padding: 30px 15px;
   background-color: white;
@@ -57,7 +57,7 @@ const Modal = styled.div`
 
 const Image = styled.div<ImgProps>`
   width: 80%;
-  height: calc(100% - 50px);
+  height: calc(100% - 80px);
   background: url(${(props) => props.src}) no-repeat center center;
   background-size: contain;
   margin: 0 auto;
@@ -66,6 +66,7 @@ const Image = styled.div<ImgProps>`
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-around;
+  padding-top: 30px;
 
   & button {
     background: none;
@@ -75,7 +76,7 @@ const ButtonWrapper = styled.div`
     height: 50px;
   }
 
-  & button:nth-child(2) {
+  & button.send {
     background: #8946a6;
   }
 `;
