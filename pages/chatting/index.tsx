@@ -1,70 +1,54 @@
-import styled from '@emotion/styled';
-import Link from 'next/link';
 import { Fragment, useEffect, useState } from 'react';
-import { app } from '@firebase/firebase';
-import {
-  getFirestore,
-  collection,
-  onSnapshot,
-  query,
-  where,
-} from 'firebase/firestore';
+import { chatList } from '../api/chat';
+import Link from 'next/link';
+import styled from '@emotion/styled';
 import Layout from '@layouts/Layout';
 
 const Chatting = () => {
   const [myChats, setMyChats] = useState<ChatRoom[]>([]);
 
   useEffect(() => {
-    const db = getFirestore(app);
+    const unsubscribe = chatList(setMyChats);
 
-    const chatQuery = query(
-      collection(db, 'chatRoom'),
-      where('users', 'array-contains', { nickName: 'User1', job: '직군' }),
-    );
-
-    onSnapshot(chatQuery, (querySnapshot) => {
-      const newChat: ChatRoom[] = [];
-
-      querySnapshot.forEach((result) => {
-        const { users, lastChat, updateAt, lastVisited } = result.data();
-        const other = users.find((me: Person) => me.nickName !== 'User1');
-        newChat.push({
-          id: result.id,
-          other,
-          lastChat,
-          updateAt,
-          lastVisited,
-        });
-      });
-      setMyChats(newChat);
-    });
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   return (
     <Layout>
-      <div>
-        {myChats.map(({ other, lastChat, updateAt, id }, idx) => (
-          <Fragment key={id}>
-            {idx !== 0 && <div></div>}
-            <Link href={`/chatting/${id}`} passHref>
-              <ChatWrapperDiv>
-                <ChatInfo>
-                  <div>{other.nickName}</div>
-                  <ChatText>
-                    {lastChat ? lastChat : '아직 나눈 대화가 없습니다.'}
-                  </ChatText>
-                </ChatInfo>
+      {myChats.map(({ other, last_chat, update_at, last_visited, id }, idx) => (
+        <Fragment key={id}>
+          {idx !== 0 && <Line />}
+          <Link
+            href={{
+              pathname: `/chatting/${id}`,
+              query: {
+                other: other ? other.nickname : '대화방에 상대가 없습니다.',
+              },
+            }}
+            as={`/chatting/${id}`}
+            passHref
+          >
+            <ChatWrapperDiv>
+              <ChatInfo>
                 <div>
-                  <div>{`${updateAt.toDate().getMonth() + 1}월 ${updateAt
-                    .toDate()
-                    .getDate()}일`}</div>
-                  <div></div>
+                  {other ? other.nickname : '대화방에 상대가 없습니다.'}
                 </div>
-              </ChatWrapperDiv>
-            </Link>
-          </Fragment>
-        ))}
-      </div>
+                <ChatText>
+                  {last_chat ? last_chat : '아직 나눈 대화가 없습니다.'}
+                </ChatText>
+              </ChatInfo>
+              <div>
+                <div>{`${update_at.toDate().getMonth() + 1}월 ${update_at
+                  .toDate()
+                  .getDate()}일`}</div>
+                {last_visited['User1'] < update_at && <Notice />}
+              </div>
+            </ChatWrapperDiv>
+          </Link>
+        </Fragment>
+      ))}
     </Layout>
   );
 };
@@ -73,10 +57,13 @@ export default Chatting;
 const ChatWrapperDiv = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 420px;
+  width: 90%;
   height: 60px;
   margin: 10px auto;
   cursor: pointer;
+  & div {
+    padding: 5px 0;
+  }
 `;
 
 const ChatInfo = styled.div`
@@ -87,4 +74,18 @@ const ChatText = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+`;
+
+const Notice = styled.div`
+  background: red;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  margin: 0 auto;
+`;
+
+const Line = styled.div`
+  width: 80%;
+  border-bottom: 1px solid #00000020;
+  margin: 0 auto;
 `;
