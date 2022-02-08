@@ -13,18 +13,31 @@ const Hr = styled.hr`
   margin-bottom: 20px;
 `;
 
-export default function Comment() {
+type CommentProps = {
+  id: string;
+};
+
+const Comment: React.FC<CommentProps> = ({ id }) => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
+
+  const [sum, setSum] = useState<number>(0);
+
   return (
     <section>
       <Container>
-        <CommentSum />
+        <CommentSum sum={sum} />
       </Container>
       <Hr></Hr>
       <Container>
-        <CommentList />
-        {isLogin ? <CommentEditor /> : <CommentLogin setIsLogin={setIsLogin} />}
+        <CommentList setSum={setSum} id={id} />
+        {isLogin ? (
+          <CommentEditor postId={id} />
+        ) : (
+          <CommentLogin setIsLogin={setIsLogin} />
+        )}
       </Container>
     </section>
   );
-}
+};
+
+export default Comment;

@@ -1,25 +1,40 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const CommentAuthorDiv = styled.div`
   margin-bottom: 25px;
-  align-self: flex-end;
   display: flex;
-  & svg {
-    margin-right: 10px;
-  }
+  justify-content: space-between;
+`;
+
+const CommentCompany = styled.span``;
+
+const CommentNickname = styled.span`
+  color: grey;
+  font-size: 0.8rem;
 `;
 
 type authorProps = {
-  author: string;
+  nickname: string;
+  job: string;
+  date: string;
 };
 
-const CommentAuthorComponent: React.FC<authorProps> = ({ author }) => {
+const CommentAuthorComponent: React.FC<authorProps> = ({
+  date,
+  nickname,
+  job,
+}) => {
   return (
     <CommentAuthorDiv>
-      <AccountCircleIcon />
-      <span>{author}</span>
+      <div>{date}</div>
+      <div>
+        <CommentNickname>{nickname}</CommentNickname>
+
+        {`  `}
+
+        <CommentCompany>{job}</CommentCompany>
+      </div>
     </CommentAuthorDiv>
   );
 };
