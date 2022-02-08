@@ -11,8 +11,8 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_APP_ID,
   databaseURL: process.env.NEXT_PUBLIC_DATABASE_URL,
 };
-// export const app = initializeApp(firebaseConfig);
-// export const auth = getAuth(app);
+export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
 export const db = getFirestore();
 export const provider = new GoogleAuthProvider();
 export const commentRef = collection(db, 'comment');

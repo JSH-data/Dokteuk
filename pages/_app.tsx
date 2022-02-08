@@ -44,7 +44,8 @@ const theme_ = createTheme(
     },
   },
 );
- function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps) {
+  console.log(process.browser);
   return (
     <AuthProvider>
       <ThemeProvider theme={theme_}>
@@ -53,11 +54,10 @@ const theme_ = createTheme(
     </AuthProvider>
   );
 }
+
 MyApp.getInitialProps = wrapper.getInitialAppProps(
   (store) =>
-    async ({ Component, ctx }: AppContext): Promise<any> => {
-      await store.dispatch(getUser());
-    },
+    async ({ Component, ctx }: AppContext): Promise<any> =>
+      await store.dispatch(getUser()),
 );
-
 export default wrapper.withRedux(MyApp);

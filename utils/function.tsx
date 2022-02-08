@@ -1,7 +1,6 @@
 //@ts-ignore
 import { UserInfo, TopicPost, RoungePost } from '@interface/CardInterface';
 import delay from '@utils/delay';
-
 export const getMyInfo = async () => {
   // await delay(5000);
   // await delay(0);

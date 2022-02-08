@@ -10,3 +10,12 @@ const Home: NextPage = () => {
   return <div></div>;
 };
 export default Home;
+export const getServerSideProps = async () => {
+  // const fs = await require('fs');
+  // console.log(fs);
+  // console.log(
+  //   "process.browser in pages/index.tsx 's getServerSideProps",
+  //   process.browser,
+  // );
+  return { props: {} };
+};

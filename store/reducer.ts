@@ -15,6 +15,7 @@ const initialUserState: UserState = {
   status: 'standby',
   error: '',
 };
+
 export const getUser = createAsyncThunk('getUser', async () => {
   return await getMyInfo();
 });
@@ -32,8 +33,8 @@ export const userSlice = createSlice({
       state.status = 'success';
     });
     builder.addCase(getUser.rejected, (state, action) => {
-      console.log(action);
       state.status = 'error';
+      state.error = action.error.message;
     });
   },
 });
