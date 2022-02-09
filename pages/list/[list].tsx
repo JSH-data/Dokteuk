@@ -21,9 +21,9 @@ const ListPage = () => {
   const { ref, inView } = useInView();
   const { user: myInfo }: any = useSelector((state: UserState) => state.user);
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (!myInfo) dispatch(getUser());
-  }, [myInfo, dispatch]);
+  // useEffect(() => {
+  //   if (!myInfo) dispatch(getUser());
+  // }, [myInfo, dispatch]);
   useEffect(() => {
     if (
       myInfo?.validRounges.findIndex(

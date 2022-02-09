@@ -1,44 +1,52 @@
 //@ts-ignore
 import { UserInfo, TopicPost, RoungePost } from '@interface/CardInterface';
 import delay from '@utils/delay';
-export const getMyInfo = async () => {
-  // await delay(5000);
+export const getMyInfo = async (result: any) => {
+  //await delay(5000);
   // await delay(0);
   // return null;
+
+  const { userData } = result.data;
+
   parseInt(Date.now().toString()) - Math.floor(Math.random() * 30000) * 1000;
   return {
-    nickname: '닉네임입니다',
-    jobSector: '외식·음료',
-    validRounges: [
-      { title: '타임라인', url: 'timeline' },
-      { title: '토픽', url: 'topic' },
-      { title: '외식·음료', url: 'food-service' },
-      { title: '매장관리·판매', url: 'store-service' },
-    ],
-    myChattings: [
-      {
-        roomName: '채팅방1',
-        roomId: 'r8qur390wjfioajwfeio399r3q4esrtscw',
-        isGroup: true,
-        lastMessage: { content: '푸하하', updatedAt: '' },
-        unreadCount: 0,
-      },
-      {
-        roomName: '채팅방2',
-        roomId: 'r8qur390wjfioajwfeio399qr23rqr23ew',
-        isGroup: true,
-        lastMessage: { content: '호호', updatedAt: '' },
-        unreadCount: 10,
-      },
-      {
-        roomName: '채팅방3',
-        roomId: 'r8qur390wjfioajwfeio399t78t7u7yfyh',
-        isGroup: false,
-        lastMessage: { content: '헤응', updatedAt: '' },
-        unreadCount: 4,
-      },
-    ],
-    hasNewNotification: true,
+    nickname: userData.nickname,
+    jobSector: userData.jobSector,
+    validRounges: userData.validRounges,
+    myChattings: userData.myChatting,
+    hasNewNotification: userData.hasNewNotification,
+    // nickname: '닉네임입니다',
+    // jobSector: '외식·음료',
+    // validRounges: [
+    //   { title: '타임라인', url: 'timeline' },
+    //   { title: '토픽', url: 'topic' },
+    //   { title: '외식·음료', url: 'food-service' },
+    //   { title: '매장관리·판매', url: 'store-service' },
+    // ],
+    // myChattings: [
+    //   {
+    //     roomName: '채팅방1',
+    //     roomId: 'r8qur390wjfioajwfeio399r3q4esrtscw',
+    //     isGroup: true,
+    //     lastMessage: { content: '푸하하', updatedAt: '' },
+    //     unreadCount: 0,
+    //   },
+    //   {
+    //     roomName: '채팅방2',
+    //     roomId: 'r8qur390wjfioajwfeio399qr23rqr23ew',
+    //     isGroup: true,
+    //     lastMessage: { content: '호호', updatedAt: '' },
+    //     unreadCount: 10,
+    //   },
+    //   {
+    //     roomName: '채팅방3',
+    //     roomId: 'r8qur390wjfioajwfeio399t78t7u7yfyh',
+    //     isGroup: false,
+    //     lastMessage: { content: '헤응', updatedAt: '' },
+    //     unreadCount: 4,
+    //   },
+    // ],
+    // hasNewNotification: true,
   } as UserInfo;
 };
 
