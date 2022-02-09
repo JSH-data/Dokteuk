@@ -95,7 +95,11 @@ const Comment: React.FC<CommentProps> = ({
             date={date}
           ></CommentAuthorComponent>
           {nestedReplyEditor && (
-            <CommentEditor bundleId={bundleId} postId={postId} />
+            <CommentEditor
+              bundleId={bundleId}
+              postId={postId}
+              setNestedReply={setNestedReplyEditor}
+            />
           )}
         </CommentDiv>
       ) : (

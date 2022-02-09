@@ -20,9 +20,9 @@ const CommentList: React.FC<CommentListProps> = ({ setSum, id }) => {
   useEffect(() => {
     const q = query(
       commentRef,
-      where('post_id', '==', `${id}`),
-      orderBy('bundle_id'),
-      orderBy('bundle_order'),
+      where('postId', '==', `${id}`),
+      orderBy('bundleId'),
+      orderBy('bundleOrder'),
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -30,7 +30,7 @@ const CommentList: React.FC<CommentListProps> = ({ setSum, id }) => {
         id: value.id,
         ...value.data(),
       }));
-      console.log(newData);
+      console.log(newData, 'data');
       setComments(newData);
       setSum(newData.length);
     });
