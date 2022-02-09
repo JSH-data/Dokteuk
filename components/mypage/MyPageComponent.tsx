@@ -6,7 +6,7 @@ import MyPagePostList from './MyPagePostList';
 const MorePage = styled.div`
   & a {
     opacity: 0.3;
-    margin: 20px auto 20px auto;
+    margin: 20px auto 90px auto;
     display: block;
     text-align: center;
   }

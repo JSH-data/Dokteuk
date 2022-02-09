@@ -5,6 +5,8 @@ type inputProps = {
   placeholder?: string;
   defaultValue?: string;
   changeFn?: (value: string) => void;
+  error?: boolean;
+  errorText?: string;
 };
 
 const InputComponent: React.FC<inputProps> = ({
@@ -12,6 +14,8 @@ const InputComponent: React.FC<inputProps> = ({
   placeholder,
   defaultValue,
   changeFn,
+  error,
+  errorText,
 }) => {
   return (
     <>
@@ -31,6 +35,8 @@ const InputComponent: React.FC<inputProps> = ({
           placeholder={placeholder ?? placeholder}
           value={defaultValue ?? defaultValue}
           onChange={(event) => changeFn?.(event.target.value)}
+          error={error}
+          helperText={errorText}
         />
       )}
     </>

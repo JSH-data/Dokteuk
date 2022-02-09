@@ -9,6 +9,10 @@ import { MyPageChangeCom } from './MyPageChangeComponent';
 const MyPagePassword: React.FC = () => {
   const [pw, setPw] = useState<string>('');
   const [pwCheck, setPwCheck] = useState<string>('');
+  const [pwError, setPwError] = useState<boolean>(false);
+  const [errorText, setErrorText] = useState<string>('');
+  const [pwCheckError, setPwCheckError] = useState<boolean>(false);
+  const [pwCheckErrorText, setPwCheckErrorText] = useState<string>('');
 
   const passwordChange = () => {
     if (pw === pwCheck && pw !== '') {
@@ -34,11 +38,15 @@ const MyPagePassword: React.FC = () => {
                 type="password"
                 placeholder="비밀번호"
                 changeFn={setPw}
+                error={pwError}
+                errorText={errorText}
               ></InputComponent>
               <InputComponent
                 type="password"
                 placeholder="비밀번호 확인"
                 changeFn={setPwCheck}
+                error={pwCheckError}
+                errorText={pwCheckErrorText}
               ></InputComponent>
               <ButtonComponent
                 text="비밀번호 변경하기"
