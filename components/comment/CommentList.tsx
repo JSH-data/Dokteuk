@@ -54,12 +54,12 @@ const CommentList: React.FC<CommentListProps> = ({ setSum, id }) => {
               likes={data.likes}
               nickname={data.nickname}
               job={data.job}
-              date={data.created_at}
-              isClicked={isClicked(data.pressed_person)}
+              date={data.createdAt}
+              isClicked={isClicked(data.pressedPerson)}
               id={data.id}
               isNested={data.origin}
-              bundleId={data.bundle_id}
-              isDeleted={data.is_deleted}
+              bundleId={data.bundleId}
+              isDeleted={data.isDeleted}
               postId={id}
             />
           );

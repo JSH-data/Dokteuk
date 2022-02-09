@@ -24,12 +24,12 @@ const LikeComponent: React.FC<LikeProps> = ({ likes, isClicked, id }) => {
     const commentRef = doc(db, 'comment', id);
     if (isClicked) {
       await updateDoc(commentRef, {
-        pressed_person: arrayRemove('user'),
+        pressedPerson: arrayRemove('user'),
         likes: likes - 1,
       });
     } else {
       await updateDoc(commentRef, {
-        pressed_person: arrayUnion('user'),
+        pressedPerson: arrayUnion('user'),
         likes: likes + 1,
       });
     }
