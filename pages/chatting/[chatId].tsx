@@ -6,20 +6,22 @@ import {
   chatMessages,
   moreChatMessages,
   leaveChat,
+  downMessage,
 } from '../api/chat';
+import { Timestamp } from 'firebase/firestore';
+import { isValidType } from '../../utils/upload';
+import ImgPreviewModal from '@components/ImgPreviewModal';
+import ChatSetting from '@components/ChatSetting';
 import styled from '@emotion/styled';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import DensityMediumIcon from '@mui/icons-material/DensityMedium';
 import AddIcon from '@mui/icons-material/Add';
 import SendIcon from '@mui/icons-material/Send';
-import { Timestamp } from 'firebase/firestore';
-import ImgPreviewModal from '@components/ImgPreviewModal';
-import ChatSetting from '@components/ChatSetting';
 
 const ChatRoom = () => {
   const [messages, setMessages] = useState<ChatText[]>([]);
   const [lastKey, setLastKey] = useState<Timestamp | null>(null);
-  const [fileSrc, setFileSrc] = useState<String | ArrayBuffer | null>(null);
+  const [fileSrc, setFileSrc] = useState<FileType | null>(null);
   const [isClickedHeader, setIsClickedHeader] = useState<boolean>(false);
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -29,16 +31,24 @@ const ChatRoom = () => {
   const router = useRouter();
   const { chatId, other } = router.query;
 
-  const onFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { files } = event.target;
-    const theFile = files![0];
-    const reader = new FileReader();
+  const onFileChange = (file: Blob) => {
+    if (isValidType(file.type)) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
 
-    reader.onload = () => {
-      const { result } = reader;
-      setFileSrc(result);
-    };
-    reader.readAsDataURL(theFile);
+      reader.onload = () => {
+        const { result } = reader;
+        setFileSrc((current) => {
+          return {
+            type: 'upload',
+            file: [...current!.file, file],
+            src: [...current!.src, result],
+          };
+        });
+      };
+    } else {
+      alert('업로드는 이미지만 가능합니다.');
+    }
   };
 
   const onFileReset = () => {
@@ -52,6 +62,17 @@ const ChatRoom = () => {
   const onLeaveChat = () => {
     leaveChat(chatId);
     router.replace(`/chatting`);
+  };
+
+  const onSubmitImg = (key?: string) => {
+    if (key) {
+      downMessage(key);
+    } else {
+      for (let i = 0; i < fileSrc!.src.length; i++) {
+        sendMessage(chatId, fileSrc!.src[i] as string, 'img', fileSrc!.file[i]);
+      }
+    }
+    setFileSrc(null);
   };
 
   useEffect(() => {
@@ -79,7 +100,11 @@ const ChatRoom = () => {
   return (
     <Fragment>
       {fileSrc && (
-        <ImgPreviewModal fileSrc={fileSrc} onFileReset={onFileReset} />
+        <ImgPreviewModal
+          fileSrc={fileSrc}
+          onFileReset={onFileReset}
+          onSubmitImg={onSubmitImg}
+        />
       )}
       {isClickedHeader && (
         <ChatSetting onToggle={onToggle} onLeaveChat={onLeaveChat} />
@@ -97,29 +122,53 @@ const ChatRoom = () => {
           {messages
             .slice()
             .reverse()
-            .map(({ id, from, msg }, idx) =>
-              idx === 0 ? (
-                <ChatText
-                  className={from === 'User1' ? 'mine' : ''}
-                  key={id}
-                  ref={ref}
-                >
-                  {msg}
-                </ChatText>
-              ) : (
-                <ChatText className={from === 'User1' ? 'mine' : ''} key={id}>
-                  {msg}
-                </ChatText>
-              ),
-            )}
+            .map(({ id, from, msg, img }, idx) => (
+              <ChatText
+                className={from === 'User1' ? 'mine' : ''}
+                key={id}
+                ref={idx === 0 ? ref : null}
+              >
+                {msg ? (
+                  msg
+                ) : (
+                  <ChatImg
+                    src={img as string}
+                    alt="preview-img"
+                    onClick={() =>
+                      setFileSrc({
+                        type: id as string,
+                        file: [],
+                        src: [img as string],
+                      })
+                    }
+                  />
+                )}
+              </ChatText>
+            ))}
           <div ref={bottomListRef} />
         </ChatBox>
       </ChatList>
       <ChatInputWrapper>
         <label htmlFor="file">
-          <AddIcon style={{ cursor: 'pointer' }} />
+          <AddIcon style={{ cursor: 'pointer', color: 'white' }} />
         </label>
-        <input id="file" type="file" hidden onChange={onFileChange} />
+        <input
+          id="file"
+          type="file"
+          multiple
+          hidden
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            const { files } = event.target;
+            setFileSrc({
+              type: 'upload',
+              file: [],
+              src: [],
+            });
+            for (let i = 0; i < files!.length; i++) {
+              onFileChange(files![i]);
+            }
+          }}
+        />
         <InputBox
           ref={inputValue}
           placeholder="메세지를 입력해주세요."
@@ -128,7 +177,7 @@ const ChatRoom = () => {
         <SendIcon
           style={{ position: 'absolute', right: '40px', cursor: 'pointer' }}
           onClick={() => {
-            sendMessage(chatId, inputValue.current!.value);
+            sendMessage(chatId, inputValue.current!.value, 'msg');
             inputValue.current!.value = '';
           }}
         />
@@ -140,6 +189,7 @@ const ChatRoom = () => {
 export default ChatRoom;
 
 const ChatHeader = styled.div`
+  color: white;
   position: fixed;
   width: 100vw;
   display: flex;
@@ -172,7 +222,8 @@ const ChatText = styled.li`
   color: ${({ theme }: any) =>
     theme.customTheme.defaultMode.searchInputTextColor};
   list-style: none;
-  background: #f0f0f0;
+  background: ${({ theme }: any) =>
+    theme.customTheme.defaultMode.chatFromBackgroundColor};
   padding: 20px;
   width: 50%;
   min-height: 60px;
@@ -180,13 +231,24 @@ const ChatText = styled.li`
   border-radius: 20px;
   box-shadow: 0px 1px 1px 0 #00000036;
   &.mine {
-    background: #b762c1;
+    background: ${({ theme }: any) =>
+      theme.customTheme.defaultMode.chatToBackgroundColor};
     margin-left: auto;
   }
 
   @media (prefers-color-scheme: dark) {
     color: white;
+    background: ${({ theme }: any) =>
+      theme.customTheme.darkMode.chatFromBackgroundColor};
+    &.mine {
+      background: ${({ theme }: any) =>
+        theme.customTheme.darkMode.chatToBackgroundColor};
+    }
   }
+`;
+
+const ChatImg = styled.img`
+  width: 100%;
 `;
 
 const ChatInputWrapper = styled.div`

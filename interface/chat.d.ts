@@ -20,11 +20,22 @@ interface ChatRoom {
 interface ChatText {
   id?: string;
   from: string;
-  msg: string;
+  msg?: string;
+  img?: string;
   create_at: Timestamp;
 }
 
 interface ImgProps {
   src: string;
   alt: string;
+}
+
+interface NoticeProps {
+  isRead: boolean;
+}
+
+interface FileType {
+  type: string;
+  file: (Blob | ArrayBuffer)[];
+  src: (string | ArrayBuffer | null)[];
 }

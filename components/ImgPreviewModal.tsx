@@ -1,20 +1,46 @@
-import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { EffectCards } from 'swiper';
+import styled from '@emotion/styled';
+import Image from 'next/image';
+import 'swiper/css';
+import 'swiper/css/effect-cards';
 
 const ImgPreviewModal = ({
   fileSrc,
   onFileReset,
+  onSubmitImg,
 }: {
-  fileSrc: String | ArrayBuffer | null;
+  fileSrc: FileType | null;
   onFileReset: () => void;
+  onSubmitImg: (k?: string) => void;
 }) => {
   return (
     <Background>
       <Modal>
-        <Image src={fileSrc as string} alt="preview-image" />
+        <SwiperStyled
+          effect={'cards'}
+          grabCursor={true}
+          modules={[EffectCards]}
+        >
+          {fileSrc!.src.map((img) => (
+            <SwiperSlide key={img as string}>
+              <Image src={img as string} alt="preview-img" layout="fill" />
+            </SwiperSlide>
+          ))}
+        </SwiperStyled>
         <ButtonWrapper>
           <button onClick={onFileReset}>취소</button>
-          <button className="send">전송</button>
+          <button
+            className="send"
+            onClick={() =>
+              fileSrc!.type === 'upload'
+                ? onSubmitImg()
+                : onSubmitImg(fileSrc!.type)
+            }
+          >
+            {fileSrc!.type === 'upload' ? '전송' : '다운'}
+          </button>
         </ButtonWrapper>
       </Modal>
     </Background>
@@ -34,7 +60,7 @@ const Background = styled.div`
 const slideDown = keyframes`
 from {
   opacity: 0;
-  transform: translateY(-30vh);
+  transform: translateY(-80vh);
 }
 to {
   opacity: 1;
@@ -46,21 +72,30 @@ const Modal = styled.div`
   width: clamp(0px, 80%, 680px);
   height: 80%;
   padding: 30px 15px;
-  background-color: white;
+  background-color: ${({ theme }: any) =>
+    theme.customTheme.defaultMode.chatFromBackgroundColor};
   border-radius: 14px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  animation: ${slideDown} 0.3s ease-out forwards;
+  animation: ${slideDown} 0.5s ease-out forwards;
   z-index: 30;
   display: flex;
   flex-direction: column;
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) =>
+      theme.customTheme.darkMode.chatFromBackgroundColor};
+  }
 `;
 
-const Image = styled.div<ImgProps>`
-  width: 80%;
+const SwiperStyled = styled(Swiper)`
+  width: 240px;
   height: calc(100% - 80px);
-  background: url(${(props) => props.src}) no-repeat center center;
-  background-size: contain;
-  margin: 0 auto;
+  & img {
+    object-fit: contain;
+  }
+  & .swiper-slide-shadow {
+    opacity: 0;
+  }
 `;
 
 const ButtonWrapper = styled.div`
@@ -69,14 +104,25 @@ const ButtonWrapper = styled.div`
   padding-top: 30px;
 
   & button {
+    color: black;
     background: none;
     border: none;
     border-radius: 10px;
     width: 100px;
     height: 50px;
   }
-
   & button.send {
-    background: #8946a6;
+    background: ${({ theme }: any) =>
+      theme.customTheme.defaultMode.chatToBackgroundColor};
+  }
+
+  @media (prefers-color-scheme: dark) {
+    & button {
+      color: white;
+    }
+    & button.send {
+      background: ${({ theme }: any) =>
+        theme.customTheme.darkMode.chatToBackgroundColor};
+    }
   }
 `;
