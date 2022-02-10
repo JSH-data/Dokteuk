@@ -11,17 +11,17 @@ export const addOriginComment = async (
   await addDoc(collection(db, 'comment'), {
     text: content,
     likes: 0,
-    pressed_person: [],
+    pressedPerson: [],
     nickname: '닉네임입니다',
     job: '직군',
-    user_id: 'user',
-    post_id: postId,
-    bundle_id: bundleId,
-    bundle_order: bundleId,
-    created_at: currentDate,
-    updated_at: '',
-    deleted_at: '',
-    is_deleted: false,
+    userId: 'user',
+    postId: postId,
+    bundleId: bundleId,
+    bundleOrder: bundleId,
+    createdAt: currentDate,
+    updatedAt: '',
+    deletedAt: '',
+    isDeleted: false,
     origin: true,
   });
 };
@@ -36,17 +36,17 @@ export const addNestedComment = async (
   await addDoc(collection(db, 'comment'), {
     text: content,
     likes: 0,
-    pressed_person: [],
+    pressedPerson: [],
     nickname: '닉네임입니다',
     job: '직군',
-    user_id: 'user',
-    post_id: postId,
-    bundle_id: bundleId,
-    bundle_order: detailTimeStamp,
-    created_at: currentDate,
-    updated_at: '',
-    deleted_at: '',
-    is_deleted: false,
+    userId: 'user',
+    postId: postId,
+    bundleId: bundleId,
+    bundleOrder: detailTimeStamp,
+    createdAt: currentDate,
+    updatedAt: '',
+    deletedAt: '',
+    isDeleted: false,
     origin: false,
   });
 };
@@ -60,6 +60,6 @@ export const updateComment = async (
   const currentDate = setCurrentDate(timeStamp);
   await updateDoc(commentRef, {
     text: content,
-    updated_at: currentDate,
+    updatedAt: currentDate,
   });
 };

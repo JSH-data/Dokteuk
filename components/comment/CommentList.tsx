@@ -20,9 +20,9 @@ const CommentList: React.FC<CommentListProps> = ({ setSum, id }) => {
   useEffect(() => {
     const q = query(
       commentRef,
-      where('post_id', '==', `${id}`),
-      orderBy('bundle_id'),
-      orderBy('bundle_order'),
+      where('postId', '==', `${id}`),
+      orderBy('bundleId'),
+      orderBy('bundleOrder'),
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -30,7 +30,7 @@ const CommentList: React.FC<CommentListProps> = ({ setSum, id }) => {
         id: value.id,
         ...value.data(),
       }));
-      console.log(newData);
+      console.log(newData, 'data');
       setComments(newData);
       setSum(newData.length);
     });
@@ -54,12 +54,12 @@ const CommentList: React.FC<CommentListProps> = ({ setSum, id }) => {
               likes={data.likes}
               nickname={data.nickname}
               job={data.job}
-              date={data.created_at}
-              isClicked={isClicked(data.pressed_person)}
+              date={data.createdAt}
+              isClicked={isClicked(data.pressedPerson)}
               id={data.id}
               isNested={data.origin}
-              bundleId={data.bundle_id}
-              isDeleted={data.is_deleted}
+              bundleId={data.bundleId}
+              isDeleted={data.isDeleted}
               postId={id}
             />
           );

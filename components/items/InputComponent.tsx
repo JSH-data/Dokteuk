@@ -1,21 +1,26 @@
 import TextField from '@mui/material/TextField';
 
+
 type inputProps = {
-  type?: string;
   placeholder?: string;
   defaultValue?: string;
   changeFn?: (value: string) => void;
+  type?: string;
+  error?: boolean;
+  errorText?: string;
 };
 
 const InputComponent: React.FC<inputProps> = ({
-  type,
   placeholder,
   defaultValue,
   changeFn,
+  type,
+  error,
+  errorText,
 }) => {
   return (
     <>
-      {!type ? (
+      {type == undefined ? (
         <TextField
           style={{ width: '85%' }}
           multiline
@@ -23,6 +28,8 @@ const InputComponent: React.FC<inputProps> = ({
           placeholder={placeholder ?? placeholder}
           value={defaultValue ?? defaultValue}
           onChange={(event) => changeFn?.(event.target.value)}
+          sx={{ div: { backgroundColor: 'white', autocomplete: 'off' } }}
+          focused={false}
         />
       ) : (
         <TextField
@@ -31,6 +38,8 @@ const InputComponent: React.FC<inputProps> = ({
           placeholder={placeholder ?? placeholder}
           value={defaultValue ?? defaultValue}
           onChange={(event) => changeFn?.(event.target.value)}
+          error={error}
+          helperText={errorText}
         />
       )}
     </>

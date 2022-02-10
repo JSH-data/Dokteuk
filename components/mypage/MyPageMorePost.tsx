@@ -1,6 +1,7 @@
 import { useInView } from 'react-intersection-observer';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import Layout from '@layouts/Layout';
 import Container from '@mui/material/Container';
 import MyPagePost from './MyPagePost';
@@ -58,17 +59,28 @@ const MyPageMorePost: React.FC = () => {
       <Layout>
         <Container>
           <article>
-            <h1>내가 작성한 게시물</h1>
+            <header style={{ display: 'flex', alignItems: 'center' }}>
+              <Link href={'/mypage'}>
+                <span style={{ marginRight: '20px' }}>{'<'}</span>
+              </Link>
+              <h1>내가 작성한 게시물</h1>
+            </header>
+
             {posts.map((post, idx) => (
               <>
                 {posts.length - 1 == idx ? (
                   <MyPagePost
+                    key={idx}
                     title={post.title}
                     content={post.content}
                     refObj={ref}
                   ></MyPagePost>
                 ) : (
-                  <MyPagePost title={post.title} content={post.content} />
+                  <MyPagePost
+                    key={idx}
+                    title={post.title}
+                    content={post.content}
+                  />
                 )}
               </>
             ))}
