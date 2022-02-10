@@ -35,6 +35,8 @@ const theme_ = createTheme(
         searchPageWrapperBackgroundColor: '#EAEAEA',
         searchWrapperBorderBottomColor: '#EAEAEA',
         footerBordertopColor: '#EAEAEA',
+        chatFromBackgroundColor: '#f0f0f0',
+        chatToBackgroundColor: '#b762c1',
       },
       darkMode: {
         headerMenuBackgroundColor: 'rgba(28, 28, 30, 1)',
@@ -51,6 +53,8 @@ const theme_ = createTheme(
         searchPageWrapperBackgroundColor: 'rgba(28, 28, 30, 1)',
         searchWrapperBorderBottomColor: 'rgb(17, 17, 19)',
         footerBordertopColor: 'rgb(17, 17, 19)',
+        chatFromBackgroundColor: 'rgba(35, 35, 37, 1)',
+        chatToBackgroundColor: '#4C78C1',
       },
     },
   },
