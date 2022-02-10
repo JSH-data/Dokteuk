@@ -29,8 +29,8 @@ export default function Signup() {
     jobSector: '',
     validRounges: [
       {
-        title: '',
-        url: '',
+        title: '타임라인',
+        url: 'timeline',
       },
     ],
     myChatting: [

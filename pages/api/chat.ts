@@ -1,7 +1,10 @@
 import { app } from '@firebase/firebase';
+import delay from '@utils/delay';
+import { getAuth } from 'firebase/auth';
 import {
   getFirestore,
   collection,
+  getDoc,
   doc,
   onSnapshot,
   addDoc,
@@ -20,10 +23,18 @@ import { Dispatch, SetStateAction } from 'react';
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-export const chatList = (setMyChats: Dispatch<SetStateAction<ChatRoom[]>>) => {
+export const chatList = (
+  setMyChats: Dispatch<SetStateAction<ChatRoom[]>>,
+  userData: UserType,
+) => {
+  const user = {
+    nickname: userData.nickname,
+    job: userData.jobSector,
+  };
+
   const chatListQuery = query(
     collection(db, 'chat'),
-    where('users', 'array-contains', { nickname: 'User1', job: '직군' }),
+    where('users', 'array-contains', user),
     orderBy('update_at', 'desc'),
     limit(20),
   );
@@ -32,13 +43,14 @@ export const chatList = (setMyChats: Dispatch<SetStateAction<ChatRoom[]>>) => {
     const newChat: ChatRoom[] = [];
     querySnapshot.forEach((result) => {
       const { users, last_chat, update_at, last_visited } = result.data();
-      const other = users.find((me: Person) => me.nickname !== 'User1');
+      const other = users.find((me: Person) => me.nickname !== user.nickname);
       newChat.push({
         id: result.id,
         other,
         last_chat,
         update_at,
         last_visited,
+        user,
       });
     });
     setMyChats(newChat);
@@ -50,7 +62,13 @@ export const chatMessages = (
   chatId: queryType,
   setMessages: Dispatch<SetStateAction<ChatText[]>>,
   setLastKey: Dispatch<SetStateAction<Timestamp | null>>,
+  userData: UserType,
 ) => {
+  const user = {
+    nickname: userData.nickname,
+    job: userData.jobSector,
+  };
+
   const chatQuery = query(
     collection(db, `chat/${chatId}/messages`),
     orderBy('create_at', 'desc'),
@@ -72,6 +90,7 @@ export const chatMessages = (
         msg,
         img,
         create_at,
+        user,
       });
     });
     setMessages(newChat);
@@ -85,7 +104,13 @@ export const moreChatMessages = (
   setMessages: Dispatch<SetStateAction<ChatText[]>>,
   setLastKey: Dispatch<SetStateAction<Timestamp | null>>,
   key: Timestamp | null,
+  userData: UserType,
 ) => {
+  const user = {
+    nickname: userData.nickname,
+    job: userData.jobSector,
+  };
+
   const chatQuery = query(
     collection(db, `chat/${chatId}/messages`),
     orderBy('create_at', 'desc'),
@@ -108,6 +133,7 @@ export const moreChatMessages = (
         msg,
         img,
         create_at,
+        user,
       });
     });
     setMessages((current) => [...current, ...newChat]);
@@ -119,18 +145,25 @@ export const sendMessage = async (
   chatId: queryType,
   value: string,
   msgType: string,
+  userData: UserType,
   file?: Blob | ArrayBuffer,
 ) => {
+  const user = {
+    nickname: userData.nickname,
+    job: userData.jobSector,
+  };
+  const timestamp = Timestamp.now();
+
   const message = await addDoc(collection(db, `chat/${chatId}/messages`), {
-    from: 'User1',
+    from: user.nickname,
     [msgType]: value,
-    create_at: Timestamp.now(),
+    create_at: timestamp,
   });
 
   await updateDoc(doc(db, 'chat', chatId as string), {
     last_chat: msgType === 'msg' ? value : '사진을 보냈습니다.',
-    update_at: Timestamp.now(),
-    [`last_visited.${'User1'}`]: Timestamp.now(),
+    update_at: timestamp,
+    [`last_visited.${user.nickname}`]: timestamp,
   });
 
   if (msgType === 'img') {
@@ -138,6 +171,17 @@ export const sendMessage = async (
       console.log('Uploaded a IMG!');
     });
   }
+};
+
+export const leaveChat = async (chatId: queryType, userData: UserType) => {
+  const user = {
+    nickname: userData.nickname,
+    job: userData.jobSector,
+  };
+
+  await updateDoc(doc(db, 'chat', chatId as string), {
+    [`last_visited.${user.nickname}`]: Timestamp.now(),
+  });
 };
 
 export const downMessage = (key: string) => {
@@ -157,8 +201,18 @@ export const downMessage = (key: string) => {
   });
 };
 
-export const leaveChat = async (chatId: queryType) => {
+export const exitChat = async (chatId: queryType, userData: UserType) => {
+  const user = {
+    nickname: userData.nickname,
+    job: userData.jobSector,
+  };
+
+  const chatRoom = await getDoc(doc(db, 'chat', chatId as string));
+  const other = chatRoom
+    .data()!
+    .users.find((me: any) => me.nickname !== user.nickname);
+
   await updateDoc(doc(db, 'chat', chatId as string), {
-    users: arrayRemove({ nickname: 'User2', job: '직군' }),
+    users: arrayRemove(other),
   });
 };
