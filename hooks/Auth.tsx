@@ -18,17 +18,15 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     const auth = getAuth();
     return auth.onIdTokenChanged(async (user) => {
       if (!user) {
-        console.log('no user');
         setCurrentUser(null);
-        setLoading(false);
+
         nookies.set(undefined, 'token', '', {});
         return;
       }
       const token = await user.getIdToken();
-      console.log('token', token);
-      console.log('user', user);
+
       setCurrentUser(user);
-      setLoading(false);
+
       nookies.set(undefined, 'token', token, {});
     });
   }, []);
@@ -42,9 +40,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   //     return () => clearInterval(handle);
   //   }, []);
 
-  if (loading) {
-    return <Loading type="spin" color="skyblue" />;
-  }
   if (!currentUser) {
     return <Login />;
   } else {

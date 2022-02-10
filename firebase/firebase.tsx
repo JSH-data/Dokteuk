@@ -1,7 +1,8 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection } from 'firebase/firestore';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-
+import { getStorage, ref } from 'firebase/storage';
+import 'firebase/storage';
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
@@ -16,3 +17,4 @@ export const auth = getAuth(app);
 export const db = getFirestore();
 export const provider = new GoogleAuthProvider();
 export const commentRef = collection(db, 'comment');
+export const storage = getStorage(app);
