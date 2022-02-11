@@ -86,7 +86,7 @@ const Footer = () => {
           <SearchOutlinedIconStyled fontSize="medium" />
         </Link>
       </div>
-      <Link href="/chatting">
+      <Link href="/chatting" passHref>
         <div>
           <ForumOutlinedIconStyled fontSize="medium" />
         </div>

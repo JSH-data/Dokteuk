@@ -11,11 +11,12 @@ import { doc, getDoc } from 'firebase/firestore';
 
 import { db, auth } from '@firebase/firebase';
 import { useRouter } from 'next/router';
+import { useDispatch } from 'react-redux';
+import { setMyInfoAction } from '@store/reducer';
 
 export default function Login() {
   const router = useRouter();
-  const provider = new GoogleAuthProvider();
-
+  const dispatch = useDispatch();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
@@ -27,32 +28,49 @@ export default function Login() {
     else if (name === 'password') setPassword(value);
   };
 
-  const loginWithGoogle = () => {
-    signInWithPopup(auth, provider)
-      .then(async (result) => {
-        // The signed-in user info.
-        const user = result.user;
-        console.log(user.uid);
-        const docSnap = await getDoc(doc(db, 'user', user.uid));
-        if (docSnap.exists()) {
-          console.log('이미 가입되어 있습니다.');
-          router.push('/');
-        } else {
-          console.log('가입되어있지 않습니다.');
-          router.push('/user/google');
-        }
-        // ...
-      })
-      .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
-      });
+  const loginWithGoogle = async () => {
+    const {
+      user: { uid },
+    } = await signInWithPopup(auth, new GoogleAuthProvider());
+    const docSnap = await getDoc(doc(db, 'user', uid));
+    if (!docSnap.exists()) return console.log('가입되어있지 않습니다.');
+    const myInfo = docSnap.data();
+    dispatch(setMyInfoAction(myInfo));
+    // router.push('/list/timeline');
+    // console.log(uid);
+    //  signInWithPopup(auth, provider)
+    //   .then(async (result) => {
+    //     const {
+    //       user: { uid },
+    //     } = result;
+    //     console.log(uid);
+    //     console.log(await getDoc(doc(db, 'user', uid)));
+    //     // The signed-in user info.
+    //     const user = result.user;
+    //     const docSnap = await getDoc(doc(db, 'user', user.uid));
+
+    //     if (docSnap.exists()) {
+    //       console.log('이미 가입되어 있습니다.');
+    //       // router.push('/');
+    //       console.log(docSnap.data());
+    //       dispatch(setMyInfoAction(docSnap.data()));
+    //     } else {
+    //       console.log('가입되어있지 않습니다.');
+    //       router.push('/user/google');
+    //     }
+    //     // ...
+    //   })
+    //   .catch((error) => {
+    //     // Handle Errors here.
+    //     const errorCode = error.code;
+    //     const errorMessage = error.message;
+    //     // The email of the user's account used.
+    //     const email = error.email;
+    //     // The AuthCredential type that was used.
+    //     const credential = GoogleAuthProvider.credentialFromError(error);
+    //     // ...
+    //   });
+    // router.push('/');
   };
 
   const SignUpSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -103,6 +121,20 @@ export default function Login() {
               <Button type="button" onClick={loginWithGoogle}>
                 Google
               </Button>
+              <Button
+                onClick={() => {
+                  router.push('/user/list/test');
+                }}
+              >
+                123412341234
+              </Button>
+              <Button
+                onClick={() => {
+                  router.push('/user/list/topic');
+                }}
+              >
+                123412341234
+              </Button>
             </WrapButton>
             <SubmitButton type="submit">로그인</SubmitButton>
           </WrapContents>
@@ -111,7 +143,6 @@ export default function Login() {
     </>
   );
 }
-
 const Main = styled.div`
   display: flex;
   align-items: center;

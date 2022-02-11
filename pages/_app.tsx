@@ -5,16 +5,15 @@ import { firebaseAdmin } from '@firebase/firebaseAdmin';
 import nookies from 'nookies';
 import fetch from 'isomorphic-unfetch';
 import wrapper from 'store/configureStore';
-import { getUser } from 'store/reducer';
+import { getUser, setMyInfoAction } from 'store/reducer';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 // import { AuthProvider } from '@hooks/Auth';
 import { query, doc, onSnapshot } from 'firebase/firestore';
 import { db } from '@firebase/firebase';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootReducer } from 'store/reducer';
 import { userSlice } from 'store/reducer';
-import { UserState } from '@interface/StoreInterface';
+import { StoreState, UserState } from '@interface/StoreInterface';
 
 const theme_ = createTheme(
   {},
@@ -35,6 +34,8 @@ const theme_ = createTheme(
         searchPageWrapperBackgroundColor: '#EAEAEA',
         searchWrapperBorderBottomColor: '#EAEAEA',
         footerBordertopColor: '#EAEAEA',
+        thumbUpIconNotLiked: '',
+        thumbUpIconLiked: 'rgb(144, 202, 249)',
         chatFromBackgroundColor: '#f0f0f0',
         chatToBackgroundColor: '#b762c1',
       },
@@ -53,6 +54,8 @@ const theme_ = createTheme(
         searchPageWrapperBackgroundColor: 'rgba(28, 28, 30, 1)',
         searchWrapperBorderBottomColor: 'rgb(17, 17, 19)',
         footerBordertopColor: 'rgb(17, 17, 19)',
+        thumbUpIconNotLiked: '',
+        thumbUpIconLiked: '',
         chatFromBackgroundColor: 'rgba(35, 35, 37, 1)',
         chatToBackgroundColor: '#4C78C1',
       },
@@ -62,32 +65,29 @@ const theme_ = createTheme(
 function MyApp({ Component, pageProps }: AppProps) {
   // console.log(process.browser);
   const dispatch = useDispatch();
-  const { user }: UserState = useSelector((state: RootReducer) => state.user);
+  const { user }: UserState = useSelector((state: StoreState) => state.user);
 
   useEffect(() => {
-    console.log(user.id, 'asdasd');
     if (user.id) {
       onSnapshot(doc(db, 'user', user.id), (doc) => {
         const data = doc.data();
-        const user = {
+        console.log(data);
+        const user_ = {
           nickname: data!.nickname,
           jobSector: data!.jobSector,
           validRounges: data!.validRounges,
           myChattings: [],
           hasNewNotification: data!.hasNewNotification,
         };
-        console.log('asdasdasd', user);
-        dispatch(userSlice.actions.setNewUserInfo(user));
+        dispatch(setMyInfoAction(user));
+        // dispatch(userSlice.actions.setNewUserInfo(user));
       });
     }
   }, []);
-
   return (
-    <AuthProvider>
-      <ThemeProvider theme={theme_}>
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </AuthProvider>
+    <ThemeProvider theme={theme_}>
+      <Component {...pageProps} />
+    </ThemeProvider>
   );
 }
 
@@ -117,6 +117,9 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(
               headers,
             }).then((res) => res.json());
             //console.log('result', result);
+            console.log('@@@@@');
+            console.log(result);
+            console.log('@@@@@');
 
             console.log(result.data.uid);
             const data = {

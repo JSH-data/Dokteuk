@@ -13,7 +13,7 @@ if (!firebaseAdmin.apps.length) {
       clientEmail: serviceAccount.client_email,
       projectId: serviceAccount.project_id,
     }),
-    databaseURL: 'https://devily-test-default-rtdb.firebaseio.com',
+    databaseURL: 'https://test-2d055-default-rtdb.firebaseio.com',
   });
 }
 

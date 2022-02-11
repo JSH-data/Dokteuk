@@ -123,12 +123,12 @@ export const RoungeCard = forwardRef(function RoungeCardWithRef(
 ) {
   const { ref: cardRef, inView } = useInView();
   return (
-    <Wrapper ref={cardRef}>
+    <Wrapper>
+      <div ref={ref} />
       <Link href={`/rounge/posts/${roungeCardData.postId}`} passHref>
         <CardWrapper>
-          {inView && (
+          {
             <>
-              <div ref={ref} />
               <CardTitleStyled>{roungeCardData.title}</CardTitleStyled>
               <CardContentStyled>{roungeCardData.content}</CardContentStyled>
               <br />
@@ -160,7 +160,7 @@ export const RoungeCard = forwardRef(function RoungeCardWithRef(
                 </div>
               </CardBottomWrapperStyled>
             </>
-          )}
+          }
         </CardWrapper>
       </Link>
     </Wrapper>
@@ -179,15 +179,15 @@ export const TopicCard = forwardRef(function TopicCardWithRef(
 
   // console.log(Object.keys(topicCardData));
   return (
-    <Wrapper ref={cardRef}>
+    <Wrapper>
+      <div ref={ref} />
       <Link href={`/topic/posts/${topicCardData.postId}`} passHref>
         <CardWrapper>
-          {inView && (
+          {
             <>
-              <div ref={ref} />
-              <OneDepthNestedLink href={`/topic/${topicCardData.topic}`}>
+              <OneDepthNestedLink href={`/topic/${topicCardData.topic.url}`}>
                 <TopicWrapperDivStyled>
-                  <div>{topicCardData.topic}</div>
+                  <div>{topicCardData.topic.title}</div>
                 </TopicWrapperDivStyled>
               </OneDepthNestedLink>
               <CardTitleStyled>{topicCardData.title}</CardTitleStyled>
@@ -224,7 +224,7 @@ export const TopicCard = forwardRef(function TopicCardWithRef(
                 </div>
               </CardBottomWrapperStyled>
             </>
-          )}
+          }
         </CardWrapper>
       </Link>
     </Wrapper>

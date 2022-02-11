@@ -348,7 +348,7 @@ const PostForm = () => {
       >
         <Alert
           onClose={handleClose}
-          severity={alertType}
+          // severity={alertType}
           sx={{ width: '100%' }}
         >
           {alertMessage}

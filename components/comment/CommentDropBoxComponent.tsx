@@ -40,21 +40,21 @@ const CommentDropBox: React.FC<CommentDropBoxProps> = ({
     });
   };
 
-  useEffect(() => {
-    window.addEventListener('click', (event: MouseEvent) =>
-      handleClickOutside(event),
-    );
-    return () => {
-      window.removeEventListener('click', (event: MouseEvent) =>
-        handleClickOutside(event),
-      );
-    };
-  }, []);
+  // useEffect(() => {
+  //   window.addEventListener('click', (event: MouseEvent) =>
+  //     handleClickOutside(event),
+  //   );
+  //   return () => {
+  //     window.removeEventListener('click', (event: MouseEvent) =>
+  //       handleClickOutside(event),
+  //     );
+  //   };
+  // }, []);
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (menuRef.current && !menuRef.current.contains(event.target))
-      setMenu(false);
-  };
+  // const handleClickOutside = (event: MouseEvent) => {
+  //   if (menuRef.current && !menuRef.current.contains(event.target))
+  //     setMenu(false);
+  // };
 
   return (
     <CommentDropBoxDiv ref={menuRef}>

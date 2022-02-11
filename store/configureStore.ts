@@ -4,6 +4,7 @@ import reducer from './reducer';
 
 const wrapper = createWrapper(() => configureStore<any>({ reducer }), {
   debug: process.env.NODE_ENV !== 'production',
+  // debug: false,
 });
 
 export default wrapper;

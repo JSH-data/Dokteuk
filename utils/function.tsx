@@ -56,11 +56,10 @@ export const getHomePostsInfiniteFunction = async (
   list: string,
   pageParam: number,
 ) => {
-  // await delay(800);
   const dummyRoungePost: RoungePost = {
     postId: 'r8q394uf90q23urq89pd3oil',
     postType: 'rounge',
-    rounge: '외식·음료',
+    rounge: { title: '외식·음료', url: 'food-service' },
     title: '라운지 글 제목',
     content:
       `조회하고 있는 list는 ${list}이고` +
@@ -74,7 +73,7 @@ export const getHomePostsInfiniteFunction = async (
   const dummyTopicPost: TopicPost = {
     postId: 'r8qur390wjfioajwfeio394uf90q23urq89pd3oil',
     postType: 'topic',
-    topic: '블라블라블라블라',
+    topic: { title: '블라블라', url: 'blabla' },
     title: '토픽 글 제목',
     content:
       `조회하고 있는 list는 ${list}이고` +
@@ -171,7 +170,7 @@ export const searchInfiniteFunction = async (
   const dummyRoungePost: RoungePost = {
     postId: 'r8q394uf90q23urq89pd3oil',
     postType: 'rounge',
-    rounge: '외식·음료',
+    rounge: { title: '외식·음료', url: 'food-service' },
     title: '라운지 글 제목',
     content:
       `전달된 pageParam은 ${pageParam} ` +
@@ -185,7 +184,7 @@ export const searchInfiniteFunction = async (
   const dummyTopicPost: TopicPost = {
     postId: 'r8qur390wjfioajwfeio394uf90q23urq89pd3oil',
     postType: 'topic',
-    topic: '블라블라블라블라',
+    topic: { title: '블라블라', url: 'blabla' },
     title: '토픽 글 제목',
     content:
       `전달된 pageParam은 ${pageParam} ` +

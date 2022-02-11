@@ -6,8 +6,8 @@ import 'swiper/css';
 import { Pagination } from 'swiper';
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
-import { UserState, ValidRounge, UserInfo } from '@interface/StoreInterface';
-import { RootReducer } from '../../store/reducer';
+import { UserState, ValidRounge, StoreState } from '@interface/StoreInterface';
+import { useEffect, useRef, useState } from 'react';
 const SwiperStyled = styled(Swiper)`
   background-color: ${({ theme }: any) =>
     theme.customTheme.defaultMode.headerMenuBackgroundColor};
@@ -60,16 +60,21 @@ const SwiperStyled = styled(Swiper)`
 `;
 
 const HeaderHome: React.FC = () => {
-  const { user: myInfo } = useSelector((state: RootReducer) => state.user);
+  const { user: myInfo }: UserState = useSelector(
+    (state: StoreState) => state.user,
+  );
+  const [asPath, setAsPath] = useState<string>('');
   const router = useRouter();
+  const ref = useRef(null);
   const headerLinks: { url: string; title: string }[] = [];
-  if (myInfo?.validRounges)
+  if (myInfo?.validRounges) {
     headerLinks.push(
       ...myInfo?.validRounges.map((v: ValidRounge) => ({
         title: v.title,
         url: `/list/${v.url}`,
       })),
     );
+  }
   if (headerLinks.length === 0) {
     headerLinks.push(
       { title: '타임라인', url: 'timeline' },
@@ -79,6 +84,26 @@ const HeaderHome: React.FC = () => {
   const initialSlide = headerLinks.findIndex(
     ({ url }) => url === router.asPath,
   );
+  useEffect(() => {
+    // slideTo(index = 0, speed = this.params.speed, runCallbacks = true, internal, initial)
+    if (navigator.userAgent.toLowerCase().indexOf('iphone') !== -1) {
+      // @ts-ignore
+      ref.current.swiper.slideTo(
+        headerLinks.findIndex(({ url }) => url === router.asPath),
+        0,
+        0,
+        0,
+        0,
+      );
+    } else {
+      // @ts-ignore
+      ref.current.swiper.slideTo(
+        headerLinks.findIndex(({ url }) => url === router.asPath),
+      );
+    }
+    setAsPath(router.asPath);
+  }, [router]);
+
   return (
     <SwiperStyled
       slidesPerView={3}
@@ -94,6 +119,8 @@ const HeaderHome: React.FC = () => {
       }}
       slideToClickedSlide
       modules={[Pagination]}
+      //@ts-ignore
+      ref={ref}
     >
       {headerLinks.map(({ title }) => (
         <SwiperSlide key={title}>

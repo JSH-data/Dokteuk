@@ -24,9 +24,15 @@
       "@styles/*": ["styles/*"],
       "@utils/*": ["utils/*"],
       "@hooks/*": ["hooks/*"],
-      "@interface/*": ["interface/*"]
+      "@interface/*": ["interface/*"],
+      "@store/*": ["store/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "components/Headers/Chatting.tsx_폐기"
+  ],
   "exclude": ["node_modules"]
 }

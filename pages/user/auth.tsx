@@ -39,3 +39,4 @@ export function AuthProvider({ children }: any) {
     </AuthContext.Provider>
   );
 }
+export default AuthProvider;
