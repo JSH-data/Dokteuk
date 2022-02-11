@@ -1,6 +1,4 @@
 import { app } from '@firebase/firebase';
-import delay from '@utils/delay';
-import { getAuth } from 'firebase/auth';
 import {
   getFirestore,
   collection,
@@ -16,6 +14,7 @@ import {
   orderBy,
   query,
   limit,
+  getDocs,
 } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { Dispatch, SetStateAction } from 'react';
@@ -99,7 +98,7 @@ export const chatMessages = (
   return unsubscribe;
 };
 
-export const moreChatMessages = (
+export const moreChatMessages = async (
   chatId: queryType,
   setMessages: Dispatch<SetStateAction<ChatText[]>>,
   setLastKey: Dispatch<SetStateAction<Timestamp | null>>,
@@ -118,27 +117,49 @@ export const moreChatMessages = (
     limit(20),
   );
 
-  onSnapshot(chatQuery, (querySnapshot) => {
-    const newChat: ChatText[] = [];
-    const lastKey =
-      querySnapshot.docs.length === 20
-        ? querySnapshot.docs[querySnapshot.docs.length - 1].data().create_at
-        : null;
+  const querySnapshot = await getDocs(chatQuery);
 
-    querySnapshot.forEach((doc) => {
-      const { msg, img, from, create_at } = doc.data();
-      newChat.push({
-        id: doc.id,
-        from,
-        msg,
-        img,
-        create_at,
-        user,
-      });
+  const newChat: ChatText[] = [];
+  const lastKey =
+    querySnapshot.docs.length === 20
+      ? querySnapshot.docs[querySnapshot.docs.length - 1].data().create_at
+      : null;
+
+  querySnapshot.forEach((doc) => {
+    const { msg, img, from, create_at } = doc.data();
+    newChat.push({
+      id: doc.id,
+      from,
+      msg,
+      img,
+      create_at,
+      user,
     });
-    setMessages((current) => [...current, ...newChat]);
-    setLastKey(lastKey);
   });
+  setMessages((current) => [...current, ...newChat]);
+  setLastKey(lastKey);
+
+  // onSnapshot(chatQuery, (querySnapshot) => {
+  //   const newChat: ChatText[] = [];
+  //   const lastKey =
+  //     querySnapshot.docs.length === 20
+  //       ? querySnapshot.docs[querySnapshot.docs.length - 1].data().create_at
+  //       : null;
+
+  //   querySnapshot.forEach((doc) => {
+  //     const { msg, img, from, create_at } = doc.data();
+  //     newChat.push({
+  //       id: doc.id,
+  //       from,
+  //       msg,
+  //       img,
+  //       create_at,
+  //       user,
+  //     });
+  //   });
+  //   setMessages((current) => [...current, ...newChat]);
+  //   setLastKey(lastKey);
+  // });
 };
 
 export const sendMessage = async (

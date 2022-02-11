@@ -9,17 +9,19 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useInView } from 'react-intersection-observer';
 import {
   sendMessage,
   chatMessages,
   moreChatMessages,
   exitChat,
-  downMessage,
   leaveChat,
+  downMessage,
 } from '../api/chat';
 import { Timestamp } from 'firebase/firestore';
 import { isValidType, isValidSize } from '../../utils/upload';
+import { useInView } from 'react-intersection-observer';
+import debounce from 'lodash/debounce';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ImgPreviewModal from '@components/ImgPreviewModal';
 import ChatSetting from '@components/ChatSetting';
 import styled from '@emotion/styled';
@@ -29,16 +31,17 @@ import AddIcon from '@mui/icons-material/Add';
 import SendIcon from '@mui/icons-material/Send';
 
 const ChatRoom = () => {
-  const { user }: any = useSelector((state: RootReducer) => state.user);
+  const { user } = useSelector((state: RootReducer) => state.user);
   const [messages, setMessages] = useState<ChatText[]>([]);
+  const [isScrollUp, setIsScrollUp] = useState<boolean>();
+  const [scrollPosition, setScrollPosition] = useState<number>();
   const [lastKey, setLastKey] = useState<Timestamp | null>(null);
   const [fileSrc, setFileSrc] = useState<FileType | null>(null);
   const [isClickedHeader, setIsClickedHeader] = useState<boolean>(false);
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-  });
-  const inputValue = useRef<HTMLInputElement>(null);
+  const [ref, inView] = useInView();
+  const messageRef = useRef<HTMLDivElement>(null);
   const bottomListRef = useRef<HTMLDivElement>(null);
+  const inputValue = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const { chatId, other } = router.query;
 
@@ -96,6 +99,31 @@ const ChatRoom = () => {
     setFileSrc(null);
   };
 
+  const onScroll = debounce(() => {
+    setIsScrollUp(
+      messageRef.current!.scrollHeight - messageRef.current!.scrollTop >
+        messageRef.current!.clientHeight * 2,
+    );
+    setScrollPosition(messageRef.current!.scrollTop);
+  }, 500);
+
+  const pageDown = () => {
+    bottomListRef.current!.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const scrollKeep = (prevScrollHeight: number) => {
+    messageRef.current!.scrollTop =
+      messageRef.current!.scrollHeight - prevScrollHeight;
+  };
+
+  const getMessages = useCallback(
+    async (prevScrollHeight) => {
+      await moreChatMessages(chatId, setMessages, setLastKey, lastKey, user);
+      scrollKeep(prevScrollHeight);
+    },
+    [chatId, lastKey, user],
+  );
+
   useEffect(() => {
     const unsubscribe = chatMessages(chatId, setMessages, setLastKey, user);
 
@@ -106,19 +134,16 @@ const ChatRoom = () => {
   }, [chatId, user]);
 
   useEffect(() => {
-    if (lastKey) {
-      bottomListRef.current!.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      bottomListRef.current!.scrollIntoView();
-    }
-  }, [messages, lastKey]);
+    pageDown();
+  }, [messages]);
 
   useEffect(() => {
-    if (inView && lastKey) {
-      console.log('s');
-      moreChatMessages(chatId, setMessages, setLastKey, lastKey, user);
+    if (scrollPosition === 0 && inView && lastKey) {
+      const prevScrollHeight =
+        messageRef.current!.scrollHeight - messageRef.current!.scrollTop;
+      getMessages(prevScrollHeight);
     }
-  }, [inView, chatId, lastKey, user]);
+  }, [scrollPosition, inView]);
 
   return (
     <Fragment>
@@ -140,16 +165,25 @@ const ChatRoom = () => {
         <div>{other}</div>
         <DensityMediumIcon onClick={onToggle} />
       </ChatHeader>
-      <ChatList>
+      {isScrollUp && (
+        <PageDownBtn
+          onClick={() => {
+            bottomListRef.current!.scrollIntoView({ behavior: 'smooth' });
+          }}
+        >
+          <KeyboardArrowDownIcon />
+        </PageDownBtn>
+      )}
+      <ChatList onScroll={onScroll} ref={messageRef}>
         <ChatBox>
           {messages
             .slice()
             .reverse()
-            .map(({ id, from, msg, img, user }, idx) => (
+            .map(({ id, from, msg, img }, idx) => (
               <ChatText
-                className={from === user!.nickname ? 'mine' : ''}
-                key={id}
+                className={from === user.nickname ? 'mine' : ''}
                 ref={idx === 0 ? ref : null}
+                key={id}
               >
                 {msg ? (
                   msg
@@ -202,6 +236,7 @@ const ChatRoom = () => {
           onClick={() => {
             sendMessage(chatId, inputValue.current!.value, 'msg', user);
             inputValue.current!.value = '';
+            setIsScrollUp(false);
           }}
         />
       </ChatInputWrapper>
@@ -272,7 +307,6 @@ const ChatText = styled.li`
 
 const ChatImg = styled.img`
   width: 100%;
-  height: 100%;
 `;
 
 const ChatInputWrapper = styled.div`
@@ -306,5 +340,25 @@ const InputBox = styled.input`
     & + svg {
       display: none;
     }
+  }
+`;
+
+const PageDownBtn = styled.button`
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  bottom: 80px;
+  right: 30px;
+  box-shadow: 0px 1px 1px 0 #00000036;
+  background: ${({ theme }: any) =>
+    theme.customTheme.defaultMode.chatFromBackgroundColor};
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) =>
+      theme.customTheme.darkMode.chatFromBackgroundColor};
+    color: white;
   }
 `;
