@@ -2,6 +2,7 @@ export interface PostAuthor {
   nickname: string;
   jobSector: string;
 }
+
 export interface RoungePost {
   postId: string;
   postType: 'rounge';
@@ -12,6 +13,7 @@ export interface RoungePost {
   commentsCount: number;
   likeCount: number;
   createdAt: string;
+  image: string[];
 }
 export interface TopicPost {
   postId: string;
@@ -23,4 +25,5 @@ export interface TopicPost {
   commentsCount: number;
   likeCount: number;
   createdAt: string;
+  image: string[];
 }

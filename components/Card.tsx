@@ -8,6 +8,9 @@ import { ForwardedRef, forwardRef } from 'react';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ModeCommentIcon from '@mui/icons-material/ModeComment';
 import { useInView } from 'react-intersection-observer';
+
+import ImgComponent from './items/ImgComponent';
+
 const Wrapper = styled.div`
   width: 100%;
   display: flex;
@@ -66,8 +69,37 @@ const CardDividerStyled = styled.div`
   margin-top: 8px;
   margin-bottom: 8px;
 `;
+
+const TopicCardMainStyled = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 0px;
+`;
+
+const RoungeCardMainStyled = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 0px;
+  height: 136px;
+`;
+
+const TopicCardContentWrapper = styled.div`
+  flex: 2;
+`;
+
+const RoungeCardContentWrapper = styled.div`
+  padding-top: 10px;
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
 const CardTitleStyled = styled.div`
   font-size: 1.5rem;
+  margin-bottom: 3px;
 `;
 const CardContentStyled = styled.div`
   height: 2rem;
@@ -128,19 +160,28 @@ export const RoungeCard = forwardRef(function RoungeCardWithRef(
         <CardWrapper>
           {inView && (
             <>
-              <div ref={ref} />
-              <CardTitleStyled>{roungeCardData.title}</CardTitleStyled>
-              <CardContentStyled>{roungeCardData.content}</CardContentStyled>
-              <br />
-              <CardAuthorJobSectorWrapperStyled>
-                <CardAuthorJobSectorStyled>
-                  {roungeCardData.author.jobSector}
-                </CardAuthorJobSectorStyled>
-                <CardMiddleDotStyled>·</CardMiddleDotStyled>
-                <CardAuthorNickname>
-                  {roungeCardData.author.nickname}
-                </CardAuthorNickname>
-              </CardAuthorJobSectorWrapperStyled>
+              <div ref={ref} style={{ display: 'contents' }} />
+              <RoungeCardMainStyled>
+                <RoungeCardContentWrapper>
+                  <CardTitleStyled>{roungeCardData.title}</CardTitleStyled>
+                  <CardContentStyled>
+                    {roungeCardData.content}
+                  </CardContentStyled>
+
+                  <CardAuthorJobSectorWrapperStyled>
+                    <CardAuthorJobSectorStyled>
+                      {roungeCardData.author.jobSector}
+                    </CardAuthorJobSectorStyled>
+                    <CardMiddleDotStyled>·</CardMiddleDotStyled>
+                    <CardAuthorNickname>
+                      {roungeCardData.author.nickname}
+                    </CardAuthorNickname>
+                  </CardAuthorJobSectorWrapperStyled>
+                </RoungeCardContentWrapper>
+                {roungeCardData.image.length == 0 && (
+                  <ImgComponent url={'https://i.ibb.co/VJXmhFt/asdasd.jpg'} />
+                )}
+              </RoungeCardMainStyled>
               <CardDividerStyled />
               <CardBottomWrapperStyled>
                 <CardStatWrapper>
@@ -185,26 +226,40 @@ export const TopicCard = forwardRef(function TopicCardWithRef(
           {inView && (
             <>
               <div ref={ref} />
-              <OneDepthNestedLink href={`/topic/${topicCardData.topic}`}>
-                <TopicWrapperDivStyled>
-                  <div>{topicCardData.topic}</div>
-                </TopicWrapperDivStyled>
-              </OneDepthNestedLink>
-              <CardTitleStyled>{topicCardData.title}</CardTitleStyled>
-              <CardContentStyled>{topicCardData.content}</CardContentStyled>
-              <br />
-              <div style={{ fontSize: '0.8rem', color: 'rgb(78, 85, 101)' }}>
-                토픽
-              </div>
-              <CardAuthorJobSectorWrapperStyled>
-                <CardAuthorJobSectorStyled>
-                  {topicCardData.author.jobSector}
-                </CardAuthorJobSectorStyled>
-                <CardMiddleDotStyled>·</CardMiddleDotStyled>
-                <CardAuthorNickname>
-                  {topicCardData.author.nickname}
-                </CardAuthorNickname>
-              </CardAuthorJobSectorWrapperStyled>
+              <TopicCardMainStyled>
+                <TopicCardContentWrapper>
+                  <OneDepthNestedLink href={`/topic/${topicCardData.topic}`}>
+                    <TopicWrapperDivStyled>
+                      <div>{topicCardData.topic}</div>
+                    </TopicWrapperDivStyled>
+                  </OneDepthNestedLink>
+                  <CardTitleStyled>{topicCardData.title}</CardTitleStyled>
+                  <CardContentStyled>{topicCardData.content}</CardContentStyled>
+
+                  <div
+                    style={{
+                      fontSize: '0.8rem',
+                      color: 'rgb(78, 85, 101)',
+                      alignSelf: 'start',
+                      marginTop: '10px', // 수정
+                    }}
+                  >
+                    토픽
+                  </div>
+                  <CardAuthorJobSectorWrapperStyled>
+                    <CardAuthorJobSectorStyled>
+                      {topicCardData.author.jobSector}
+                    </CardAuthorJobSectorStyled>
+                    <CardMiddleDotStyled>·</CardMiddleDotStyled>
+                    <CardAuthorNickname>
+                      {topicCardData.author.nickname}
+                    </CardAuthorNickname>
+                  </CardAuthorJobSectorWrapperStyled>
+                </TopicCardContentWrapper>
+                {topicCardData.image.length !== 0 && (
+                  <ImgComponent url={topicCardData.image[0]} />
+                )}
+              </TopicCardMainStyled>
               <CardDividerStyled />
               <CardBottomWrapperStyled>
                 <CardStatWrapper>

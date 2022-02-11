@@ -70,6 +70,7 @@ export const getHomePostsInfiniteFunction = async (
     author: { nickname: '닉네임', jobSector: '외식·음료' },
     likeCount: Math.floor(Math.random() * 5),
     createdAt: Date.now().toString(),
+    image: [],
   };
   const dummyTopicPost: TopicPost = {
     postId: 'r8qur390wjfioajwfeio394uf90q23urq89pd3oil',
@@ -84,35 +85,62 @@ export const getHomePostsInfiniteFunction = async (
     author: { nickname: '닉네임', jobSector: '외식·음료' },
     likeCount: Math.floor(Math.random() * 5),
     createdAt: Date.now().toString(),
+    image: [],
   };
 
   const generateTenTopicPosts = () => {
     const dummyTopicPosts = [];
     for (let i = 0; i < 10; i++) {
-      const newTopicPost: TopicPost = {
-        ...dummyTopicPost,
-        postId: dummyTopicPost.postId + Math.floor(Math.random() * 1000000),
-        createdAt: (
-          parseInt(dummyTopicPost.createdAt) -
-          Math.floor(Math.random() * 30000) * 1000
-        ).toString(),
-      };
-      dummyTopicPosts.push(newTopicPost);
+      if (i % 2 === 0) {
+        const newTopicPost: TopicPost = {
+          ...dummyTopicPost,
+          postId: dummyTopicPost.postId + Math.floor(Math.random() * 1000000),
+          createdAt: (
+            parseInt(dummyTopicPost.createdAt) -
+            Math.floor(Math.random() * 30000) * 1000
+          ).toString(),
+        };
+        dummyTopicPosts.push(newTopicPost);
+      } else {
+        const newTopicPost: TopicPost = {
+          ...dummyTopicPost,
+          image: ['https://i.ibb.co/VJXmhFt/asdasd.jpg'],
+          postId: dummyTopicPost.postId + Math.floor(Math.random() * 1000000),
+          createdAt: (
+            parseInt(dummyTopicPost.createdAt) -
+            Math.floor(Math.random() * 30000) * 1000
+          ).toString(),
+        };
+        dummyTopicPosts.push(newTopicPost);
+      }
     }
     return dummyTopicPosts;
   };
   const generateTenRoungePosts = () => {
     const dummyRoungePosts = [];
     for (let i = 0; i < 10; i++) {
-      const newRoungePost: RoungePost = {
-        ...dummyRoungePost,
-        postId: dummyRoungePost.postId + Math.floor(Math.random() * 1000000),
-        createdAt: (
-          parseInt(dummyRoungePost.createdAt) -
-          Math.floor(Math.random() * 30000) * 1000
-        ).toString(),
-      };
-      dummyRoungePosts.push(newRoungePost);
+      if (i % 2 === 0) {
+        const newRoungePost: RoungePost = {
+          ...dummyRoungePost,
+          image: ['https://i.ibb.co/VJXmhFt/asdasd.jpg'],
+          postId: dummyRoungePost.postId + Math.floor(Math.random() * 1000000),
+          createdAt: (
+            parseInt(dummyRoungePost.createdAt) -
+            Math.floor(Math.random() * 30000) * 1000
+          ).toString(),
+        };
+        dummyRoungePosts.push(newRoungePost);
+      } else {
+        const newRoungePost: RoungePost = {
+          ...dummyRoungePost,
+          postId: dummyRoungePost.postId + Math.floor(Math.random() * 1000000),
+          createdAt: (
+            parseInt(dummyRoungePost.createdAt) -
+            Math.floor(Math.random() * 30000) * 1000
+          ).toString(),
+        };
+        dummyRoungePosts.push(newRoungePost);
+      }
     }
     return dummyRoungePosts;
   };
@@ -181,6 +209,7 @@ export const searchInfiniteFunction = async (
     author: { nickname: '닉네임', jobSector: '외식·음료' },
     likeCount: Math.floor(Math.random() * 5),
     createdAt: Date.now().toString(),
+    image: [],
   };
   const dummyTopicPost: TopicPost = {
     postId: 'r8qur390wjfioajwfeio394uf90q23urq89pd3oil',
@@ -195,6 +224,7 @@ export const searchInfiniteFunction = async (
     author: { nickname: '닉네임', jobSector: '외식·음료' },
     likeCount: Math.floor(Math.random() * 5),
     createdAt: Date.now().toString(),
+    image: [],
   };
   const dummyTopicPosts = [];
   const dummyRoungePosts = [];
