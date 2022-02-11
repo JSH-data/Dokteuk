@@ -6,13 +6,14 @@ import {
   initialViewAction,
   resetViewAction,
   setScrollAction,
+  setSearchValueAction,
   setViewAction,
 } from 'store/reducer';
 import { useInView } from 'react-intersection-observer';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 import { TopicPost, RoungePost } from '@interface/CardInterface';
-import { StoreState, UserState } from '@interface/StoreInterface';
+import { StoreState, UserState, ViewPosts } from '@interface/StoreInterface';
 import { RoungeCard, TopicCard } from '@components/Card';
 import { ChildrenWrapperDivStyled } from '@layouts/Layout';
 import Footer from '@layouts/Footer';
@@ -21,14 +22,11 @@ import { searchInfiniteFunction } from '@utils/function';
 import { useRouter } from 'next/router';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import useDebounce from '@hooks/useDebounce';
+import wrapper from '@store/configureStore';
 
-export interface SearchResult {
-  result: Array<TopicPost | RoungePost>;
-  nextPage: number;
-}
-const Search = ({ searchValue = '' }: { searchValue: string }) => {
+const Search = () => {
   const dispatch = useDispatch();
-  const { view }: { view: Array<SearchResult> } = useSelector(
+  const { view, searchValue }: ViewPosts = useSelector(
     (state: StoreState) => state.view,
   );
   const { ref, inView } = useInView();
@@ -88,13 +86,15 @@ const WrappedSearch = ({ referer }: { referer: -1 | 1 }) => {
   const { user: myInfo } = useSelector((state: StoreState) => state.user);
   const { scrollY } = useSelector((state: StoreState) => state.scroll);
   const [searchValue, setSearchValue] = useState('');
+  const paddingFunction = useDebounce({
+    cb: () => window.scrollY !== 0 && dispatch(setScrollAction(window.scrollY)),
+    ms: 100,
+  });
   useEffect(() => {
-    const paddingFunction = useDebounce({
-      cb: () =>
-        window.scrollY !== 0 && dispatch(setScrollAction(window.scrollY)),
-      ms: 100,
-    });
-
+    if (referer === -1) {
+      dispatch(setSearchValueAction(''));
+      dispatch(resetViewAction());
+    }
     window.addEventListener('scroll', paddingFunction);
     return () => {
       window.removeEventListener('scroll', paddingFunction);
@@ -125,6 +125,7 @@ const WrappedSearch = ({ referer }: { referer: -1 | 1 }) => {
     if (!value) return; // value가 없을 시 return
     window.scrollTo({ top: 0, behavior: 'smooth' }); // 새로 검색 시 상단스크롤
     setSearchValue(value); // value값 변경
+    dispatch(setSearchValueAction(value));
     dispatch(resetViewAction());
   };
 
@@ -143,12 +144,13 @@ const WrappedSearch = ({ referer }: { referer: -1 | 1 }) => {
         </SearchWrapperStyled>
       </HeaderWrapperDivStyled>
       <ChildrenWrapperDivStyled>
-        <Search searchValue={searchValue} />
+        <Search />
       </ChildrenWrapperDivStyled>
       <Footer />
     </>
   );
 };
+
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext,
 ) => {

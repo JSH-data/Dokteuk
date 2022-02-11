@@ -5,11 +5,15 @@ import { useInView } from 'react-intersection-observer';
 import styled from '@emotion/styled';
 import { LinearProgress } from '@mui/material';
 
-import { StoreState, UserState, ValidRounge } from '@interface/StoreInterface';
+import {
+  SearchResult,
+  StoreState,
+  UserState,
+  ValidRounge,
+} from '@interface/StoreInterface';
 import { TopicPost, RoungePost } from '@interface/CardInterface';
 import { getHomePostsInfiniteFunction } from '@utils/function';
 import Layout from '@layouts/Layout';
-import { SearchResult } from '@pages/search';
 import { RoungeCard, TopicCard } from '@components/Card';
 import NotFoundPage from '@pages/404';
 import {
@@ -18,6 +22,7 @@ import {
   resetViewAction,
   setScrollAction,
   initialViewAction,
+  setSearchValueAction,
 } from '@store/reducer';
 import wrapper from '@store/configureStore';
 
@@ -39,13 +44,11 @@ const ListPage = () => {
     (state: StoreState) => state.scroll,
   );
   // console.log(myInfo);
+  const paddingFunction = useDebounce({
+    cb: () => window.scrollY !== 0 && dispatch(setScrollAction(window.scrollY)),
+    ms: 100,
+  });
   useEffect(() => {
-    const paddingFunction = useDebounce({
-      cb: () =>
-        window.scrollY !== 0 && dispatch(setScrollAction(window.scrollY)),
-      ms: 100,
-    });
-
     window.addEventListener('scroll', paddingFunction);
     return () => {
       window.removeEventListener('scroll', paddingFunction);
@@ -159,32 +162,33 @@ const ListPage = () => {
   );
 };
 
-// export const getServerSideProps = wrapper.getServerSideProps(
-//   (store) =>
-//     async (props): Promise<any> => {
-//       // const { list } = props.params as { list: string };
-//       // switch (list) {
-//       //   case 'timeline': // topic, rounge 데이터 다 갖고와서 view에 dispatch
-//       //     store.dispatch(
-//       //       initialViewAction(
-//       //         await getHomePostsInfiniteFunction('timeline', 0),
-//       //       ),
-//       //     );
-//       //     console.log(list === 'timeline');
-//       //     break;
-//       //   case 'topic': // topic 데이터 다 갖고와서 view에 dispatch
-//       //     store.dispatch(
-//       //       initialViewAction(await getHomePostsInfiniteFunction('topic', 0)),
-//       //     );
-//       //     break;
-//       //   default:
-//       //     store.dispatch(
-//       //       initialViewAction(await getHomePostsInfiniteFunction(list, 0)),
-//       //     );
-//       //     break;
-//       // }
-//     },
-// );
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async (props): Promise<any> => {
+      const { list } = props.params as { list: string };
+      store.dispatch(setSearchValueAction(''));
+      switch (list) {
+        case 'timeline': // topic, rounge 데이터 다 갖고와서 view에 dispatch
+          store.dispatch(
+            initialViewAction(
+              await getHomePostsInfiniteFunction('timeline', 0),
+            ),
+          );
+          console.log(list === 'timeline');
+          break;
+        case 'topic': // topic 데이터 다 갖고와서 view에 dispatch
+          store.dispatch(
+            initialViewAction(await getHomePostsInfiniteFunction('topic', 0)),
+          );
+          break;
+        default:
+          store.dispatch(
+            initialViewAction(await getHomePostsInfiniteFunction(list, 0)),
+          );
+          break;
+      }
+    },
+);
 
 export default ListPage;
 

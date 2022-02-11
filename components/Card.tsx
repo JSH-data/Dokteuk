@@ -95,6 +95,7 @@ const CardTitleStyled = styled.div`
   font-size: 1.5rem;
   margin-bottom: 3px;
 `;
+
 const CardContentStyled = styled.div`
   height: 2rem;
   overflow: hidden;

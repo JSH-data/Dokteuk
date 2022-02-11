@@ -37,7 +37,7 @@ export default function Signup() {
         url: 'topic',
       },
     ],
-    myChatting: [
+    myChattings: [
       {
         roomName: '',
         roomId: '',
@@ -49,7 +49,7 @@ export default function Signup() {
         unreadCount: 0,
       },
     ],
-    notification: true,
+    hasNewNotification: true,
   };
 
   const onChangeInput = (
