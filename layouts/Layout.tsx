@@ -6,8 +6,8 @@ import { useRouter } from 'next/router';
 
 export const ChildrenWrapperDivStyled = styled(motion.div)`
   padding-top: 60px;
-  height: 100vh;
-  overflow-y: scroll;
+  // height: 100vh;
+  // overflow-y: scroll;
   // -webkit-overflow-scrolling: touch;
 `;
 const Layout: React.FC = ({ children }) => {

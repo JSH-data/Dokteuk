@@ -32,8 +32,12 @@ export default function Signup() {
         title: '타임라인',
         url: 'timeline',
       },
+      {
+        title: '토픽',
+        url: 'topic',
+      },
     ],
-    myChatting: [
+    myChattings: [
       {
         roomName: '',
         roomId: '',
@@ -45,7 +49,7 @@ export default function Signup() {
         unreadCount: 0,
       },
     ],
-    notification: true,
+    hasNewNotification: true,
   };
 
   const onChangeInput = (
@@ -63,6 +67,7 @@ export default function Signup() {
       router.push('/');
     }
   };
+
   const checkNickname = async () => {
     const nicknameCheckQuery = query(
       collection(db, 'user'),

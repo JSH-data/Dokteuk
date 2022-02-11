@@ -2,25 +2,82 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useInView } from 'react-intersection-observer';
-import { getUser } from 'store/reducer';
 import styled from '@emotion/styled';
 import { LinearProgress } from '@mui/material';
 
-import { UserState, ValidRounge } from '@interface/StoreInterface';
+import {
+  SearchResult,
+  StoreState,
+  UserState,
+  ValidRounge,
+} from '@interface/StoreInterface';
 import { TopicPost, RoungePost } from '@interface/CardInterface';
 import { getHomePostsInfiniteFunction } from '@utils/function';
 import Layout from '@layouts/Layout';
-import { SearchResult } from '@pages/search';
 import { RoungeCard, TopicCard } from '@components/Card';
 import NotFoundPage from '@pages/404';
+import {
+  getUser,
+  setViewAction,
+  resetViewAction,
+  setScrollAction,
+  initialViewAction,
+  setSearchValueAction,
+} from '@store/reducer';
+import wrapper from '@store/configureStore';
+
+import useDebounce from '@hooks/useDebounce';
 
 const ListPage = () => {
   const router = useRouter();
-  const [results, setResults] = useState<Array<SearchResult>>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { ref, inView } = useInView();
-  const { user: myInfo }: any = useSelector((state: UserState) => state.user);
   const dispatch = useDispatch();
+  const { ref, inView } = useInView();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [asPath, setAsPath] = useState<string>(router.asPath);
+  const { user: myInfo }: UserState = useSelector(
+    (state: StoreState) => state.user,
+  );
+  const { view }: { view: Array<SearchResult> } = useSelector(
+    (state: StoreState) => state.view,
+  );
+  const { scrollY }: { scrollY: number } = useSelector(
+    (state: StoreState) => state.scroll,
+  );
+  // console.log(myInfo);
+  const paddingFunction = useDebounce({
+    cb: () => window.scrollY !== 0 && dispatch(setScrollAction(window.scrollY)),
+    ms: 100,
+  });
+  useEffect(() => {
+    window.addEventListener('scroll', paddingFunction);
+    return () => {
+      window.removeEventListener('scroll', paddingFunction);
+      // dispatch(resetViewAction());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  // useEffect(() => {
+  //   if (!myInfo) dispatch(getUser());
+  // }, [myInfo, dispatch]);
+
+  useEffect(() => {
+    if (router.asPath !== asPath) {
+      dispatch(resetViewAction()); // 뒤로가기로 온 게 아닐때 View를 Reset한다.
+      dispatch(setScrollAction(0));
+      router.events.on(
+        'routeChangeComplete',
+        () => window.scrollTo({ top: 0 }),
+        // setTimeout(() => window.scrollTo({ top: 0 }), 0),
+      );
+    } else
+      router.events.on(
+        'routeChangeComplete',
+        () => window.scrollTo({ top: scrollY }),
+        // setTimeout(() => window.scrollTo({ top: scrollY }), 0),
+      );
+
+    setAsPath(router.asPath);
+  }, [router.asPath]);
   // useEffect(() => {
   //   if (!myInfo) dispatch(getUser());
   // }, [myInfo, dispatch]);
@@ -31,37 +88,34 @@ const ListPage = () => {
       ) === -1
     ) {
       return;
-      router.push('/404');
-    } else {
-      (async () => {
-        setIsLoading(true);
-        const result = await getHomePostsInfiniteFunction(
-          router.asPath.split('/')[2],
-          0,
-        );
-        setIsLoading(false);
-        setResults([result]);
-      })();
     }
-    return () => {
-      setResults([]);
-    };
   }, [router, myInfo]);
+  useEffect(() => {
+    if (view.length === 0)
+      (async () => {
+        dispatch(
+          setViewAction(
+            await getHomePostsInfiniteFunction(router.asPath.split('/')[2], 0),
+          ),
+        );
+      })();
+  }, [view]);
   useEffect(() => {
     if (inView) {
       (async () => {
-        const nextResult = await getHomePostsInfiniteFunction(
+        setIsLoading(true);
+        const nextResults = await getHomePostsInfiniteFunction(
           router.asPath.split('/')[2],
-          results[results.length - 1].nextPage,
+          view[view.length - 1].nextPage,
         );
-        setResults([...results, nextResult]);
+        dispatch(setViewAction(nextResults));
+        setIsLoading(false);
       })();
     }
-  }, [inView, results, router.asPath]);
-  const renderData = results.flatMap((value: any) => value.result) ?? [];
-  // console.log(renderData[1]?.content);
-  // console.log(renderData?.length);
-  if (isLoading && results.length === 0) {
+  }, [inView]);
+
+  const renderData = view.flatMap((value: any) => value.result) ?? [];
+  if (isLoading && view.length === 0) {
     return (
       <Layout>
         <LinearProgress />
@@ -107,6 +161,34 @@ const ListPage = () => {
     </>
   );
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async (props): Promise<any> => {
+      const { list } = props.params as { list: string };
+      store.dispatch(setSearchValueAction(''));
+      switch (list) {
+        case 'timeline': // topic, rounge 데이터 다 갖고와서 view에 dispatch
+          store.dispatch(
+            initialViewAction(
+              await getHomePostsInfiniteFunction('timeline', 0),
+            ),
+          );
+          console.log(list === 'timeline');
+          break;
+        case 'topic': // topic 데이터 다 갖고와서 view에 dispatch
+          store.dispatch(
+            initialViewAction(await getHomePostsInfiniteFunction('topic', 0)),
+          );
+          break;
+        default:
+          store.dispatch(
+            initialViewAction(await getHomePostsInfiniteFunction(list, 0)),
+          );
+          break;
+      }
+    },
+);
 
 export default ListPage;
 

@@ -12,8 +12,12 @@ const MyPagePostLi = styled.li`
   border-bottom: 1px solid #8946a6;
   padding-bottom: 10px;
   list-style: none;
-  & span {
+  text-overflow: ellipsis;
+  & div {
+    width: 90%;
     color: #ea99d5;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   & h4 {
     margin-bottom: 10px;
@@ -24,7 +28,7 @@ const MyPagePost: React.FC<MyPagePost> = ({ title, content, refObj }) => {
   return (
     <MyPagePostLi>
       <h4 ref={refObj}>{title}</h4>
-      <span>{content}</span>
+      <div>{content}</div>
     </MyPagePostLi>
   );
 };

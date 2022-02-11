@@ -1,20 +1,35 @@
 import { useState } from 'react';
+import { nicknameUpdate } from '@utils/userUpdate';
 import Head from 'next/head';
+import Link from 'next/link';
 import Layout from '@layouts/Layout';
 import ButtonComponent from '@components/items/ButtonComponent';
 import InputComponent from '@components/items/InputComponent';
 import Container from '@mui/material/Container';
 import { MyPageChangeCom } from './MyPageChangeComponent';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { useRouter } from 'next/router';
 
-const MyPageNickName: React.FC = () => {
+type MyPageNickNameProps = {
+  userId: string;
+};
+
+const MyPageNickName: React.FC<MyPageNickNameProps> = ({ userId }) => {
   const [nickname, setNickname] = useState<string>('');
   const [errorText, setErrorText] = useState<string>('');
   const [error, setError] = useState<boolean>(false);
+  const router = useRouter();
 
-  const nicknameChange = () => {
+  const nicknameChange = async () => {
     if (nickname.length < 3) {
       setError(true);
       setErrorText('닉네임을 더길게 써라 ㅡㅡ');
+    } else {
+      setError(false);
+      setErrorText('');
+
+      await nicknameUpdate(nickname, userId);
+      router.push('/mypage');
     }
   };
 
@@ -28,20 +43,24 @@ const MyPageNickName: React.FC = () => {
       <Layout>
         <Container>
           <MyPageChangeCom>
-            <h1>닉네임 변경</h1>
-            <div>
-              <InputComponent
-                placeholder="닉네임을 입력해주세요"
-                changeFn={setNickname}
-                type={'text'}
-                error={error}
-                errorText={errorText}
-              ></InputComponent>
-              <ButtonComponent
-                text="변경하기"
-                activeFn={nicknameChange}
-              ></ButtonComponent>
-            </div>
+            <header>
+              <Link href={'/mypage'}>
+                <ArrowBackIosNewIcon />
+              </Link>
+              <h1>닉네임 변경</h1>
+            </header>
+
+            <InputComponent
+              placeholder="닉네임을 입력해주세요"
+              changeFn={setNickname}
+              type={'text'}
+              error={error}
+              errorText={errorText}
+            ></InputComponent>
+            <ButtonComponent
+              text="변경하기"
+              activeFn={nicknameChange}
+            ></ButtonComponent>
           </MyPageChangeCom>
         </Container>
       </Layout>

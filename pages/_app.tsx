@@ -14,7 +14,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootReducer } from 'store/reducer';
 import { userSlice } from 'store/reducer';
-import { UserState } from '@interface/StoreInterface';
+import { UserInfo, UserState } from '@interface/StoreInterface';
 
 const theme_ = createTheme(
   {},
@@ -65,19 +65,20 @@ function MyApp({ Component, pageProps }: AppProps) {
   const { user }: UserState = useSelector((state: RootReducer) => state.user);
 
   useEffect(() => {
-    console.log(user.id, 'asdasd');
     if (user.id) {
       onSnapshot(doc(db, 'user', user.id), (doc) => {
-        const data = doc.data();
-        const user = {
-          nickname: data!.nickname,
-          jobSector: data!.jobSector,
-          validRounges: data!.validRounges,
+        const data = doc.data() as UserInfo;
+        const userData: UserInfo = {
+          nickname: data.nickname,
+          jobSector: data.jobSector,
+          validRounges: data.validRounges,
+          email: data.email,
           myChattings: [],
-          hasNewNotification: data!.hasNewNotification,
+          hasNewNotification: data.hasNewNotification,
+          id: doc.id,
         };
-        console.log('asdasdasd', user);
-        dispatch(userSlice.actions.setNewUserInfo(user));
+
+        dispatch(userSlice.actions.setNewUserInfo(userData));
       });
     }
   }, []);
@@ -118,18 +119,20 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(
             }).then((res) => res.json());
             //console.log('result', result);
 
-            console.log(result.data.uid);
+            console.log(result, 'dlrj?');
             const data = {
               nickname: result.data.userData.nickname,
               jobSector: result.data.userData.jobSector,
               validRounges: result.data.userData.validRounges,
-              myChattings: result.data.userData.myChattings,
+              myChattings: [],
               id: result.data.uid,
-              hasNewNotification: result.data.userData.hasNewNotification,
+              hasNewNotification: result.data.userData.notification,
+              email: result.data.email,
             };
-            console.log('데이터', data);
+
             await store.dispatch(getUser(data));
           } catch (e) {
+            console.error(e);
             // let exceptions fail silently
             // could be invalid token, just let client-side deal with that
           }

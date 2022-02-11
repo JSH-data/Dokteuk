@@ -44,6 +44,7 @@ export default function Login() {
         // ...
       })
       .catch((error) => {
+        console.error(error);
         // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;

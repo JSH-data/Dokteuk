@@ -20,6 +20,6 @@ const Header: React.FC = () => {
 export default Header;
 export const HeaderWrapperDivStyled = styled.div`
   position: fixed;
-  zindex: 9999;
+  z-index: 99;
   width: 100vw;
 `;

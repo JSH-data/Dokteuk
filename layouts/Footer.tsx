@@ -20,6 +20,7 @@ const FooterDiv = styled.footer`
   width: 100%;
   bottom: 0;
   position: fixed;
+  z-index: 99;
   background-color: ${({ theme }: any) =>
     theme.customTheme.defaultMode.footerMenuBackgroundColor};
   @media (prefers-color-scheme: dark) {

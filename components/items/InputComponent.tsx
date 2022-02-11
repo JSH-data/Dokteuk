@@ -1,6 +1,5 @@
 import TextField from '@mui/material/TextField';
 
-
 type inputProps = {
   placeholder?: string;
   defaultValue?: string;
@@ -40,6 +39,12 @@ const InputComponent: React.FC<inputProps> = ({
           onChange={(event) => changeFn?.(event.target.value)}
           error={error}
           helperText={errorText}
+          sx={{ input: { backgroundColor: 'white' } }}
+          margin="normal"
+          focused={false}
+          inputProps={{
+            autoComplete: 'new-password',
+          }}
         />
       )}
     </>

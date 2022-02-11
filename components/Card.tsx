@@ -1,13 +1,14 @@
 import styled from '@emotion/styled';
 import { getDateTime } from '@utils/function';
-//@ts-ignore
 import { TopicPost, RoungePost } from '@interface/CardInterface';
 import Link from 'next/link';
 import { ForwardedRef, forwardRef } from 'react';
-// import VisibilityIcon from '@mui/icons-material/Visibility';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ModeCommentIcon from '@mui/icons-material/ModeComment';
 import { useInView } from 'react-intersection-observer';
+
+import ImgComponent from './items/ImgComponent';
+
 const Wrapper = styled.div`
   width: 100%;
   display: flex;
@@ -63,12 +64,38 @@ const CardDividerStyled = styled.div`
   background-color: rgb(39, 39, 41);
   height: 0.5px;
   margin-left: -24px;
-  margin-top: 8px;
   margin-bottom: 8px;
 `;
+
+const TopicCardMainStyled = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 0px;
+`;
+
+const RoungeCardMainStyled = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 0px;
+  height: 138px;
+`;
+
+const TopicCardContentWrapper = styled.div`
+  flex: 2;
+`;
+
+const RoungeCardContentWrapper = styled.div`
+  padding-top: 5px;
+  flex: 2;
+`;
+
 const CardTitleStyled = styled.div`
   font-size: 1.5rem;
+  margin-bottom: 3px;
 `;
+
 const CardContentStyled = styled.div`
   height: 2rem;
   overflow: hidden;
@@ -97,6 +124,7 @@ const CardAuthorNickname = styled.div`
 `;
 const CardBottomWrapperStyled = styled.div`
   display: flex;
+  height: 20px;
 `;
 const CardStatWrapper = styled.div`
   font-size: 1rem;
@@ -121,26 +149,43 @@ export const RoungeCard = forwardRef(function RoungeCardWithRef(
   },
   ref?: ForwardedRef<any>,
 ) {
-  const { ref: cardRef, inView } = useInView();
+  // const { ref: cardRef, inView } = useInView();
   return (
-    <Wrapper ref={cardRef}>
-      <Link href={`/rounge/posts/${roungeCardData.postId}`} passHref>
+    // <Wrapper ref={cardRef}>
+    <Wrapper>
+      <Link
+        href={`/list/rounge/${roungeCardData.rounge.url}/${roungeCardData.postId}`}
+        passHref
+      >
         <CardWrapper>
-          {inView && (
+          {
+            // {inView && (
             <>
-              <div ref={ref} />
-              <CardTitleStyled>{roungeCardData.title}</CardTitleStyled>
-              <CardContentStyled>{roungeCardData.content}</CardContentStyled>
-              <br />
-              <CardAuthorJobSectorWrapperStyled>
-                <CardAuthorJobSectorStyled>
-                  {roungeCardData.author.jobSector}
-                </CardAuthorJobSectorStyled>
-                <CardMiddleDotStyled>·</CardMiddleDotStyled>
-                <CardAuthorNickname>
-                  {roungeCardData.author.nickname}
-                </CardAuthorNickname>
-              </CardAuthorJobSectorWrapperStyled>
+              <div ref={ref} style={{ display: 'contents' }} />
+              <RoungeCardMainStyled>
+                <RoungeCardContentWrapper>
+                  <CardTitleStyled>{roungeCardData.title}</CardTitleStyled>
+                  <br />
+                  <CardContentStyled>
+                    {roungeCardData.content}
+                  </CardContentStyled>
+                  <br />
+
+                  <CardAuthorJobSectorWrapperStyled>
+                    <CardAuthorJobSectorStyled>
+                      {roungeCardData.author.jobSector}
+                    </CardAuthorJobSectorStyled>
+                    <CardMiddleDotStyled>·</CardMiddleDotStyled>
+                    <CardAuthorNickname>
+                      {roungeCardData.author.nickname}
+                    </CardAuthorNickname>
+                  </CardAuthorJobSectorWrapperStyled>
+                </RoungeCardContentWrapper>
+                {roungeCardData.image.length !== 0 && (
+                  <ImgComponent urls={roungeCardData.image} />
+                )}
+              </RoungeCardMainStyled>
+
               <CardDividerStyled />
               <CardBottomWrapperStyled>
                 <CardStatWrapper>
@@ -160,7 +205,7 @@ export const RoungeCard = forwardRef(function RoungeCardWithRef(
                 </div>
               </CardBottomWrapperStyled>
             </>
-          )}
+          }
         </CardWrapper>
       </Link>
     </Wrapper>
@@ -175,36 +220,57 @@ export const TopicCard = forwardRef(function TopicCardWithRef(
   },
   ref?: any,
 ) {
-  const { ref: cardRef, inView } = useInView();
+  // const { ref: cardRef, inView } = useInView();
 
   // console.log(Object.keys(topicCardData));
   return (
-    <Wrapper ref={cardRef}>
-      <Link href={`/topic/posts/${topicCardData.postId}`} passHref>
+    // <Wrapper ref={cardRef}>
+    <Wrapper>
+      <Link
+        href={`/list/topic/${topicCardData.topic.url}/${topicCardData.postId}`}
+        passHref
+      >
         <CardWrapper>
-          {inView && (
+          {/* {inView && ( */}
+          {
             <>
               <div ref={ref} />
-              <OneDepthNestedLink href={`/topic/${topicCardData.topic}`}>
-                <TopicWrapperDivStyled>
-                  <div>{topicCardData.topic}</div>
-                </TopicWrapperDivStyled>
-              </OneDepthNestedLink>
-              <CardTitleStyled>{topicCardData.title}</CardTitleStyled>
-              <CardContentStyled>{topicCardData.content}</CardContentStyled>
-              <br />
-              <div style={{ fontSize: '0.8rem', color: 'rgb(78, 85, 101)' }}>
-                토픽
-              </div>
-              <CardAuthorJobSectorWrapperStyled>
-                <CardAuthorJobSectorStyled>
-                  {topicCardData.author.jobSector}
-                </CardAuthorJobSectorStyled>
-                <CardMiddleDotStyled>·</CardMiddleDotStyled>
-                <CardAuthorNickname>
-                  {topicCardData.author.nickname}
-                </CardAuthorNickname>
-              </CardAuthorJobSectorWrapperStyled>
+              <TopicCardMainStyled>
+                <TopicCardContentWrapper>
+                  <OneDepthNestedLink
+                    href={`/list/topic/${topicCardData.topic.url}`}
+                  >
+                    <TopicWrapperDivStyled>
+                      <div>{topicCardData.topic.title}</div>
+                    </TopicWrapperDivStyled>
+                  </OneDepthNestedLink>
+                  <CardTitleStyled>{topicCardData.title}</CardTitleStyled>
+                  <CardContentStyled>{topicCardData.content}</CardContentStyled>
+
+                  <div
+                    style={{
+                      fontSize: '0.8rem',
+                      color: 'rgb(78, 85, 101)',
+                      alignSelf: 'start',
+                      marginTop: '10px', // 수정
+                    }}
+                  >
+                    토픽
+                  </div>
+                  <CardAuthorJobSectorWrapperStyled>
+                    <CardAuthorJobSectorStyled>
+                      {topicCardData.author.jobSector}
+                    </CardAuthorJobSectorStyled>
+                    <CardMiddleDotStyled>·</CardMiddleDotStyled>
+                    <CardAuthorNickname>
+                      {topicCardData.author.nickname}
+                    </CardAuthorNickname>
+                  </CardAuthorJobSectorWrapperStyled>
+                </TopicCardContentWrapper>
+                {topicCardData.image.length !== 0 && (
+                  <ImgComponent urls={topicCardData.image} />
+                )}
+              </TopicCardMainStyled>
               <CardDividerStyled />
               <CardBottomWrapperStyled>
                 <CardStatWrapper>
@@ -224,7 +290,7 @@ export const TopicCard = forwardRef(function TopicCardWithRef(
                 </div>
               </CardBottomWrapperStyled>
             </>
-          )}
+          }
         </CardWrapper>
       </Link>
     </Wrapper>

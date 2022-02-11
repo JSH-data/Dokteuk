@@ -1,41 +1,42 @@
 import MyPagePost from './MyPagePost';
-import { MyPageListComponent } from './MyPageListComponent';
+import { useEffect, useState } from 'react';
+import { MyPageProfileComponent } from './MyPageProfileComponent';
+import { collection, query, where, getDocs, limit } from 'firebase/firestore';
+import { db } from '@firebase/firebase';
 
-const postings = [
-  {
-    title: '게시물 제목 ',
-    content: '게시물 내용 조금',
-  },
-  {
-    title: '게시물 제목 ',
-    content: '게시물 내용 조금',
-  },
-  {
-    title: '게시물 제목 ',
-    content: '게시물 내용 조금',
-  },
-  {
-    title: '게시물 제목 ',
-    content: '게시물 내용 조금',
-  },
-  {
-    title: '게시물 제목 ',
-    content: '게시물 내용 조금',
-  },
-];
+type MyPagePostListProps = {
+  userId: string;
+};
 
-const MyPagePostList: React.FC = () => {
+const MyPagePostList: React.FC<MyPagePostListProps> = ({ userId }) => {
+  const [posts, setPosts] = useState<any>([]);
+  useEffect(() => {
+    const getMyPost = async (userId: string) => {
+      const q = query(
+        collection(db, 'post'),
+        where('userId', '==', userId),
+        limit(5),
+      );
+      const querySnapshot = await getDocs(q);
+      const myPost: any = [];
+      querySnapshot.forEach((doc) => {
+        myPost.push(doc.data());
+      });
+      setPosts([...myPost]);
+    };
+    getMyPost(userId);
+  }, []);
   return (
-    <MyPageListComponent>
+    <MyPageProfileComponent>
       <h1>내가 작성한 게시물</h1>
       <ul>
-        {postings.map((post, idx) => {
+        {posts.map((post: any, idx: number) => {
           return (
             <MyPagePost key={idx} title={post.title} content={post.content} />
           );
         })}
       </ul>
-    </MyPageListComponent>
+    </MyPageProfileComponent>
   );
 };
 
