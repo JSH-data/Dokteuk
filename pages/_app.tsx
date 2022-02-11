@@ -68,16 +68,17 @@ function MyApp({ Component, pageProps }: AppProps) {
     if (user.id) {
       onSnapshot(doc(db, 'user', user.id), (doc) => {
         const data = doc.data() as UserInfo;
-        const user: UserInfo = {
+        const userData: UserInfo = {
           nickname: data.nickname,
           jobSector: data.jobSector,
           validRounges: data.validRounges,
+          email: data.email,
           myChattings: [],
           hasNewNotification: data.hasNewNotification,
           id: doc.id,
         };
-        console.log(user);
-        dispatch(userSlice.actions.setNewUserInfo(user));
+
+        dispatch(userSlice.actions.setNewUserInfo(userData));
       });
     }
   }, []);
@@ -118,16 +119,17 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(
             }).then((res) => res.json());
             //console.log('result', result);
 
-            console.log(result.data.uid);
+            console.log(result, 'dlrj?');
             const data = {
               nickname: result.data.userData.nickname,
               jobSector: result.data.userData.jobSector,
               validRounges: result.data.userData.validRounges,
-              myChattings: result.data.userData.myChattings,
+              myChattings: [],
               id: result.data.uid,
-              hasNewNotification: result.data.userData.hasNewNotification,
+              hasNewNotification: result.data.userData.notification,
+              email: result.data.email,
             };
-            console.log('데이터', data);
+
             await store.dispatch(getUser(data));
           } catch (e) {
             console.error(e);

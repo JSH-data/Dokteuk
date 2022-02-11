@@ -4,6 +4,14 @@ export const MyPageChangeCom = styled.article`
   & button {
     display: block;
     margin-left: auto;
-    margin-top: 2rem;
+    margin-top: 1rem;
+  }
+  & header {
+    margin-bottom: 4rem;
+    display: flex;
+    align-items: center;
+  }
+  & h1 {
+    margin-left: 1rem;
   }
 `;

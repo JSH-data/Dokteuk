@@ -14,7 +14,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     //console.log(JSON.stringify(cookies, null, 2));
     const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
     const { uid, email } = token;
-    console.log(token);
+    console.log(token, '토큰');
 
     // {
     //   iss: 'https://securetoken.google.com/devily-test',
