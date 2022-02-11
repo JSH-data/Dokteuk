@@ -10,3 +10,5 @@ export const ImgTypes = [
 
 export const isValidType = (imgType: string): boolean =>
   ImgTypes.includes(imgType);
+
+export const isValidSize = (fileSize: number): boolean => 1048487 > fileSize;

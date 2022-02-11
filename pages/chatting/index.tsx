@@ -3,19 +3,20 @@ import { chatList } from '../api/chat';
 import Link from 'next/link';
 import styled from '@emotion/styled';
 import Layout from '@layouts/Layout';
-import { getAuth } from '@firebase/auth';
-import { app } from '@firebase/firebase';
+import type { RootReducer } from 'store/reducer';
+import { useSelector } from 'react-redux';
 
-const Chatting = () => {
+const Chatting = (props: any) => {
   const [myChats, setMyChats] = useState<ChatRoom[]>([]);
+  const { user }: any = useSelector((state: RootReducer) => state.user);
 
   useEffect(() => {
-    const unsubscribe = chatList(setMyChats);
+    const unsubscribe = chatList(setMyChats, user);
 
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [user]);
 
   return (
     <Layout>
@@ -25,37 +26,43 @@ const Chatting = () => {
             <div>아직 개설된 채팅방이 없습니다.</div>
           </EmptyChatWrapper>
         ) : (
-          myChats.map(({ other, last_chat, update_at, last_visited, id }) => (
-            <Fragment key={id}>
-              <Link
-                href={{
-                  pathname: `/chatting/${id}`,
-                  query: {
-                    other: other ? other.nickname : '대화방에 상대가 없습니다.',
-                  },
-                }}
-                as={`/chatting/${id}`}
-                passHref
-              >
-                <ChatWrapper>
-                  <div className="text">
-                    <div>
-                      {other ? other.nickname : '대화방에 상대가 없습니다.'}
+          myChats.map(
+            ({ other, last_chat, update_at, last_visited, id, user }) => (
+              <Fragment key={id}>
+                <Link
+                  href={{
+                    pathname: `/chatting/${id}`,
+                    query: {
+                      other: other
+                        ? other.nickname
+                        : '대화방에 상대가 없습니다.',
+                    },
+                  }}
+                  as={`/chatting/${id}`}
+                  passHref
+                >
+                  <ChatWrapper>
+                    <div className="text">
+                      <div>
+                        {other ? other.nickname : '대화방에 상대가 없습니다.'}
+                      </div>
+                      <ChatText>
+                        {last_chat ? last_chat : '아직 나눈 대화가 없습니다.'}
+                      </ChatText>
                     </div>
-                    <ChatText>
-                      {last_chat ? last_chat : '아직 나눈 대화가 없습니다.'}
-                    </ChatText>
-                  </div>
-                  <div>
-                    <div>{`${update_at.toDate().getMonth() + 1}월 ${update_at
-                      .toDate()
-                      .getDate()}일`}</div>
-                    <Notice isRead={last_visited['User1'] >= update_at} />
-                  </div>
-                </ChatWrapper>
-              </Link>
-            </Fragment>
-          ))
+                    <div>
+                      <div>{`${update_at.toDate().getMonth() + 1}월 ${update_at
+                        .toDate()
+                        .getDate()}일`}</div>
+                      <Notice
+                        isRead={last_visited[user!.nickname] >= update_at}
+                      />
+                    </div>
+                  </ChatWrapper>
+                </Link>
+              </Fragment>
+            ),
+          )
         )}
       </ChatMain>
     </Layout>

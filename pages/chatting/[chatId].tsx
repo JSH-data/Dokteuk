@@ -1,15 +1,25 @@
 import { useRouter } from 'next/router';
-import { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { RootReducer } from 'store/reducer';
+import {
+  ChangeEvent,
+  Fragment,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useInView } from 'react-intersection-observer';
 import {
   sendMessage,
   chatMessages,
   moreChatMessages,
-  leaveChat,
+  exitChat,
   downMessage,
+  leaveChat,
 } from '../api/chat';
 import { Timestamp } from 'firebase/firestore';
-import { isValidType } from '../../utils/upload';
+import { isValidType, isValidSize } from '../../utils/upload';
 import ImgPreviewModal from '@components/ImgPreviewModal';
 import ChatSetting from '@components/ChatSetting';
 import styled from '@emotion/styled';
@@ -19,6 +29,7 @@ import AddIcon from '@mui/icons-material/Add';
 import SendIcon from '@mui/icons-material/Send';
 
 const ChatRoom = () => {
+  const { user }: any = useSelector((state: RootReducer) => state.user);
   const [messages, setMessages] = useState<ChatText[]>([]);
   const [lastKey, setLastKey] = useState<Timestamp | null>(null);
   const [fileSrc, setFileSrc] = useState<FileType | null>(null);
@@ -32,7 +43,7 @@ const ChatRoom = () => {
   const { chatId, other } = router.query;
 
   const onFileChange = (file: Blob) => {
-    if (isValidType(file.type)) {
+    if (isValidType(file.type) && isValidSize(file.size)) {
       const reader = new FileReader();
       reader.readAsDataURL(file);
 
@@ -46,8 +57,12 @@ const ChatRoom = () => {
           };
         });
       };
-    } else {
+    } else if (isValidSize(file.size)) {
       alert('업로드는 이미지만 가능합니다.');
+      setFileSrc(null);
+    } else {
+      alert('1Mb 이하로만 올릴 수 있습니다.');
+      setFileSrc(null);
     }
   };
 
@@ -60,7 +75,7 @@ const ChatRoom = () => {
   };
 
   const onLeaveChat = () => {
-    leaveChat(chatId);
+    exitChat(chatId, user);
     router.replace(`/chatting`);
   };
 
@@ -69,19 +84,26 @@ const ChatRoom = () => {
       downMessage(key);
     } else {
       for (let i = 0; i < fileSrc!.src.length; i++) {
-        sendMessage(chatId, fileSrc!.src[i] as string, 'img', fileSrc!.file[i]);
+        sendMessage(
+          chatId,
+          fileSrc!.src[i] as string,
+          'img',
+          user,
+          fileSrc!.file[i],
+        );
       }
     }
     setFileSrc(null);
   };
 
   useEffect(() => {
-    const unsubscribe = chatMessages(chatId, setMessages, setLastKey);
+    const unsubscribe = chatMessages(chatId, setMessages, setLastKey, user);
 
     return () => {
+      leaveChat(chatId, user);
       unsubscribe();
     };
-  }, [chatId]);
+  }, [chatId, user]);
 
   useEffect(() => {
     if (lastKey) {
@@ -93,9 +115,10 @@ const ChatRoom = () => {
 
   useEffect(() => {
     if (inView && lastKey) {
-      moreChatMessages(chatId, setMessages, setLastKey, lastKey);
+      console.log('s');
+      moreChatMessages(chatId, setMessages, setLastKey, lastKey, user);
     }
-  }, [inView, chatId, lastKey]);
+  }, [inView, chatId, lastKey, user]);
 
   return (
     <Fragment>
@@ -122,9 +145,9 @@ const ChatRoom = () => {
           {messages
             .slice()
             .reverse()
-            .map(({ id, from, msg, img }, idx) => (
+            .map(({ id, from, msg, img, user }, idx) => (
               <ChatText
-                className={from === 'User1' ? 'mine' : ''}
+                className={from === user!.nickname ? 'mine' : ''}
                 key={id}
                 ref={idx === 0 ? ref : null}
               >
@@ -177,7 +200,7 @@ const ChatRoom = () => {
         <SendIcon
           style={{ position: 'absolute', right: '40px', cursor: 'pointer' }}
           onClick={() => {
-            sendMessage(chatId, inputValue.current!.value, 'msg');
+            sendMessage(chatId, inputValue.current!.value, 'msg', user);
             inputValue.current!.value = '';
           }}
         />
@@ -249,6 +272,7 @@ const ChatText = styled.li`
 
 const ChatImg = styled.img`
   width: 100%;
+  height: 100%;
 `;
 
 const ChatInputWrapper = styled.div`
