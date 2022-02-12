@@ -1,8 +1,4 @@
-import { app } from '@firebase/firebase';
-import delay from '@utils/delay';
-import { getAuth } from 'firebase/auth';
 import {
-  getFirestore,
   collection,
   getDoc,
   doc,
@@ -16,22 +12,17 @@ import {
   orderBy,
   query,
   limit,
+  getDocs,
+  endBefore,
 } from 'firebase/firestore';
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { db, storage } from '../../firebase/firebase';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { Dispatch, SetStateAction } from 'react';
-
-const db = getFirestore(app);
-const storage = getStorage(app);
 
 export const chatList = (
   setMyChats: Dispatch<SetStateAction<ChatRoom[]>>,
-  userData: UserType,
+  user: UserType,
 ) => {
-  const user = {
-    nickname: userData.nickname,
-    job: userData.jobSector,
-  };
-
   const chatListQuery = query(
     collection(db, 'chat'),
     where('users', 'array-contains', user),
@@ -58,30 +49,56 @@ export const chatList = (
   return unsubscribe;
 };
 
-export const chatMessages = (
-  chatId: queryType,
-  setMessages: Dispatch<SetStateAction<ChatText[]>>,
-  setLastKey: Dispatch<SetStateAction<Timestamp | null>>,
-  userData: UserType,
-) => {
-  const user = {
-    nickname: userData.nickname,
-    job: userData.jobSector,
-  };
-
+export const getChatMessages = async (chatId: queryType, user: UserType) => {
   const chatQuery = query(
     collection(db, `chat/${chatId}/messages`),
     orderBy('create_at', 'desc'),
     limit(20),
   );
 
-  const unsubscribe = onSnapshot(chatQuery, (querySnapshot) => {
-    const newChat: ChatText[] = [];
-    const lastKey =
-      querySnapshot.docs.length === 20
-        ? querySnapshot.docs[querySnapshot.docs.length - 1].data().create_at
-        : null;
+  const querySnapshot = await getDocs(chatQuery);
 
+  const initMessage: ChatText[] = [];
+  const startKey =
+    querySnapshot.docs.length === 20
+      ? querySnapshot.docs[querySnapshot.docs.length - 1].data().create_at
+      : null;
+  const endKey = querySnapshot.docs[0].data().create_at;
+
+  querySnapshot.forEach((doc) => {
+    const { msg, img, from, create_at } = doc.data();
+    initMessage.push({
+      id: doc.id,
+      from,
+      msg,
+      img,
+      create_at,
+      user,
+    });
+  });
+
+  return {
+    initMessage,
+    _startKey: startKey,
+    _endKey: endKey,
+  };
+};
+
+export const chatMessages = (
+  chatId: queryType,
+  setMessages: Dispatch<SetStateAction<ChatText[]>>,
+  key: Timestamp | null,
+  user: UserType,
+) => {
+  const chatQuery = query(
+    collection(db, `chat/${chatId}/messages`),
+    orderBy('create_at', 'desc'),
+    endBefore(key),
+    limit(1),
+  );
+
+  onSnapshot(chatQuery, (querySnapshot) => {
+    const newChat: ChatText[] = [];
     querySnapshot.forEach((doc) => {
       const { msg, img, from, create_at } = doc.data();
       newChat.push({
@@ -93,24 +110,15 @@ export const chatMessages = (
         user,
       });
     });
-    setMessages(newChat);
-    setLastKey(lastKey);
+    setMessages((current) => [...newChat, ...current]);
   });
-  return unsubscribe;
 };
 
-export const moreChatMessages = (
+export const moreChatMessages = async (
   chatId: queryType,
-  setMessages: Dispatch<SetStateAction<ChatText[]>>,
-  setLastKey: Dispatch<SetStateAction<Timestamp | null>>,
   key: Timestamp | null,
-  userData: UserType,
+  user: UserType,
 ) => {
-  const user = {
-    nickname: userData.nickname,
-    job: userData.jobSector,
-  };
-
   const chatQuery = query(
     collection(db, `chat/${chatId}/messages`),
     orderBy('create_at', 'desc'),
@@ -118,40 +126,38 @@ export const moreChatMessages = (
     limit(20),
   );
 
-  onSnapshot(chatQuery, (querySnapshot) => {
-    const newChat: ChatText[] = [];
-    const lastKey =
-      querySnapshot.docs.length === 20
-        ? querySnapshot.docs[querySnapshot.docs.length - 1].data().create_at
-        : null;
+  const querySnapshot = await getDocs(chatQuery);
 
-    querySnapshot.forEach((doc) => {
-      const { msg, img, from, create_at } = doc.data();
-      newChat.push({
-        id: doc.id,
-        from,
-        msg,
-        img,
-        create_at,
-        user,
-      });
+  const moreMessage: ChatText[] = [];
+  const startKey =
+    querySnapshot.docs.length === 20
+      ? querySnapshot.docs[querySnapshot.docs.length - 1].data().create_at
+      : null;
+
+  querySnapshot.forEach((doc) => {
+    const { msg, img, from, create_at } = doc.data();
+    moreMessage.push({
+      id: doc.id,
+      from,
+      msg,
+      img,
+      create_at,
+      user,
     });
-    setMessages((current) => [...current, ...newChat]);
-    setLastKey(lastKey);
   });
+  return {
+    moreMessage,
+    _startKey: startKey,
+  };
 };
 
 export const sendMessage = async (
   chatId: queryType,
   value: string,
   msgType: string,
-  userData: UserType,
+  user: UserType,
   file?: Blob | ArrayBuffer,
 ) => {
-  const user = {
-    nickname: userData.nickname,
-    job: userData.jobSector,
-  };
   const timestamp = Timestamp.now();
 
   const message = await addDoc(collection(db, `chat/${chatId}/messages`), {
@@ -166,25 +172,18 @@ export const sendMessage = async (
     [`last_visited.${user.nickname}`]: timestamp,
   });
 
-  if (msgType === 'img') {
-    uploadBytes(ref(storage, `chat/${message.id}`), file!).then(() => {
-      console.log('Uploaded a IMG!');
-    });
+  if (msgType === 'img' && file) {
+    uploadImg(message.id, file);
   }
 };
 
-export const leaveChat = async (chatId: queryType, userData: UserType) => {
-  const user = {
-    nickname: userData.nickname,
-    job: userData.jobSector,
-  };
-
-  await updateDoc(doc(db, 'chat', chatId as string), {
-    [`last_visited.${user.nickname}`]: Timestamp.now(),
+export const uploadImg = (id: string, file: Blob | ArrayBuffer) => {
+  uploadBytes(ref(storage, `chat/${id}`), file).then(() => {
+    console.log('Uploaded a IMG!');
   });
 };
 
-export const downMessage = (key: string) => {
+export const downloadImg = (key: string) => {
   getDownloadURL(ref(storage, `chat/${key}`)).then((url) => {
     const xhr = new XMLHttpRequest();
     xhr.responseType = 'blob';
@@ -201,12 +200,13 @@ export const downMessage = (key: string) => {
   });
 };
 
-export const exitChat = async (chatId: queryType, userData: UserType) => {
-  const user = {
-    nickname: userData.nickname,
-    job: userData.jobSector,
-  };
+export const leaveChat = async (chatId: queryType, user: UserType) => {
+  await updateDoc(doc(db, 'chat', chatId as string), {
+    [`last_visited.${user.nickname}`]: Timestamp.now(),
+  });
+};
 
+export const exitChat = async (chatId: queryType, user: UserType) => {
   const chatRoom = await getDoc(doc(db, 'chat', chatId as string));
   const other = chatRoom
     .data()!

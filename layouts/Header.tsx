@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
 import HeaderHome from '@components/Headers/Home';
 import HeaderSkeleton from '@components/Headers/Skeleton';
+import Chatting from '@components/Headers/Chatting';
 import TestHeader from './TestHeader';
 
 const Header: React.FC = () => {
@@ -13,7 +14,7 @@ const Header: React.FC = () => {
     <HeaderWrapperDivStyled>
       {topic !== undefined && <TestHeader title={topic} />}
       {headerKey === 'list' && topic == undefined && <HeaderHome />}
-      {/* {headerKey === 'chatting' && <HeaderChatting />} */}
+      {headerKey === 'chat' && <Chatting />}
       {/* {headerKey === 'notification' && <HeaderNotification />} */}
       {/* {headerKey === 'mypage' && <HeaderMyPage />} */}
     </HeaderWrapperDivStyled>
