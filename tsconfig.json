@@ -28,6 +28,11 @@
       "@store/*": ["store/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "pages/list/rounge/[rounge]/[postid].tsx.back"
+  ],
   "exclude": ["node_modules"]
 }

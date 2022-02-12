@@ -6,8 +6,7 @@ import { auth } from '@firebase/firebase';
 const AuthContext = createContext<{ loginuser: any }>({
   loginuser: null,
 });
-
-export function AuthProvider({ children }: any) {
+export default function AuthProvider({ children }: any) {
   const [loginuser, setLoginUser] = useState<any>(null);
   useEffect(() => {
     return auth.onIdTokenChanged(async (user) => {
