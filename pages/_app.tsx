@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import '../styles/globals.css';
 import type { AppContext, AppProps } from 'next/app';
 import AuthProvider from './user/auth';
@@ -96,11 +97,20 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <AuthProvider>
-      <ThemeProvider theme={theme_}>
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </AuthProvider>
+    <>
+      <Head>
+        <title>DokTeuk</title>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, shrink-to-fit=no "
+        />
+      </Head>
+      <AuthProvider>
+        <ThemeProvider theme={theme_}>
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </AuthProvider>
+    </>
   );
 }
 

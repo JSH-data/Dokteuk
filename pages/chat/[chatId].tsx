@@ -15,7 +15,6 @@ import {
   leaveChat,
   downloadImg,
   getChatMessages,
-  uploadImg,
 } from '../api/chat';
 import {
   NewMessage,
@@ -25,18 +24,18 @@ import {
   ChatText,
   ChatImg,
   ChatInputWrapper,
+  FormBox,
   InputBox,
+  SendIconStyled,
   PageDownBtn,
   KeyboardArrowDownIcon,
   ArrowBackIosNewIcon,
   DensityMediumIcon,
   AddIcon,
-  SendIcon,
 } from '../../styles/chatStyle';
 import { useRouter } from 'next/router';
 import { Timestamp } from 'firebase/firestore';
 import { encodeFile } from '../../utils/upload';
-import { useInView } from 'react-intersection-observer';
 import wrapper from '@store/configureStore';
 import debounce from 'lodash/debounce';
 import ImgPreviewModal from '@components/ImgPreviewModal';
@@ -190,7 +189,7 @@ const ChatRoom = ({ nickname, job }: { nickname: string; job: string }) => {
         <div>{other}</div>
         <DensityMediumIcon onClick={onToggle} />
       </ChatHeader>
-      {isScrollUp && (
+      {isScrollUp && !newMessage && (
         <PageDownBtn
           onClick={() => {
             setIsScrollUp(false);
@@ -205,11 +204,7 @@ const ChatRoom = ({ nickname, job }: { nickname: string; job: string }) => {
             .slice()
             .reverse()
             .map(({ id, from, msg, img }, idx) => (
-              <ChatText
-                className={from === nickname ? 'mine' : ''}
-                key={id}
-                // ref={idx === 0 ? ref : null}
-              >
+              <ChatText className={from === nickname ? 'mine' : ''} key={id}>
                 {msg ? (
                   msg
                 ) : (
@@ -256,15 +251,19 @@ const ChatRoom = ({ nickname, job }: { nickname: string; job: string }) => {
             }
           }}
         />
-        <InputBox
-          ref={inputValue}
-          placeholder="메세지를 입력해주세요."
-          required
-        />
-        <SendIcon
-          style={{ position: 'absolute', right: '40px', cursor: 'pointer' }}
-          onClick={() => onSendMessage()}
-        />
+        <FormBox
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSendMessage();
+          }}
+        >
+          <InputBox
+            ref={inputValue}
+            placeholder="메세지를 입력해주세요."
+            required
+          />
+          <SendIconStyled onClick={() => onSendMessage()} />
+        </FormBox>
       </ChatInputWrapper>
     </Fragment>
   );

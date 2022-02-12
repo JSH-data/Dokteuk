@@ -14,7 +14,6 @@ import {
 const Chat = ({ nickname, job }: { nickname: string; job: string }) => {
   const [myChats, setMyChats] = useState<ChatRoom[]>([]);
   const user = useMemo(() => ({ nickname, job }), [nickname, job]);
-
   useEffect(() => {
     const unsubscribe = chatList(setMyChats, user);
 
@@ -89,7 +88,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       // todo: 초기값을 판단하는 근거가 이상함...
       return {
         redirect: {
-          destination: '/404',
+          destination: '/user/login',
           permanent: false,
         },
       };

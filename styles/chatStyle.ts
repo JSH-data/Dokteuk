@@ -109,7 +109,7 @@ export const ChatInputWrapper = styled.div`
   }
 `;
 
-export const InputBox = styled.input`
+export const FormBox = styled.form`
   border-radius: 20px;
   border: none;
   width: 100%;
@@ -117,6 +117,14 @@ export const InputBox = styled.input`
   margin-left: 20px;
   padding-left: 30px;
   padding-right: 60px;
+  background: #f2f2f2;
+`;
+
+export const InputBox = styled.input`
+  border-radius: 20px;
+  border: none;
+  width: 100%;
+  height: 40px;
   background: #f2f2f2;
   &:focus {
     outline: none;
@@ -126,6 +134,14 @@ export const InputBox = styled.input`
       display: none;
     }
   }
+`;
+
+export const SendIconStyled = styled(SendIcon)`
+  position: absolute;
+  right: 40px;
+  bottom: 18px;
+  cursor: pointer;
+  color: gray;
 `;
 
 export const PageDownBtn = styled.button`
