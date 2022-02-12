@@ -11,8 +11,11 @@ const ChatSetting = ({
     <Background>
       <ModalWrapper>
         <OptionButton>
-          <div className="block">차단하기</div>
-          <div onClick={onLeaveChat}>채팅방 나가기</div>
+          <div className="text">채팅방을 나가시겠습니까?</div>
+          <Line />
+          <div className="exit" onClick={onLeaveChat}>
+            채팅방 나가기
+          </div>
         </OptionButton>
         <CancelButton onClick={onToggle}>닫기</CancelButton>
       </ModalWrapper>
@@ -36,25 +39,51 @@ const ModalWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
+  color: black;
 
   & > div {
     width: clamp(0px, 80%, 600px);
     border-radius: 20px;
-    background: white;
+    background-color: ${({ theme }: any) =>
+      theme.customTheme.defaultMode.chatFromBackgroundColor};
     margin-bottom: 20px;
     cursor: pointer;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: white;
+    & > div {
+      background-color: ${({ theme }: any) =>
+        theme.customTheme.darkMode.chatFromBackgroundColor};
+    }
   }
 `;
 
 const OptionButton = styled.div`
-  height: 100px;
+  height: 80px;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
   align-items: center;
 
-  & .block {
+  & .text {
+    font-size: 12px;
+    color: gray;
+    height: 30px;
+    line-height: 30px;
+  }
+  & .exit {
     color: red;
+    height: 50px;
+    line-height: 50px;
+  }
+`;
+
+const Line = styled.div`
+  border-bottom: 1px solid #d1d1d1;
+  width: 100%;
+
+  @media (prefers-color-scheme: dark) {
+    border-bottom: 1px solid #3f3f3f;
   }
 `;
 

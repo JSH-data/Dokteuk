@@ -83,10 +83,6 @@ const ChatRoom = ({ nickname, job }: { nickname: string; job: string }) => {
     setScrollPosition(messageRef.current!.scrollTop);
   }, 500);
 
-  const pageDown = () => {
-    bottomListRef.current!.scrollIntoView({ behavior: 'smooth' });
-  };
-
   const scrollKeep = (prevScrollHeight: number) => {
     messageRef.current!.scrollTop =
       messageRef.current!.scrollHeight - prevScrollHeight;
@@ -110,7 +106,8 @@ const ChatRoom = ({ nickname, job }: { nickname: string; job: string }) => {
   }, [chatId, user]);
 
   useEffect(() => {
-    pageDown();
+    // Page Down
+    bottomListRef.current!.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   useEffect(() => {
