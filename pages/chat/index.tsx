@@ -1,9 +1,15 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { chatList } from '../api/chat';
 import Link from 'next/link';
-import styled from '@emotion/styled';
 import Layout from '@layouts/Layout';
 import wrapper from '@store/configureStore';
+import {
+  ChatMain,
+  EmptyChatWrapper,
+  ChatWrapper,
+  Text,
+  Notice,
+} from '../../styles/chatStyle';
 
 const Chat = ({ nickname, job }: { nickname: string; job: string }) => {
   const [myChats, setMyChats] = useState<ChatRoom[]>([]);
@@ -42,12 +48,19 @@ const Chat = ({ nickname, job }: { nickname: string; job: string }) => {
                 >
                   <ChatWrapper>
                     <div className="text">
-                      <div>
-                        {other ? other.nickname : '대화방에 상대가 없습니다.'}
+                      <div className="userInfo">
+                        {other ? (
+                          <>
+                            <div>{other.nickname}</div>
+                            <div className="job">{other.job}</div>
+                          </>
+                        ) : (
+                          '대화방에 상대가 없습니다.'
+                        )}
                       </div>
-                      <ChatText>
+                      <Text>
                         {last_chat ? last_chat : '아직 나눈 대화가 없습니다.'}
-                      </ChatText>
+                      </Text>
                     </div>
                     <div>
                       <div>{`${update_at.toDate().getMonth() + 1}월 ${update_at
@@ -92,67 +105,3 @@ export const getServerSideProps = wrapper.getServerSideProps(
 );
 
 export default Chat;
-
-const ChatMain = styled.div`
-  height: calc(100vh - 120px);
-  overflow: scroll;
-`;
-const EmptyChatWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: clamp(0px, 80%, 680px);
-  height: calc(100% - 40px);
-  text-align: center;
-  margin: 20px auto;
-  border-radius: 10px;
-  background: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.cardWrapperBackgroundColor};
-
-  @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) =>
-      theme.customTheme.darkMode.cardWrapperBackgroundColor};
-  }
-`;
-
-const ChatWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: clamp(0px, 80%, 680px);
-  height: 80px;
-  margin: 20px auto;
-  padding: 0 20px;
-  cursor: pointer;
-  border-radius: 10px;
-  background: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.cardWrapperBackgroundColor};
-  & > div {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-  }
-
-  & .text {
-    width: clamp(0px, 75%, 450px);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) =>
-      theme.customTheme.darkMode.cardWrapperBackgroundColor};
-  }
-`;
-
-const ChatText = styled.div`
-  padding-left: 5px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-`;
-
-const Notice = styled.div<NoticeProps>`
-  background: ${(props) => (props.isRead ? 'none' : 'red')};
-  height: 20px;
-  width: 20px;
-  border-radius: 50%;
-  margin: 0 auto;
-`;

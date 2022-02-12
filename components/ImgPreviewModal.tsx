@@ -7,11 +7,11 @@ import 'swiper/css';
 import 'swiper/css/effect-cards';
 
 const ImgPreviewModal = ({
-  fileSrc,
+  imgData,
   onFileReset,
   onSubmitImg,
 }: {
-  fileSrc: FileType | null;
+  imgData: FileType | null;
   onFileReset: () => void;
   onSubmitImg: (k?: string) => void;
 }) => {
@@ -23,7 +23,7 @@ const ImgPreviewModal = ({
           grabCursor={true}
           modules={[EffectCards]}
         >
-          {fileSrc!.src.map((img) => (
+          {imgData!.src.map((img) => (
             <SwiperSlide key={img as string}>
               <Image src={img as string} alt="preview-img" layout="fill" />
             </SwiperSlide>
@@ -34,12 +34,12 @@ const ImgPreviewModal = ({
           <button
             className="send"
             onClick={() =>
-              fileSrc!.type === 'upload'
+              imgData!.type === 'upload'
                 ? onSubmitImg()
-                : onSubmitImg(fileSrc!.type)
+                : onSubmitImg(imgData!.type)
             }
           >
-            {fileSrc!.type === 'upload' ? '전송' : '다운'}
+            {imgData!.type === 'upload' ? '전송' : '다운'}
           </button>
         </ButtonWrapper>
       </Modal>
