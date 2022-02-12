@@ -2,19 +2,18 @@
 import { UserInfo, TopicPost, RoungePost } from '@interface/CardInterface';
 import delay from '@utils/delay';
 export const getMyInfo = async (result: any) => {
-  //await delay(5000);
+  //await delay(3000);
   // await delay(0);
   // return null;
 
-  const { userData } = result.data;
-
   parseInt(Date.now().toString()) - Math.floor(Math.random() * 30000) * 1000;
   return {
-    nickname: userData.nickname,
-    jobSector: userData.jobSector,
-    validRounges: userData.validRounges,
-    myChattings: userData.myChatting,
-    hasNewNotification: userData.hasNewNotification,
+    nickname: result.nickname,
+    jobSector: result.jobSector,
+    validRounges: result.validRounges,
+    myChattings: result.myChatting,
+    hasNewNotification: result.hasNewNotification,
+    id: result.id,
     // nickname: '닉네임입니다',
     // jobSector: '외식·음료',
     // validRounges: [

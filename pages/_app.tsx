@@ -1,19 +1,19 @@
 import '../styles/globals.css';
 import type { AppContext, AppProps } from 'next/app';
 import { AuthProvider } from './user/auth';
-import { firebaseAdmin } from '@firebase/firebaseAdmin';
 import nookies from 'nookies';
 import fetch from 'isomorphic-unfetch';
 import wrapper from 'store/configureStore';
 import { getUser } from 'store/reducer';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 // import { AuthProvider } from '@hooks/Auth';
-import { query, doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '@firebase/firebase';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootReducer } from 'store/reducer';
 import { userSlice } from 'store/reducer';
+import { setNewUserInfo } from 'store/reducer';
 import { UserInfo, UserState } from '@interface/StoreInterface';
 
 const theme_ = createTheme(
@@ -68,7 +68,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     if (user.id) {
       onSnapshot(doc(db, 'user', user.id), (doc) => {
         const data = doc.data() as UserInfo;
-
         const userData: UserInfo = {
           nickname: data.nickname,
           jobSector: data.jobSector,
@@ -77,9 +76,21 @@ function MyApp({ Component, pageProps }: AppProps) {
           myChattings: [],
           hasNewNotification: data.hasNewNotification,
           id: doc.id,
+          post: [],
         };
+        dispatch(setNewUserInfo(user));
+        // console.log(user);
+        // const userData: UserInfo = {
+        //   nickname: data.nickname,
+        //   jobSector: data.jobSector,
+        //   validRounges: data.validRounges,
+        //   email: data.email,
+        //   myChattings: [],
+        //   hasNewNotification: data.hasNewNotification,
+        //   id: doc.id,
+        // };
 
-        dispatch(userSlice.actions.setNewUserInfo(userData));
+        // dispatch(userSlice.actions.setNewUserInfo(userData));
       });
     }
   }, []);
@@ -96,14 +107,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 MyApp.getInitialProps = wrapper.getInitialAppProps(
   (store) =>
     async ({ Component, ctx }: AppContext): Promise<any> => {
-      // onSnapshot(doc(db, 'user', 'dBEEX25SN6e5f6Zcb9CFU3xnLyI3'), (doc) => {
-      //   console.log(doc.data(), 'hi');
-      // });
-
       // only run on server-side, user should be auth'd if on client-side
       if (typeof window === 'undefined') {
         const { token } = nookies.get(ctx);
-        // console.log('token', token);
 
         // if a token was found, try to do SSA
         if (token) {
@@ -148,6 +154,17 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(
               id,
               email,
             };
+            // console.log(result, 'dlrj?');
+            // const data = {
+            //   nickname: result.data.userData.nickname,
+            //   jobSector: result.data.userData.jobSector,
+            //   validRounges: result.data.userData.validRounges,
+            //   myChattings: [],
+            //   id: result.data.uid,
+            //   hasNewNotification: result.data.userData.notification,
+            //   email: result.data.email,
+            // };
+
             await store.dispatch(getUser(data));
           } catch (e) {
             console.error(e);

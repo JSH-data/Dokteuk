@@ -11,10 +11,14 @@ const initialUserState: UserState = {
   user: {
     nickname: '',
     jobSector: '',
-    validRounges: [],
+    validRounges: [
+      { title: '타임라인', url: 'timeline' },
+      { title: '토픽', url: 'topic' },
+    ],
     myChattings: [],
     id: '',
     hasNewNotification: false,
+    post: [],
     email: '',
   },
   status: 'standby',
@@ -24,8 +28,8 @@ const initialUserState: UserState = {
 export const getUser = createAsyncThunk('getUser', async (result: any) => {
   return await result;
 });
-// export const getUser = createAsyncThunk('getUser', async () => {
-//   return await getMyInfo();
+// export const getUser = createAsyncThunk('getUser', async (result: any) => {
+//   return await getMyInfo(result);
 // });
 // console.log(getUser.name);
 export const userSlice = createSlice({
@@ -37,6 +41,9 @@ export const userSlice = createSlice({
     },
     setMyInfo: (state, action) => {
       state.user = action.payload;
+    },
+    reset: (state) => {
+      Object.assign(state, initialUserState);
     },
   },
   extraReducers: (builder) => {
@@ -125,6 +132,7 @@ const rootReducer = (
             myChattings: [],
             id: '',
             hasNewNotification: false,
+            post: [],
             email: '',
           },
           status: 'standby',
@@ -165,5 +173,7 @@ const rootReducer = (
   }
 };
 
+export const setNewUserInfo = userSlice.actions.setNewUserInfo;
+export const reset = userSlice.actions.reset;
 export default rootReducer;
 export type RootReducer = ReturnType<typeof rootReducer>;
