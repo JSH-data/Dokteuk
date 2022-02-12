@@ -17,7 +17,7 @@ import {
   downMessage,
 } from '../api/chat';
 import { Timestamp } from 'firebase/firestore';
-import { isValidType, isValidSize } from '../../utils/upload';
+import { encodeFile } from '../../utils/upload';
 import { useInView } from 'react-intersection-observer';
 import wrapper from '@store/configureStore';
 import debounce from 'lodash/debounce';
@@ -44,30 +44,6 @@ const ChatRoom = ({ nickname, job }: { nickname: string; job: string }) => {
   const inputValue = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const { chatId, other } = router.query;
-
-  const onFileChange = (file: Blob) => {
-    if (isValidType(file.type) && isValidSize(file.size)) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-
-      reader.onload = () => {
-        const { result } = reader;
-        setFileSrc((current) => {
-          return {
-            type: 'upload',
-            file: [...current!.file, file],
-            src: [...current!.src, result],
-          };
-        });
-      };
-    } else if (isValidSize(file.size)) {
-      alert('업로드는 이미지만 가능합니다.');
-      setFileSrc(null);
-    } else {
-      alert('1Mb 이하로만 올릴 수 있습니다.');
-      setFileSrc(null);
-    }
-  };
 
   const onFileReset = () => {
     setFileSrc(null);
@@ -222,7 +198,7 @@ const ChatRoom = ({ nickname, job }: { nickname: string; job: string }) => {
               src: [],
             });
             for (let i = 0; i < files!.length; i++) {
-              onFileChange(files![i]);
+              encodeFile(files![i], setFileSrc);
             }
           }}
         />
