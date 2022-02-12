@@ -15,6 +15,7 @@ const Wrapper = styled.div`
   justify-content: center;
 `;
 const CardWrapper = styled.div`
+  width: 100%;
   background-color: ${({ theme }: any) =>
     theme.customTheme.defaultMode.cardWrapperBackgroundColor};
   height: 200px;
@@ -23,6 +24,7 @@ const CardWrapper = styled.div`
   padding: 12px 24px;
   cursor: pointer;
   display: grid;
+  grid-template-columns: 1fr;
   justify-content: center;
   align-items: center;
   max-width: 680px;
@@ -149,7 +151,90 @@ const ModeCommentIconStyled = styled(ModeCommentIcon)`
   font-size: 1rem;
   margin-right: 0.5rem;
 `;
+const CardTitleStyledSkeleton = styled(CardTitleStyled)`
+  background-color: gray;
+  width: 60%;
+  opacity: 0.2;
+  border-radius: 10px;
+  margin-bottom: 8px;
+`;
 
+const CardContentStyledSkeleton = styled(CardContentStyled)`
+  background-color: gray;
+  height: 1rem;
+  width: 80%;
+  opacity: 0.2;
+  border-radius: 10px;
+  margin-bottom: 2px;
+`;
+const CardContentStyledSkeleton_2 = styled(CardContentStyled)`
+  background-color: gray;
+  height: 1rem;
+  width: 75%;
+  opacity: 0.2;
+  border-radius: 10px;
+`;
+const InnerTopicSkeleton = styled.div`
+  margin-top: 4px;
+  background-color: gray;
+  height: 1rem;
+  width: 10%;
+  opacity: 0.2;
+  border-radius: 10px;
+`;
+
+const CardAuthorJobSectorStyledSkeleton = styled(CardAuthorJobSectorStyled)`
+  margin-top: 8px;
+  background-color: gray;
+  height: 1rem;
+  width: 5%;
+  opacity: 0.2;
+  border-radius: 10px;
+`;
+const CardMiddleDotStyledSkeleton = styled(CardMiddleDotStyled)`
+  color: gray;
+  opacity: 0.4;
+`;
+const CardAuthorNicknameSkeleton = styled(CardAuthorNickname)`
+  margin-top: 8px;
+  background-color: gray;
+  height: 1rem;
+  width: 5%;
+  opacity: 0.2;
+  border-radius: 10px;
+`;
+const CardDividerStyledSkeleton = styled(CardDividerStyled)`
+  color: gray;
+  opacity: 0.1;
+  margin-top: 4px;
+`;
+const CardStatWrapperSkeleton = styled(CardStatWrapper)`
+  padding: 0 8px 0 8px;
+  background-color: gray;
+  opacity: 0.2;
+  border-radius: 10px;
+`;
+const ThumbUpIconStyledSkeleton = styled(ThumbUpIconStyled)`
+  opacity: 0.8;
+  background-color: black;
+  border-radius: 10px;
+  color: gray;
+`;
+const ModeCommentIconStyledSkeleton = styled(ModeCommentIconStyled)`
+  opacity: 0.5;
+  background-color: gray;
+  border-radius: 10px;
+`;
+const DateDiffStyledSkeleton = styled.div`
+  margin-left: auto;
+  background-color: gray;
+  width: 10%;
+  opacity: 0.2;
+  border-radius: 10px;
+`;
+const CardWrapperSkeleton = styled(CardWrapper)`
+  height: auto;
+`;
 export const RoungeCard = forwardRef(function RoungeCardWithRef(
   {
     roungeCardData,
@@ -158,17 +243,16 @@ export const RoungeCard = forwardRef(function RoungeCardWithRef(
   },
   ref?: ForwardedRef<any>,
 ) {
-  // const { ref: cardRef, inView } = useInView();
+  const { ref: cardRef, inView } = useInView();
   return (
-    // <Wrapper ref={cardRef}>
-    <Wrapper>
+    <Wrapper ref={cardRef}>
+      {/* <Wrapper> */}
       <Link
         href={`/list/rounge/${roungeCardData.rounge.url}/${roungeCardData.postId}`}
         passHref
       >
         <CardWrapper>
-          {
-            // {inView && (
+          {inView ? (
             <>
               <div ref={ref} style={{ display: 'contents' }} />
               <RoungeCardMainStyled>
@@ -214,12 +298,51 @@ export const RoungeCard = forwardRef(function RoungeCardWithRef(
                 </div>
               </CardBottomWrapperStyled>
             </>
-          }
+          ) : (
+            <>
+              <div ref={ref} />
+              <CardSkeleton />
+            </>
+          )}
         </CardWrapper>
       </Link>
     </Wrapper>
   );
 });
+
+const CardSkeleton = () => {
+  return (
+    <Wrapper>
+      <CardWrapperSkeleton>
+        <TopicCardMainStyled>
+          <TopicCardContentWrapper>
+            <CardTitleStyledSkeleton />
+            <CardContentStyledSkeleton />
+            <CardContentStyledSkeleton_2 />
+            <InnerTopicSkeleton />
+            <CardAuthorJobSectorWrapperStyled>
+              <CardAuthorJobSectorStyledSkeleton />
+              <CardMiddleDotStyledSkeleton>·</CardMiddleDotStyledSkeleton>
+              <CardAuthorNicknameSkeleton />
+            </CardAuthorJobSectorWrapperStyled>
+          </TopicCardContentWrapper>
+        </TopicCardMainStyled>
+        <CardDividerStyledSkeleton />
+        <CardBottomWrapperStyled>
+          <CardStatWrapperSkeleton>
+            <ThumbUpIconStyledSkeleton />
+            좋아요
+          </CardStatWrapperSkeleton>
+          <CardStatWrapperSkeleton>
+            <ModeCommentIconStyledSkeleton />
+            댓글
+          </CardStatWrapperSkeleton>
+          <DateDiffStyledSkeleton />
+        </CardBottomWrapperStyled>
+      </CardWrapperSkeleton>
+    </Wrapper>
+  );
+};
 
 export const TopicCard = forwardRef(function TopicCardWithRef(
   {
@@ -229,19 +352,18 @@ export const TopicCard = forwardRef(function TopicCardWithRef(
   },
   ref?: any,
 ) {
-  // const { ref: cardRef, inView } = useInView();
+  const { ref: cardRef, inView } = useInView();
 
   // console.log(Object.keys(topicCardData));
   return (
-    // <Wrapper ref={cardRef}>
-    <Wrapper>
+    <Wrapper ref={cardRef}>
+      {/* <Wrapper> */}
       <Link
         href={`/list/topic/${topicCardData.topic.url}/${topicCardData.postId}`}
         passHref
       >
         <CardWrapper>
-          {/* {inView && ( */}
-          {
+          {inView ? (
             <>
               <div ref={ref} />
               <TopicCardMainStyled>
@@ -299,7 +421,12 @@ export const TopicCard = forwardRef(function TopicCardWithRef(
                 </div>
               </CardBottomWrapperStyled>
             </>
-          }
+          ) : (
+            <>
+              <div ref={ref} />
+              <CardSkeleton />
+            </>
+          )}
         </CardWrapper>
       </Link>
     </Wrapper>

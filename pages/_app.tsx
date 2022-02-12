@@ -119,17 +119,23 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(
             }).then((res) => res.json());
             //console.log('result', result);
 
-            console.log(result, 'dlrj?');
-            const data = {
-              nickname: result.data.userData.nickname,
-              jobSector: result.data.userData.jobSector,
-              validRounges: result.data.userData.validRounges,
-              myChattings: [],
-              id: result.data.uid,
-              hasNewNotification: result.data.userData.hasNewNotification,
-              email: result.data.email,
-            };
+            const {
+              data: { userData, uid: id, email },
+            }: {
+              data: {
+                uid: string;
+                email: string;
+                userData: Omit<UserInfo, 'email' | 'id'>;
+              };
+            } = await fetch('http://localhost:3000/api/validate', {
+              headers,
+            }).then((res) => res.json());
 
+            const data: UserInfo = {
+              ...userData,
+              id,
+              email,
+            };
             await store.dispatch(getUser(data));
           } catch (e) {
             console.error(e);
