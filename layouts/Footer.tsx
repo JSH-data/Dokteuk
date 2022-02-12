@@ -77,17 +77,17 @@ const BorderColorOutlinedIconStyled = styled(BorderColorOutlinedIcon)`
 const Footer = () => {
   return (
     <FooterDiv>
-      <Link href="/">
+      <Link href="/" passHref>
         <div>
           <HomeOutlinedIconStyled fontSize="medium" />
         </div>
       </Link>
       <div>
-        <Link href="/search">
+        <Link href="/search" passHref>
           <SearchOutlinedIconStyled fontSize="medium" />
         </Link>
       </div>
-      <Link href="/chatting">
+      <Link href="/chat" passHref>
         <div>
           <ForumOutlinedIconStyled fontSize="medium" />
         </div>

@@ -10,7 +10,7 @@ const Header: React.FC = () => {
   return (
     <HeaderWrapperDivStyled>
       {headerKey === 'list' && <HeaderHome />}
-      {headerKey === 'chatting' && <HeaderChatting />}
+      {headerKey === 'chat' && <HeaderChatting />}
       {/* {headerKey === 'notification' && <HeaderNotification />} */}
       {/* {headerKey === 'mypage' && <HeaderMyPage />} */}
       {headerKey === '' && <HeaderSkeleton />}

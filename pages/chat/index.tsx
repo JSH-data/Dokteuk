@@ -1,14 +1,13 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { chatList } from '../api/chat';
 import Link from 'next/link';
 import styled from '@emotion/styled';
 import Layout from '@layouts/Layout';
-import type { RootReducer } from 'store/reducer';
-import { useSelector } from 'react-redux';
+import wrapper from '@store/configureStore';
 
-const Chatting = (props: any) => {
+const Chat = ({ nickname, job }: { nickname: string; job: string }) => {
   const [myChats, setMyChats] = useState<ChatRoom[]>([]);
-  const { user }: any = useSelector((state: RootReducer) => state.user);
+  const user = useMemo(() => ({ nickname, job }), [nickname, job]);
 
   useEffect(() => {
     const unsubscribe = chatList(setMyChats, user);
@@ -31,14 +30,14 @@ const Chatting = (props: any) => {
               <Fragment key={id}>
                 <Link
                   href={{
-                    pathname: `/chatting/${id}`,
+                    pathname: `/chat/${id}`,
                     query: {
                       other: other
                         ? other.nickname
                         : '대화방에 상대가 없습니다.',
                     },
                   }}
-                  as={`/chatting/${id}`}
+                  as={`/chat/${id}`}
                   passHref
                 >
                   <ChatWrapper>
@@ -68,10 +67,34 @@ const Chatting = (props: any) => {
     </Layout>
   );
 };
-export default Chatting;
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (ctx) => {
+    const data = store.getState();
+    console.log(data, '마이페이지 데이터');
+    if (data.user.user.nickname == '') {
+      // todo: 초기값을 판단하는 근거가 이상함...
+      return {
+        redirect: {
+          destination: '/404',
+          permanent: false,
+        },
+      };
+    }
+
+    return {
+      props: {
+        nickname: data.user.user.nickname,
+        job: data.user.user.jobSector,
+      },
+    };
+  },
+);
+
+export default Chat;
 
 const ChatMain = styled.div`
-  height: calc(100% - 60px);
+  height: calc(100vh - 120px);
   overflow: scroll;
 `;
 const EmptyChatWrapper = styled.div`

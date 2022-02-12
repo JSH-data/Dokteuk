@@ -1,11 +1,10 @@
 import { useRouter } from 'next/router';
-import { useSelector } from 'react-redux';
-import { RootReducer } from 'store/reducer';
 import {
   ChangeEvent,
   Fragment,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -20,6 +19,7 @@ import {
 import { Timestamp } from 'firebase/firestore';
 import { isValidType, isValidSize } from '../../utils/upload';
 import { useInView } from 'react-intersection-observer';
+import wrapper from '@store/configureStore';
 import debounce from 'lodash/debounce';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ImgPreviewModal from '@components/ImgPreviewModal';
@@ -30,8 +30,8 @@ import DensityMediumIcon from '@mui/icons-material/DensityMedium';
 import AddIcon from '@mui/icons-material/Add';
 import SendIcon from '@mui/icons-material/Send';
 
-const ChatRoom = () => {
-  const { user } = useSelector((state: RootReducer) => state.user);
+const ChatRoom = ({ nickname, job }: { nickname: string; job: string }) => {
+  const user = useMemo(() => ({ nickname, job }), [nickname, job]);
   const [messages, setMessages] = useState<ChatText[]>([]);
   const [isScrollUp, setIsScrollUp] = useState<boolean>();
   const [scrollPosition, setScrollPosition] = useState<number>();
@@ -181,7 +181,7 @@ const ChatRoom = () => {
             .reverse()
             .map(({ id, from, msg, img }, idx) => (
               <ChatText
-                className={from === user.nickname ? 'mine' : ''}
+                className={from === nickname ? 'mine' : ''}
                 ref={idx === 0 ? ref : null}
                 key={id}
               >
@@ -362,3 +362,26 @@ const PageDownBtn = styled.button`
     color: white;
   }
 `;
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (ctx) => {
+    const data = store.getState();
+    console.log(data, '마이페이지 데이터');
+    if (data.user.user.nickname == '') {
+      // todo: 초기값을 판단하는 근거가 이상함...
+      return {
+        redirect: {
+          destination: '/404',
+          permanent: false,
+        },
+      };
+    }
+
+    return {
+      props: {
+        nickname: data.user.user.nickname,
+        job: data.user.user.jobSector,
+      },
+    };
+  },
+);
