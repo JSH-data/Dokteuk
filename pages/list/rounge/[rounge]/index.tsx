@@ -10,7 +10,7 @@ import { StoreState, UserState, ValidRounge } from '@interface/StoreInterface';
 import { TopicPost, RoungePost } from '@interface/CardInterface';
 import { getHomePostsInfiniteFunction } from '@utils/function';
 import Layout from '@layouts/Layout';
-import { SearchResult } from '@pages/search';
+import { SearchResult } from '@interface/StoreInterface';
 import { RoungeCard, TopicCard } from '@components/Card';
 import NotFoundPage from '@pages/404';
 import { setViewAction } from '@store/reducer';
@@ -36,9 +36,9 @@ const RoungePage = () => {
     }
   }, [router.asPath]);
 
-  useEffect(() => {
-    if (!myInfo) dispatch(getUser());
-  }, [myInfo, dispatch]);
+  // useEffect(() => {
+  //   if (!myInfo) dispatch(getUser());
+  // }, [myInfo, dispatch]);
   useEffect(() => {
     console.log(myInfo?.validRounges.map((v: any) => `/list/rounge/${v.url}`));
     console.log(router.asPath);

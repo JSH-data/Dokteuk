@@ -23,6 +23,7 @@ import {
   updateDoc,
   doc,
   getDoc,
+  getDocs,
 } from 'firebase/firestore';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { db } from '@firebase/firebase';
@@ -44,7 +45,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import SaveIcon from '@mui/icons-material/Save';
 import type { RootReducer } from 'store/reducer';
 import { useSelector } from 'react-redux';
-
+import { withRouter } from 'next/router';
+import { StoreState, UserState } from '@interface/StoreInterface';
 const PostForm = () => {
   //이미지 업로드 부분
   const [postImage, setPostImage] = useState<any>(null);
@@ -52,29 +54,32 @@ const PostForm = () => {
   const [progress, setProgress] = useState(0);
   const [imgList, setImgList] = useState<any>([]);
   //텍스트 처리
-  const { user }: any = useSelector((state: RootReducer) => state.user);
+  const { user }: UserState = useSelector((state: StoreState) => state.user);
   console.log(user);
   //유저
   const [userInfoList, setuserInfoList] = useState<any>('');
-  const [alertType, setAlertType] = useState('success');
+  const [alertType, setAlertType] = useState<
+    'error' | 'info' | 'success' | 'warning'
+  >('success');
   const [alertMessage, setAlertMessage] = useState('');
   const [open, setOpen] = useState(false);
   const [clickState, setClickState] = useState(true);
   const [post, setPost] = useState({
     title: '',
     content: '',
-    press_person: [],
-    post_id: '',
-    post_type: '',
-    user_id: '',
+    pressPerson: [],
+    postId: '',
+    postType: '',
+    userId: '',
     topic: '',
     rounge: '',
-    created_at: '',
-    updated_at: '',
-    deleted_at: '',
-    is_deleted: false,
+    createdAt: '',
+    updatedAt: '',
+    deletedAt: '',
+    isDeleted: false,
     job: '',
     nickname: '',
+    image: [],
   });
   //photoupload 확인 아이콘-아직 미구현
   const [loading, setLoading] = React.useState(false);
@@ -95,7 +100,7 @@ const PostForm = () => {
   useEffect(() => {
     const findUserInfo = async () => {
       //id로 user 파악함
-      const docRef = doc(db, 'users', user.id);
+      const docRef = doc(db, 'user', user.id);
 
       const docSnap = await getDoc(docRef);
 
@@ -138,25 +143,25 @@ const PostForm = () => {
     } else {
       image = {};
     }
-    if (post.post_type === '' || post.title === '' || post.content === '') {
+    if (post.postType === '' || post.title === '' || post.content === '') {
       showAlert('error', `필수항목을 작성해 주세요`);
-    } else if (post.post_type === 'Topic' && post.topic === '') {
+    } else if (post.postType === 'Topic' && post.topic === '') {
       showAlert('error', `토픽 주제를 선택해 주세요`);
-    } else if (post.post_type === 'Topic') {
+    } else if (post.postType === 'Topic') {
       const collectionRef = collection(db, 'posts');
       const { id: newId } = await addDoc(collectionRef, {
         ...post,
-        user_id: userInfoList.user_id,
-        job: userInfoList.job,
-        nickname: userInfoList.nickname,
+        userId: user.id,
+        job: user.jobSector,
+        nickname: user.nickname,
         rounge: '',
-        created_at: serverTimestamp(),
+        createdAt: serverTimestamp(),
         image: image,
       });
-      const docRef = doc(db, 'users', user.id);
+      const docRef = doc(db, 'user', user.id);
       const userPostUpdate = {
-        ...userInfoList,
-        post: [...userInfoList.post, newId],
+        ...user,
+        post: [...user.post, newId],
       };
       updateDoc(docRef, userPostUpdate);
       //유저에 게시물 id 추가
@@ -167,17 +172,17 @@ const PostForm = () => {
       const collectionRef = collection(db, 'posts');
       const { id: newId } = await addDoc(collectionRef, {
         ...post,
-        user_id: userInfoList.user_id,
-        job: userInfoList.job,
-        nickname: userInfoList.nickname,
+        userId: user.id,
+        job: user.jobSector,
+        nickname: user.nickname,
         topic: '',
-        created_at: serverTimestamp(),
+        createdAt: serverTimestamp(),
         image: image,
       });
-      const docRef = doc(db, 'users', user.id);
+      const docRef = doc(db, 'user', user.id);
       const userPostUpdate = {
-        ...userInfoList,
-        post: [...userInfoList.post, newId],
+        ...user,
+        post: [...user.post, newId],
       };
       updateDoc(docRef, userPostUpdate);
       //나중에 topic 페이지로 이동하도록 변경하기
@@ -291,16 +296,16 @@ const PostForm = () => {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={post.post_type}
+            value={post.postType}
             label="postMenu"
-            onChange={(e) => setPost({ ...post, post_type: e.target.value })}
+            onChange={(e) => setPost({ ...post, postType: e.target.value })}
           >
             <MenuItem value={'Rounge'}>라운지</MenuItem>
             <MenuItem value={'Topic'}>토픽</MenuItem>
           </Select>
         </FormControl>
       </Box>
-      {post.post_type === 'Topic' && (
+      {post.postType === 'Topic' && (
         <Box sx={{ minWidth: 120, mt: 3 }}>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">토픽</InputLabel>
@@ -319,7 +324,7 @@ const PostForm = () => {
           </FormControl>
         </Box>
       )}
-      {post.post_type === 'Rounge' && (
+      {post.postType === 'Rounge' && (
         <Box sx={{ minWidth: 120, mt: 3 }}>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">라운지</InputLabel>
@@ -330,7 +335,8 @@ const PostForm = () => {
               label="RoungeMenu"
               onChange={(e) => setPost({ ...post, rounge: e.target.value })}
             >
-              {userInfoList.valid_rounge.map((v: any) => {
+              {console.log(user)}
+              {user.validRounges.map((v: any) => {
                 return (
                   <MenuItem value={v.url} key={v.url}>
                     {v.title}
@@ -383,9 +389,10 @@ const PostForm = () => {
                 justifyContent: 'center',
                 display: 'flex',
                 flexDirection: 'column',
+                alignItems: 'center',
               }}
             >
-              <img src={v[0]} style={{ maxWidth: '100%' }} key={i} />
+              <img src={v[0]} style={{ maxWidth: '100%' }} key={i} alt={v[0]} />
               <Button
                 sx={{ position: 'relative' }}
                 onClick={() => {
@@ -407,7 +414,6 @@ const PostForm = () => {
                   let ImgArr = [...imgList];
                   ImgArr[i][2] = e.target.value;
                   setImgList(ImgArr);
-                  console.log(imgList);
                 }}
               />
             </Box>
@@ -488,11 +494,11 @@ const PostForm = () => {
           borderRadius: 1,
         }}
       >
-        <Link href="/">
+        <Link href="/" passHref>
           <Button variant="contained">메인으로 이동</Button>
         </Link>
         <Button variant="contained" onClick={onSubmit}>
-          {post.hasOwnProperty('timestamp') ? '게시물 수정' : '게시물 작성'}
+          게시물 작성
         </Button>
       </Box>
     </Container>
@@ -500,17 +506,3 @@ const PostForm = () => {
 };
 
 export default PostForm;
-
-// export const getStaticProps = async (context: any) => {
-//   const { currentUser }: any = useAuth();
-//   const userId = currentUser.uid;
-
-//   const docRef = doc(db, "users", userId);
-
-//   const docSnap = await getDoc(docRef);
-
-//   return {
-//     props: { postProps: JSON.stringify(docSnap.data()) },
-//   };
-// };
-//useAuth를 쓰지 못하는데 이런 경우에는 그냥 유저 정보를 props로 받아오는 것 밖에 답이 없는지?

@@ -1,6 +1,6 @@
 import '../styles/globals.css';
 import type { AppContext, AppProps } from 'next/app';
-import { AuthProvider } from './user/auth';
+import AuthProvider from './user/auth';
 import nookies from 'nookies';
 import fetch from 'isomorphic-unfetch';
 import wrapper from 'store/configureStore';

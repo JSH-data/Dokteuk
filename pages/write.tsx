@@ -1,4 +1,4 @@
-import PostForm from '../components/post/postForm';
+import PostForm from '@components/write/PostForm';
 
 export interface ChildProps {
   postsProps: any;
