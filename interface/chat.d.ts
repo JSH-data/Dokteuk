@@ -54,17 +54,5 @@ interface FileType {
 
 interface UserType {
   nickname: string;
-  jobSector: string;
-  validRounges: { title: string; url: string }[];
-  myChatting: {
-    roomName: string;
-    roomId: string;
-    isGroup: false;
-    lastMessage: {
-      content: string;
-      updatedAt: string;
-    };
-    unreadCount: number;
-  }[];
-  notification: boolean;
+  job: string;
 }

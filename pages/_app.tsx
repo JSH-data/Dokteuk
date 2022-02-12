@@ -126,7 +126,7 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(
               validRounges: result.data.userData.validRounges,
               myChattings: [],
               id: result.data.uid,
-              hasNewNotification: result.data.userData.notification,
+              hasNewNotification: result.data.userData.hasNewNotification,
               email: result.data.email,
             };
 

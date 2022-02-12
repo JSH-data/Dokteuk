@@ -24,13 +24,8 @@ const storage = getStorage(app);
 
 export const chatList = (
   setMyChats: Dispatch<SetStateAction<ChatRoom[]>>,
-  userData: UserType,
+  user: UserType,
 ) => {
-  const user = {
-    nickname: userData.nickname,
-    job: userData.jobSector,
-  };
-
   const chatListQuery = query(
     collection(db, 'chat'),
     where('users', 'array-contains', user),
@@ -61,13 +56,8 @@ export const chatMessages = (
   chatId: queryType,
   setMessages: Dispatch<SetStateAction<ChatText[]>>,
   setLastKey: Dispatch<SetStateAction<Timestamp | null>>,
-  userData: UserType,
+  user: UserType,
 ) => {
-  const user = {
-    nickname: userData.nickname,
-    job: userData.jobSector,
-  };
-
   const chatQuery = query(
     collection(db, `chat/${chatId}/messages`),
     orderBy('create_at', 'desc'),
@@ -103,13 +93,8 @@ export const moreChatMessages = async (
   setMessages: Dispatch<SetStateAction<ChatText[]>>,
   setLastKey: Dispatch<SetStateAction<Timestamp | null>>,
   key: Timestamp | null,
-  userData: UserType,
+  user: UserType,
 ) => {
-  const user = {
-    nickname: userData.nickname,
-    job: userData.jobSector,
-  };
-
   const chatQuery = query(
     collection(db, `chat/${chatId}/messages`),
     orderBy('create_at', 'desc'),
@@ -138,41 +123,15 @@ export const moreChatMessages = async (
   });
   setMessages((current) => [...current, ...newChat]);
   setLastKey(lastKey);
-
-  // onSnapshot(chatQuery, (querySnapshot) => {
-  //   const newChat: ChatText[] = [];
-  //   const lastKey =
-  //     querySnapshot.docs.length === 20
-  //       ? querySnapshot.docs[querySnapshot.docs.length - 1].data().create_at
-  //       : null;
-
-  //   querySnapshot.forEach((doc) => {
-  //     const { msg, img, from, create_at } = doc.data();
-  //     newChat.push({
-  //       id: doc.id,
-  //       from,
-  //       msg,
-  //       img,
-  //       create_at,
-  //       user,
-  //     });
-  //   });
-  //   setMessages((current) => [...current, ...newChat]);
-  //   setLastKey(lastKey);
-  // });
 };
 
 export const sendMessage = async (
   chatId: queryType,
   value: string,
   msgType: string,
-  userData: UserType,
+  user: UserType,
   file?: Blob | ArrayBuffer,
 ) => {
-  const user = {
-    nickname: userData.nickname,
-    job: userData.jobSector,
-  };
   const timestamp = Timestamp.now();
 
   const message = await addDoc(collection(db, `chat/${chatId}/messages`), {
@@ -194,12 +153,7 @@ export const sendMessage = async (
   }
 };
 
-export const leaveChat = async (chatId: queryType, userData: UserType) => {
-  const user = {
-    nickname: userData.nickname,
-    job: userData.jobSector,
-  };
-
+export const leaveChat = async (chatId: queryType, user: UserType) => {
   await updateDoc(doc(db, 'chat', chatId as string), {
     [`last_visited.${user.nickname}`]: Timestamp.now(),
   });
@@ -222,12 +176,7 @@ export const downMessage = (key: string) => {
   });
 };
 
-export const exitChat = async (chatId: queryType, userData: UserType) => {
-  const user = {
-    nickname: userData.nickname,
-    job: userData.jobSector,
-  };
-
+export const exitChat = async (chatId: queryType, user: UserType) => {
   const chatRoom = await getDoc(doc(db, 'chat', chatId as string));
   const other = chatRoom
     .data()!
