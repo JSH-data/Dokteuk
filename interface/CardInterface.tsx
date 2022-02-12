@@ -22,7 +22,7 @@ export interface RoungePost {
   commentsCount: number;
   likeCount: number;
   createdAt: string;
-  image: string[];
+  images: string[];
 }
 export interface TopicPost {
   postId: string;
@@ -34,5 +34,5 @@ export interface TopicPost {
   commentsCount: number;
   likeCount: number;
   createdAt: string;
-  image: string[];
+  images: string[];
 }
