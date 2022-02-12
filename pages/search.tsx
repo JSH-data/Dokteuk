@@ -83,6 +83,9 @@ const Search = () => {
 const WrappedSearch = ({ referer }: { referer: -1 | 1 }) => {
   const router = useRouter();
   const dispatch = useDispatch();
+  // useEffect(() => {
+  //   if (!myInfo) dispatch(getUser());
+  // }, [myInfo, dispatch]);
   const { user: myInfo } = useSelector((state: StoreState) => state.user);
   const { scrollY } = useSelector((state: StoreState) => state.scroll);
   const [searchValue, setSearchValue] = useState('');

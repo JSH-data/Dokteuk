@@ -6,6 +6,8 @@ import CommentAuthorComponent from './CommentAuthorComponent';
 import MenuIcon from '@mui/icons-material/Menu';
 import CommentDropBox from './CommentDropBoxComponent';
 import CommentEditor from './CommentEditor';
+import { useSelector } from 'react-redux';
+import { RootReducer } from '@store/reducer';
 
 type CommentProps = {
   text: string;
@@ -14,11 +16,12 @@ type CommentProps = {
   job: string;
   date: string;
   isClicked: boolean;
-  id: string;
+  commentId: string;
   isNested: boolean;
   bundleId: number;
   isDeleted: boolean;
   postId: string;
+  userId: string;
 };
 
 const CommentDiv = styled.div<{ isClicked: boolean }>`
@@ -47,17 +50,20 @@ const Comment: React.FC<CommentProps> = ({
   job,
   date,
   isClicked,
-  id,
+  commentId,
   isNested,
   bundleId,
   isDeleted,
   postId,
+  userId,
 }) => {
   const [menu, setMenu] = useState(false);
 
   const [nestedReplyEditor, setNestedReplyEditor] = useState(false);
 
   const [modify, setModify] = useState(false);
+
+  const userInfo = useSelector((state: RootReducer) => state.user.user.id);
 
   return (
     <>
@@ -71,14 +77,21 @@ const Comment: React.FC<CommentProps> = ({
                 position: 'relative',
               }}
             >
-              <LikeComponent likes={likes} isClicked={isClicked} id={id} />
+              <LikeComponent
+                likes={likes}
+                isClicked={isClicked}
+                commentId={commentId}
+                isDeleted={isDeleted}
+                userId={userId}
+              />
               <MenuIcon onClick={() => setMenu(!menu)} />
-              {!isDeleted && menu && (
+              {!isDeleted && menu && userInfo && (
                 <CommentDropBox
                   setNestedReply={setNestedReplyEditor}
                   setMenu={setMenu}
                   setModify={setModify}
-                  id={id}
+                  commentId={commentId}
+                  userId={userId}
                 />
               )}
             </div>
@@ -86,7 +99,7 @@ const Comment: React.FC<CommentProps> = ({
           <CommentTextComponent
             commentText={isDeleted ? deleteMessage : text}
             modify={modify}
-            id={id}
+            commentId={commentId}
             setModify={setModify}
           ></CommentTextComponent>
           <CommentAuthorComponent
@@ -112,13 +125,20 @@ const Comment: React.FC<CommentProps> = ({
                 position: 'relative',
               }}
             >
-              <LikeComponent likes={likes} isClicked={isClicked} id={id} />
+              <LikeComponent
+                likes={likes}
+                isClicked={isClicked}
+                commentId={commentId}
+                isDeleted={isDeleted}
+                userId={userId}
+              />
               <MenuIcon onClick={() => setMenu(!menu)} />
-              {!isDeleted && menu && (
+              {!isDeleted && menu && userInfo && (
                 <CommentDropBox
                   setMenu={setMenu}
                   setModify={setModify}
-                  id={id}
+                  commentId={commentId}
+                  userId={userId}
                 />
               )}
             </div>
@@ -126,7 +146,7 @@ const Comment: React.FC<CommentProps> = ({
           <CommentTextComponent
             modify={modify}
             setModify={setModify}
-            id={id}
+            commentId={commentId}
             commentText={isDeleted ? deleteMessage : text}
           ></CommentTextComponent>
           <CommentAuthorComponent

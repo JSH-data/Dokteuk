@@ -4,46 +4,68 @@ import setCurrentDate from './setCurrentDate';
 
 export const addOriginComment = async (
   content: string,
-  currentDate: string,
   postId: string,
+  userInfo: any,
   bundleId?: number,
 ) => {
-  await addDoc(collection(db, 'comment'), {
-    text: content,
-    likes: 0,
-    pressedPerson: [],
-    nickname: '닉네임입니다',
-    job: '직군',
-    userId: 'user',
-    postId: postId,
-    bundleId: bundleId,
-    bundleOrder: bundleId,
-    createdAt: currentDate,
-    updatedAt: '',
-    deletedAt: '',
-    isDeleted: false,
-    origin: true,
-  });
+  // console.log(userInfo, 'userInfo');
+  // console.log({
+  //   text: content,
+  //   likes: 0,
+  //   pressedPerson: [],
+  //   nickname: userInfo.nickname,
+  //   job: userInfo.jobSector,
+  //   userId: userInfo.id,
+  //   postId: postId,
+  //   bundleId: bundleId,
+  //   bundleOrder: bundleId,
+  //   createdAt: currentDate,
+  //   updatedAt: '',
+  //   deletedAt: '',
+  //   isDeleted: false,
+  //   origin: true,
+  // });
+  try {
+    await addDoc(collection(db, 'comment'), {
+      text: content,
+      likes: 0,
+      pressedPerson: [],
+      nickname: userInfo.nickname,
+      job: userInfo.jobSector,
+      userId: userInfo.id,
+      postId: postId,
+      bundleId: bundleId,
+      bundleOrder: bundleId,
+      createdAt: Date.now().toString(),
+      updatedAt: '',
+      deletedAt: '',
+      isDeleted: false,
+      origin: true,
+    });
+  } catch (err) {
+    alert(`${err}`);
+  }
 };
 
 export const addNestedComment = async (
   content: string,
   bundleId: number,
-  currentDate: string,
+
   detailTimeStamp: number,
+  userInfo: any,
   postId: string,
 ) => {
   await addDoc(collection(db, 'comment'), {
     text: content,
     likes: 0,
     pressedPerson: [],
-    nickname: '닉네임입니다',
-    job: '직군',
-    userId: 'user',
+    nickname: userInfo.nickname,
+    job: userInfo.jobSector,
+    userId: userInfo.id,
     postId: postId,
     bundleId: bundleId,
     bundleOrder: detailTimeStamp,
-    createdAt: currentDate,
+    createdAt: Date.now().toString(),
     updatedAt: '',
     deletedAt: '',
     isDeleted: false,
@@ -53,10 +75,10 @@ export const addNestedComment = async (
 
 export const updateComment = async (
   content: string,
-  id: string,
+  commentId: string,
   timeStamp: Date,
 ) => {
-  const commentRef = doc(db, 'comment', id);
+  const commentRef = doc(db, 'comment', commentId);
   const currentDate = setCurrentDate(timeStamp);
   await updateDoc(commentRef, {
     text: content,

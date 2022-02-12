@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { getDateTime } from '@utils/function';
 
 const CommentAuthorDiv = styled.div`
   margin-bottom: 25px;
@@ -27,7 +28,7 @@ const CommentAuthorComponent: React.FC<authorProps> = ({
 }) => {
   return (
     <CommentAuthorDiv>
-      <div>{date}</div>
+      <div>{getDateTime(date)}</div>
       <div>
         <CommentNickname>{nickname}</CommentNickname>
 

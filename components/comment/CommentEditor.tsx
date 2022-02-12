@@ -4,6 +4,8 @@ import setCurrentDate from '@utils/setCurrentDate';
 import { addOriginComment, addNestedComment } from '@utils/commentUtils';
 import InputComponent from '@components/items/InputComponent';
 import ButtonComponent from '@components/items/ButtonComponent';
+import { useSelector } from 'react-redux';
+import { RootReducer } from '@store/reducer';
 
 const CommentEditorSection = styled.section`
   display: flex;
@@ -11,6 +13,7 @@ const CommentEditorSection = styled.section`
   margin-bottom: 25px;
   & button {
     min-width: 90px;
+    margin-left: 10px;
   }
 `;
 
@@ -27,20 +30,25 @@ const CommentEditor: React.FC<CommentEditorProps> = ({
 }) => {
   const [comment, setComment] = useState<string>('');
 
-  const inputRef = useRef<HTMLElement>(null);
+  const userInfo = useSelector((state: RootReducer) => state.user.user);
 
   const addComment = async () => {
     const timeStamp = new Date();
 
     const detailTimeStamp = timeStamp.getTime();
 
-    const currentDate = setCurrentDate(timeStamp);
-
     if (!bundleId) {
       bundleId = detailTimeStamp;
-      addOriginComment(comment, currentDate, postId, bundleId);
+      addOriginComment(comment, postId, userInfo, bundleId);
     } else {
-      addNestedComment(comment, bundleId, currentDate, detailTimeStamp, postId);
+      addNestedComment(
+        comment,
+        bundleId,
+
+        detailTimeStamp,
+        userInfo,
+        postId,
+      );
       if (setNestedReply != undefined) setNestedReply(false);
     }
     setComment('');

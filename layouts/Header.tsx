@@ -2,18 +2,21 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
 import HeaderHome from '@components/Headers/Home';
 import HeaderSkeleton from '@components/Headers/Skeleton';
-import HeaderChatting from '@components/Headers/Chatting';
+import Chatting from '@components/Headers/Chatting';
+import TestHeader from './TestHeader';
 
 const Header: React.FC = () => {
   const router = useRouter();
   const headerKey = router.pathname.split('/')[1];
+  const topic = router.query.topic as string;
+
   return (
     <HeaderWrapperDivStyled>
-      {headerKey === 'list' && <HeaderHome />}
-      {headerKey === 'chat' && <HeaderChatting />}
+      {topic !== undefined && <TestHeader title={topic} />}
+      {headerKey === 'list' && topic == undefined && <HeaderHome />}
+      {headerKey === 'chat' && <Chatting />}
       {/* {headerKey === 'notification' && <HeaderNotification />} */}
       {/* {headerKey === 'mypage' && <HeaderMyPage />} */}
-      {headerKey === '' && <HeaderSkeleton />}
     </HeaderWrapperDivStyled>
   );
 };

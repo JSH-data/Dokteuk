@@ -16,20 +16,32 @@ const LikeDiv = styled.div`
 type LikeProps = {
   likes: number;
   isClicked: boolean;
-  id: string;
+  commentId: string;
+  isDeleted: boolean;
+  userId: string;
 };
-
-const LikeComponent: React.FC<LikeProps> = ({ likes, isClicked, id }) => {
+// todo: 비로그인 사용자 좋아요 방지
+const LikeComponent: React.FC<LikeProps> = ({
+  likes,
+  isClicked,
+  commentId,
+  isDeleted,
+  userId,
+}) => {
   const addLike = async () => {
-    const commentRef = doc(db, 'comment', id);
+    if (!userId) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+    const commentRef = doc(db, 'comment', commentId);
     if (isClicked) {
       await updateDoc(commentRef, {
-        pressedPerson: arrayRemove('user'),
+        pressedPerson: arrayRemove(userId),
         likes: likes - 1,
       });
     } else {
       await updateDoc(commentRef, {
-        pressedPerson: arrayUnion('user'),
+        pressedPerson: arrayUnion(userId),
         likes: likes + 1,
       });
     }
@@ -42,8 +54,7 @@ const LikeComponent: React.FC<LikeProps> = ({ likes, isClicked, id }) => {
       ) : (
         <FavoriteBorderIcon onClick={() => addLike()} />
       )}
-
-      <span>{likes}</span>
+      {!isDeleted && <span>{likes}</span>}
     </LikeDiv>
   );
 };

@@ -22,9 +22,7 @@ import { getStorage, ref, uploadString } from 'firebase/storage';
 import { useRouter } from 'next/router';
 import MenuItem from '@mui/material/MenuItem';
 import { UserInfo } from '@interface/StoreInterface';
-import nookies from 'nookies';
-import { firebaseAdmin } from '@firebase/firebaseAdmin';
-import { InferGetServerSidePropsType, GetServerSidePropsContext } from 'next';
+
 const jobSectors = [
   '외식·음료',
   '매장관리·판매',
@@ -35,7 +33,7 @@ const jobSectors = [
   'IT·기술',
   '디자인',
 ];
-type InputHelperText = {
+type UserInputData = {
   email: string;
   password: string;
   checkPassword: string;
@@ -46,8 +44,6 @@ type InputHelperText = {
 export default function Signup() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const storage = getStorage();
-
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [checkPassword, setCheckPassword] = useState<string>('');
@@ -56,41 +52,38 @@ export default function Signup() {
   const [error, setError] = useState<string>('');
   const [imageUrl, setImageUrl] = useState<string>('');
   const [imageExt, setImageExt] = useState<string>('');
-  const [inputHelpers, setInputHelpers] = useState<InputHelperText>({
+  const [userInputs, setUserInputs] = useState<UserInputData>();
+  const [inputHelper, setInputHelper] = useState<UserInputData>({
     email: '',
     password: '6자리 이상 입력 해 주세요',
     checkPassword: '비밀번호가 같지 않습니다.',
     nickname: '',
     jobSector: '직종을 선택 해 주세요',
   });
+  const storage = getStorage();
+  const { provider } = router.query;
+
+  useEffect(() => {
+    if (provider === 'google' && auth.currentUser) {
+      const curUser = auth.currentUser;
+      console.log('google account');
+      setIsGoogle(true);
+      setEmail(curUser?.email!);
+      setPassword(curUser?.email!);
+      setCheckPassword(curUser?.email!);
+    }
+  }, []);
   const [jobSector, setJobSector] = useState('');
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    let helperText;
-    if (name === 'email') {
-      setEmail(value);
-    } else if (name === 'password') {
-      if (value.length >= 6) {
-        helperText = '사용 가능한 비밀번호 입니다!';
-      }
-      setPassword(value);
-    } else if (name === 'checkPassword') {
-      if (password !== value) {
-        helperText = '비밀번호가 다릅니다!';
-      } else {
-        helperText = '비밀번호가 같습니다!';
-      }
-      setCheckPassword(value);
-    } else if (name === 'nickname') setNickname(value);
+
+    if (name === 'email') setEmail(value);
+    else if (name === 'password') setPassword(value);
+    else if (name === 'checkPassword') setCheckPassword(value);
+    else if (name === 'nickname') setNickname(value);
     else if (name === 'jobSector') setJobSector(value);
 
-    const newInputHelpers = {
-      ...inputHelpers,
-      [name]: helperText,
-    };
-
-    setInputHelpers(newInputHelpers);
     // switch (name) {
     //   case 'password':
     //     if (value.length < 6) {
@@ -118,6 +111,14 @@ export default function Signup() {
     }
   };
 
+  const getUid = async () => {
+    if (isGoogle) {
+      const user = auth.currentUser;
+      return user!.uid;
+    } else {
+      return createUserWithEmail();
+    }
+  };
   const SignUpSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (checkPassword !== password) {
@@ -148,10 +149,12 @@ export default function Signup() {
         post: [],
         email: email,
       };
-      const user_id = await createUserWithEmail();
+      const user_id = await getUid();
+      console.log(user_id);
       uploadImg(user_id!);
       console.log('success');
-      await setDoc(doc(db, 'user', user_id!), userInitData);
+      const docSnap = await setDoc(doc(db, 'user', user_id!), userInitData);
+      console.log(docSnap);
       await signOut(auth);
       router.push('/');
     }
@@ -172,19 +175,15 @@ export default function Signup() {
       collection(db, 'user'),
       where('nickname', '==', nickname),
     );
-    let nicknameHelperText;
     const nicknameCheckSnap = await getDocs(nicknameCheckQuery);
-    if (nicknameCheckSnap.docs.length !== 0 || nickname.length < 3) {
-      nicknameHelperText = '사용 불가능한 닉네임 입니다!';
-    } else {
-      nicknameHelperText = '사용 가능한 닉네임 입니다!';
-    }
-    const newInputHelper = {
-      ...inputHelpers,
-      nickname: nicknameHelperText,
-    };
+    if (nicknameCheckSnap.docs.length !== 0) {
+      const newInputHelper = {
+        ...inputHelper,
+        nickname: '닉네임이 중복되었습니다!',
+      };
 
-    setInputHelpers(newInputHelper);
+      setInputHelper(newInputHelper);
+    }
   };
 
   const onImageChange = (e: any) => {
@@ -215,13 +214,15 @@ export default function Signup() {
                 name="email"
                 value={email}
                 onChange={onInputChange}
-                helperText={inputHelpers.email}
+                helperText={inputHelper.email}
               />
             </WrapInput>
             <WrapInput>
               <Label>비밀번호</Label>
               <TextFields
                 required
+                disabled={isGoogle}
+                fullWidth
                 type="password"
                 placeholder="비밀번호는 6자리 이상 입력해주세요."
                 variant="outlined"
@@ -229,10 +230,11 @@ export default function Signup() {
                 name="password"
                 value={password}
                 onChange={onInputChange}
-                helperText={inputHelpers.password}
+                helperText={inputHelper.password}
               />
               <TextFields
                 required
+                disabled={isGoogle}
                 type="password"
                 placeholder="비밀번호를 한 번더 입력해 주세요."
                 variant="outlined"
@@ -240,7 +242,7 @@ export default function Signup() {
                 name="checkPassword"
                 value={checkPassword}
                 onChange={onInputChange}
-                helperText={inputHelpers.checkPassword}
+                helperText={inputHelper.checkPassword}
               />
             </WrapInput>
 
@@ -263,39 +265,36 @@ export default function Signup() {
                 placeholder="닉네임을 입력해 주세요."
                 value={nickname}
                 onChange={onInputChange}
-                helperText={inputHelpers.nickname}
+                helperText={inputHelper.nickname}
               />
             </WrapInput>
-            <WrapImageUpload>
+            <WrapInput>
               <Label>증명서</Label>
-              <label
-                htmlFor="contained-button-file"
-                style={{ display: 'flex', flexDirection: 'column' }}
-              >
+              <label htmlFor="contained-button-file">
                 <Input
                   accept="image/*"
                   id="contained-button-file"
                   type="file"
                   onChange={onImageChange}
                 />
+                <Button variant="contained" component="span">
+                  Upload
+                </Button>
+              </label>
+            </WrapInput>
+            {imageUrl && (
+              <WrapInput>
                 <Button
                   variant="contained"
                   component="span"
-                  style={{ background: '#8946a6', marginLeft: 10 }}
+                  onClick={onClearImg}
                 >
-                  파일 선택
+                  사진 지우기
                 </Button>
-              </label>
-              <Button
-                variant="contained"
-                component="span"
-                onClick={onClearImg}
-                style={{ background: '#8946a6', marginLeft: 10 }}
-              >
-                사진 지우기
-              </Button>
-            </WrapImageUpload>
-            {imageUrl && <img src={imageUrl} width="150px" height="200px" />}
+
+                <img src={imageUrl} width="150px" height="200px" />
+              </WrapInput>
+            )}
             <WrapInput>
               <Label>직종</Label>
               <TextFields
@@ -305,7 +304,7 @@ export default function Signup() {
                 name="jobSector"
                 value={jobSector}
                 onChange={onInputChange}
-                helperText={inputHelpers.jobSector}
+                helperText={inputHelper.jobSector}
               >
                 {jobSectors.map((value, idx) => (
                   <MenuItem key={idx} value={value}>
@@ -322,6 +321,21 @@ export default function Signup() {
   );
 }
 
+// export const getServerSideProps = async (
+//   context: GetServerSidePropsContext,
+// ) => {
+//   const { provider } = context.query;
+
+//   if (provider !== 'google' && provider !== 'signup') {
+//     return {
+//       redirect: {
+//         permanent: false,
+//         destination: '/404',
+//       },
+//     };
+//   }
+// };
+
 const Main = styled.div`
   display: flex;
   align-items: center;
@@ -337,13 +351,6 @@ const WrapContents = styled.div`
 const WrapInput = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 20px;
-  width: 100%;
-`;
-
-const WrapImageUpload = styled.div`
-  display: flex;
-  flex-direction: row;
   margin: 20px;
   width: 100%;
 `;
@@ -385,11 +392,11 @@ const Label = styled.label`
     color: red;
   }
 `;
-const Input = styled('input')({
-  display: 'none',
-});
 
 const TextFields = styled(TextField)`
   color: #8946a6;
   margin: 5px;
 `;
+const Input = styled('input')({
+  display: 'none',
+});

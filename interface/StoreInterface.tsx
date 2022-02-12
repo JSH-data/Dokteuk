@@ -20,6 +20,7 @@ export interface UserInfo {
   myChattings: Array<MyChatting>;
   hasNewNotification: boolean;
   id: string;
+  post: Array<string>;
   email: string;
 }
 
@@ -36,6 +37,7 @@ export interface StoreState {
   user: UserState;
   view: ViewPosts;
   scroll: { scrollY: number };
+  // data: any;
 }
 export interface SearchResult {
   result: Array<TopicPost | RoungePost>;

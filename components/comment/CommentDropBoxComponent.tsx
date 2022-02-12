@@ -2,12 +2,15 @@ import React, { useRef, useEffect } from 'react';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '@firebase/firebase';
 import styled from '@emotion/styled';
+import { useSelector } from 'react-redux';
+import { RootReducer } from '@store/reducer';
 
 type CommentDropBoxProps = {
   setNestedReply?: (v: boolean) => void;
   setMenu(v: boolean): void;
   setModify(v: boolean): void;
-  id: string;
+  commentId: string;
+  userId: string;
 };
 
 const CommentDropBoxDiv = styled.div`
@@ -29,14 +32,16 @@ const CommentDropBox: React.FC<CommentDropBoxProps> = ({
   setNestedReply,
   setMenu,
   setModify,
-  id,
+  commentId,
+  userId,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
+  const userLoginInfo = useSelector((state: RootReducer) => state.user.user.id);
 
   const deleteComment = async () => {
-    const commentref = doc(db, 'comment', id);
+    const commentref = doc(db, 'comment', commentId);
     await updateDoc(commentref, {
-      is_deleted: true,
+      isDeleted: true,
     });
   };
 
@@ -69,23 +74,26 @@ const CommentDropBox: React.FC<CommentDropBoxProps> = ({
         </CommentDropBoxOption>
       )}
 
-      <CommentDropBoxOption
-        onClick={() => {
-          setModify(true);
-          setMenu(false);
-        }}
-      >
-        수정하기
-      </CommentDropBoxOption>
-
-      <CommentDropBoxOption
-        onClick={() => {
-          deleteComment();
-          setMenu(false);
-        }}
-      >
-        삭제하기
-      </CommentDropBoxOption>
+      {userId == userLoginInfo && (
+        <>
+          <CommentDropBoxOption
+            onClick={() => {
+              setModify(true);
+              setMenu(false);
+            }}
+          >
+            수정하기
+          </CommentDropBoxOption>
+          <CommentDropBoxOption
+            onClick={() => {
+              deleteComment();
+              setMenu(false);
+            }}
+          >
+            삭제하기
+          </CommentDropBoxOption>
+        </>
+      )}
     </CommentDropBoxDiv>
   );
 };

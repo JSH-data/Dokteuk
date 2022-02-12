@@ -4,11 +4,13 @@ const validate = async (token: string) => {
   // Check that the user has a valid token
   const decodedToken = await firebaseAdmin.auth().verifyIdToken(token, true);
   // console.log(decodedToken);
+  //const userData;
   let userData;
   //Get user Firebase data from token
 
   const user = await firebaseAdmin.auth().getUser(decodedToken.uid);
   // Get any additional user data from the Firebase DB
+  const [UserInfo] = user.providerData;
   await firebaseAdmin
     .firestore()
     .collection('user')
@@ -27,9 +29,9 @@ const validate = async (token: string) => {
     user: {
       uid: user.uid,
       email: user.email,
-      // username: userData.username,
       emailVerified: user.emailVerified,
       userData: userData,
+      providerId: UserInfo.providerId,
     },
   };
   return result;

@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import Button from '@mui/material/Button';
 import styled from '@emotion/styled';
 
@@ -10,22 +11,15 @@ const CommentLoginSection = styled.section`
   }
 `;
 
-type CommentLoginProps = {
-  setIsLogin(isLogin: boolean): void;
-};
-
-const CommentLogin: React.FC<CommentLoginProps> = ({ setIsLogin }) => {
+const CommentLogin: React.FC = () => {
   return (
     <CommentLoginSection>
       <h4>답변을 위해 로그인해주세요!</h4>
-      <Button
-        onClick={() => setIsLogin(true)}
-        variant="contained"
-        size="medium"
-        color="secondary"
-      >
-        로그인하기
-      </Button>
+      <Link href={'user/login'}>
+        <Button variant="contained" size="medium" color="secondary">
+          로그인하기
+        </Button>
+      </Link>
     </CommentLoginSection>
   );
 };

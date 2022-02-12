@@ -10,17 +10,22 @@ const CommentListDiv = styled.div`
 
 type CommentListProps = {
   setSum(s: number): void;
-  id: string;
+  postId: string;
+  userId?: string;
 };
 
-const CommentList: React.FC<CommentListProps> = ({ setSum, id }) => {
+const CommentList: React.FC<CommentListProps> = ({
+  setSum,
+  postId,
+  userId,
+}) => {
   const [comments, setComments] = useState<any>([]); // todo: 타입 지정
-  const [userId, setUserId] = useState('user'); // 추후 전역으로 들고 있어야할 user의 아이디, 추가적으로 닉네임, job등등...
 
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const q = query(
       commentRef,
-      where('postId', '==', `${id}`),
+      where('postId', '==', `${postId}`),
       orderBy('bundleId'),
       orderBy('bundleOrder'),
     );
@@ -30,9 +35,10 @@ const CommentList: React.FC<CommentListProps> = ({ setSum, id }) => {
         id: value.id,
         ...value.data(),
       }));
-      console.log(newData, 'data');
+
       setComments(newData);
       setSum(newData.length);
+      setLoading(false);
     });
 
     return () => unsubscribe();
@@ -40,10 +46,14 @@ const CommentList: React.FC<CommentListProps> = ({ setSum, id }) => {
 
   const isClicked = (arr: any) => (arr.indexOf(userId) === -1 ? false : true); // todo: 타입 지정
 
+  if (loading) {
+    return <div style={{ marginBottom: '20px' }}>댓글을 불러오는 중...</div>;
+  }
+
   return (
     <CommentListDiv>
       {comments.length == 0 ? (
-        <>댓글이 아직 등록되지 않았습니다. 댓글을 입력해주세요</>
+        <div style={{ marginBottom: '20px' }}>등록된 댓글이 없습니다.</div>
       ) : (
         comments.map((data: any) => {
           // todo: 타입 지정
@@ -56,11 +66,12 @@ const CommentList: React.FC<CommentListProps> = ({ setSum, id }) => {
               job={data.job}
               date={data.createdAt}
               isClicked={isClicked(data.pressedPerson)}
-              id={data.id}
+              commentId={data.id}
               isNested={data.origin}
               bundleId={data.bundleId}
               isDeleted={data.isDeleted}
-              postId={id}
+              postId={postId}
+              userId={data.userId}
             />
           );
         })

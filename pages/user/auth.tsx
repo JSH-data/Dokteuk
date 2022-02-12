@@ -1,5 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
-import { firebase } from '@firebase/firebaseClient';
+import { createContext, useEffect, useState, useContext } from 'react';
 import { getAuth } from 'firebase/auth';
 import nookies from 'nookies';
 import { auth } from '@firebase/firebase';

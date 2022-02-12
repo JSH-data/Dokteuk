@@ -11,10 +11,14 @@ const initialUserState: UserState = {
   user: {
     nickname: '',
     jobSector: '',
-    validRounges: [],
+    validRounges: [
+      { title: '타임라인', url: 'timeline' },
+      { title: '토픽', url: 'topic' },
+    ],
     myChattings: [],
     id: '',
     hasNewNotification: false,
+    post: [],
     email: '',
   },
   status: 'standby',
@@ -24,8 +28,8 @@ const initialUserState: UserState = {
 export const getUser = createAsyncThunk('getUser', async (result: any) => {
   return await result;
 });
-// export const getUser = createAsyncThunk('getUser', async () => {
-//   return await getMyInfo();
+// export const getUser = createAsyncThunk('getUser', async (result: any) => {
+//   return await getMyInfo(result);
 // });
 // console.log(getUser.name);
 export const userSlice = createSlice({
@@ -37,6 +41,9 @@ export const userSlice = createSlice({
     },
     setMyInfo: (state, action) => {
       state.user = action.payload;
+    },
+    reset: (state) => {
+      Object.assign(state, initialUserState);
     },
   },
   extraReducers: (builder) => {
@@ -83,6 +90,20 @@ const scroll = createSlice({
   },
 });
 
+// 임시
+const topicPost = createSlice({
+  name: 'posts',
+  initialState: { posts: <any>[] },
+  reducers: {
+    setData(state, action) {
+      console.log('setData 실행');
+      state.posts = action.payload;
+    },
+  },
+});
+
+export const setDataAction = topicPost.actions.setData; // 임시
+
 export const setViewAction = view.actions.setViewPosts;
 export const resetViewAction = view.actions.resetViewPosts;
 export const initialViewAction = view.actions.initialViewPosts;
@@ -94,12 +115,15 @@ const rootReducer = (
     user: UserState;
     view: ViewPosts;
     scroll: { scrollY: number };
+    posts: any;
   },
   action: AnyAction,
 ) => {
   {
     switch (action.type) {
       case HYDRATE:
+        // console.log(state);
+        // return state;
         let userState: UserState = {
           user: {
             nickname: '',
@@ -108,14 +132,16 @@ const rootReducer = (
             myChattings: [],
             id: '',
             hasNewNotification: false,
+            post: [],
             email: '',
           },
           status: 'standby',
           error: '',
         };
+
         if (action.payload.user.user.nickname) userState = action.payload.user;
         else userState = state.user;
-        if (state.view.view.length === 0)
+        if (state.view.view.length === 0) {
           return {
             ...action.payload,
             view:
@@ -123,8 +149,9 @@ const rootReducer = (
                 ? { view: [], searchValue: '' }
                 : state.view,
             user: userState,
+            posts: state.posts,
           };
-        else
+        } else
           return {
             user: userState,
             view:
@@ -132,17 +159,21 @@ const rootReducer = (
                 ? { view: [], searchValue: '' }
                 : state.view,
             scroll: { scrollY: state.scroll.scrollY },
+            posts: state.posts,
           };
       default:
         const combineReducer = combineReducers({
           user: userSlice.reducer,
           view: view.reducer,
           scroll: scroll.reducer,
+          posts: topicPost.reducer,
         });
         return combineReducer(state, action);
     }
   }
 };
 
+export const setNewUserInfo = userSlice.actions.setNewUserInfo;
+export const reset = userSlice.actions.reset;
 export default rootReducer;
 export type RootReducer = ReturnType<typeof rootReducer>;
