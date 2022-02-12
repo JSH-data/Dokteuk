@@ -3,9 +3,10 @@ import CommentLogin from '@components/comment/CommentLogin';
 import CommentEditor from '@components/comment/CommentEditor';
 import CommentSum from '@components/comment/CommentSum';
 import Container from '@mui/material/Container';
-import { useState } from 'react';
-
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
+import { useSelector } from 'react-redux';
+import { RootReducer } from '@store/reducer';
 
 const Hr = styled.hr`
   border-top: 0px;
@@ -18,9 +19,9 @@ type CommentProps = {
 };
 
 const Comment: React.FC<CommentProps> = ({ id }) => {
-  const [isLogin, setIsLogin] = useState<boolean>(false);
-
   const [sum, setSum] = useState<number>(0);
+
+  const userId = useSelector((state: RootReducer) => state.user.user.id);
 
   return (
     <section>
@@ -29,12 +30,8 @@ const Comment: React.FC<CommentProps> = ({ id }) => {
       </Container>
       <Hr></Hr>
       <Container>
-        <CommentList setSum={setSum} id={id} />
-        {isLogin ? (
-          <CommentEditor postId={id} />
-        ) : (
-          <CommentLogin setIsLogin={setIsLogin} />
-        )}
+        <CommentList setSum={setSum} postId={id} userId={userId} />
+        {userId ? <CommentEditor postId={id} /> : <CommentLogin />}
       </Container>
     </section>
   );

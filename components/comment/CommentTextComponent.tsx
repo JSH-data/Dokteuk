@@ -20,14 +20,14 @@ const CommentTextDiv = styled.div`
 type CommentProps = {
   commentText: string;
   modify: boolean;
-  id: string;
+  commentId: string;
   setModify: (v: boolean) => void;
 };
 
 const CommentTextComponent: React.FC<CommentProps> = ({
   commentText,
   modify,
-  id,
+  commentId,
   setModify,
 }) => {
   return (
@@ -40,7 +40,7 @@ const CommentTextComponent: React.FC<CommentProps> = ({
           <CommentUpdateEditor
             setModify={setModify}
             originComment={commentText}
-            id={id}
+            commentId={commentId}
           />
         </>
       ) : (
