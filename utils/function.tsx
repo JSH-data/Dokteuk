@@ -70,7 +70,7 @@ export const getHomePostsInfiniteFunction = async (
     author: { nickname: '닉네임', jobSector: '외식·음료' },
     likeCount: Math.floor(Math.random() * 5),
     createdAt: Date.now().toString(),
-    image: [],
+    images: [],
   };
   const dummyTopicPost: TopicPost = {
     postId: 'r8qur390wjfioajwfeio394uf90q23urq89pd3oil',
@@ -85,7 +85,7 @@ export const getHomePostsInfiniteFunction = async (
     author: { nickname: '닉네임', jobSector: '외식·음료' },
     likeCount: Math.floor(Math.random() * 5),
     createdAt: Date.now().toString(),
-    image: [],
+    images: [],
   };
 
   const generateTenTopicPosts = () => {
@@ -104,7 +104,7 @@ export const getHomePostsInfiniteFunction = async (
       } else {
         const newTopicPost: TopicPost = {
           ...dummyTopicPost,
-          image: ['https://i.ibb.co/VJXmhFt/asdasd.jpg'],
+          images: ['https://i.ibb.co/VJXmhFt/asdasd.jpg'],
           postId: dummyTopicPost.postId + Math.floor(Math.random() * 1000000),
           createdAt: (
             parseInt(dummyTopicPost.createdAt) -
@@ -122,7 +122,7 @@ export const getHomePostsInfiniteFunction = async (
       if (i % 2 === 0) {
         const newRoungePost: RoungePost = {
           ...dummyRoungePost,
-          image: [
+          images: [
             'https://i.ibb.co/VJXmhFt/asdasd.jpg',
             'https://i.ibb.co/VJXmhFt/asdasd.jpg',
           ],
@@ -212,7 +212,7 @@ export const searchInfiniteFunction = async (
     author: { nickname: '닉네임', jobSector: '외식·음료' },
     likeCount: Math.floor(Math.random() * 5),
     createdAt: Date.now().toString(),
-    image: [],
+    images: [],
   };
   const dummyTopicPost: TopicPost = {
     postId: 'r8qur390wjfioajwfeio394uf90q23urq89pd3oil',
@@ -227,7 +227,7 @@ export const searchInfiniteFunction = async (
     author: { nickname: '닉네임', jobSector: '외식·음료' },
     likeCount: Math.floor(Math.random() * 5),
     createdAt: Date.now().toString(),
-    image: [],
+    images: [],
   };
   const dummyTopicPosts = [];
   const dummyRoungePosts = [];

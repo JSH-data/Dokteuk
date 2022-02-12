@@ -94,6 +94,13 @@ const RoungeCardContentWrapper = styled.div`
 const CardTitleStyled = styled.div`
   font-size: 1.5rem;
   margin-bottom: 3px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  height: calc(1.5rem + 5px);
+  word-break: break-all;
+  -webkit-line-clamp: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
 `;
 
 const CardContentStyled = styled.div`
@@ -105,6 +112,8 @@ const CardContentStyled = styled.div`
   -webkit-box-orient: vertical;
   font-size: 0.8rem;
   color: rgb(118, 118, 120);
+  word-break: break-all;
+  -webkit-line-clamp: 2;
 `;
 const CardAuthorJobSectorStyled = styled.div`
   font-size: 0.8rem;
@@ -181,8 +190,8 @@ export const RoungeCard = forwardRef(function RoungeCardWithRef(
                     </CardAuthorNickname>
                   </CardAuthorJobSectorWrapperStyled>
                 </RoungeCardContentWrapper>
-                {roungeCardData.image.length !== 0 && (
-                  <ImgComponent urls={roungeCardData.image} />
+                {roungeCardData.images.length !== 0 && (
+                  <ImgComponent urls={roungeCardData.images} />
                 )}
               </RoungeCardMainStyled>
 
@@ -267,8 +276,8 @@ export const TopicCard = forwardRef(function TopicCardWithRef(
                     </CardAuthorNickname>
                   </CardAuthorJobSectorWrapperStyled>
                 </TopicCardContentWrapper>
-                {topicCardData.image.length !== 0 && (
-                  <ImgComponent urls={topicCardData.image} />
+                {topicCardData.images.length !== 0 && (
+                  <ImgComponent urls={topicCardData.images} />
                 )}
               </TopicCardMainStyled>
               <CardDividerStyled />
