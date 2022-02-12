@@ -432,3 +432,72 @@ export const TopicCard = forwardRef(function TopicCardWithRef(
     </Wrapper>
   );
 });
+
+export const TestTopicCard = forwardRef(function TopicCardWithRef(
+  {
+    topicCardData,
+  }: {
+    topicCardData: TopicPost;
+  },
+  ref?: any,
+) {
+  // const { ref: cardRef, inView } = useInView();
+  // console.log(Object.keys(topicCardData));
+  return (
+    // <Wrapper ref={cardRef}>
+    <Wrapper>
+      <Link
+        href={`/list/topic/${topicCardData.topic.url}/${topicCardData.postId}`}
+        passHref
+      >
+        <CardWrapper>
+          {/* {inView && ( */}
+          {
+            <>
+              <div ref={ref} />
+              <TopicCardMainStyled>
+                <TopicCardContentWrapper>
+                  <CardTitleStyled>{topicCardData.title}</CardTitleStyled>
+                  <br />
+
+                  <CardContentStyled>{topicCardData.content}</CardContentStyled>
+                  <br />
+                  <CardAuthorJobSectorWrapperStyled>
+                    <CardAuthorJobSectorStyled>
+                      {topicCardData.author.jobSector}
+                    </CardAuthorJobSectorStyled>
+                    <CardMiddleDotStyled>·</CardMiddleDotStyled>
+                    <CardAuthorNickname>
+                      {topicCardData.author.nickname}
+                    </CardAuthorNickname>
+                  </CardAuthorJobSectorWrapperStyled>
+                </TopicCardContentWrapper>
+                {topicCardData.images.length !== 0 && (
+                  <ImgComponent urls={topicCardData.images} />
+                )}
+              </TopicCardMainStyled>
+              <CardDividerStyled />
+              <CardBottomWrapperStyled>
+                <CardStatWrapper>
+                  <ThumbUpIconStyled />
+                  {topicCardData.likeCount === 0
+                    ? '좋아요'
+                    : topicCardData.likeCount}
+                </CardStatWrapper>
+                <CardStatWrapper>
+                  <ModeCommentIconStyled />
+                  {topicCardData.commentsCount === 0
+                    ? '댓글'
+                    : topicCardData.commentsCount}
+                </CardStatWrapper>
+                <div style={{ marginLeft: 'auto' }}>
+                  {getDateTime(topicCardData.createdAt)}
+                </div>
+              </CardBottomWrapperStyled>
+            </>
+          }
+        </CardWrapper>
+      </Link>
+    </Wrapper>
+  );
+});

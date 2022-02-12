@@ -122,13 +122,13 @@ const ListPage = () => {
       </Layout>
     );
   }
-  if (
-    myInfo?.validRounges.findIndex(
-      (v: ValidRounge) => `/list/${v.url}` === router.asPath,
-    ) === -1
-  ) {
-    return <NotFoundPage />;
-  }
+  // if (
+  //   myInfo?.validRounges.findIndex(
+  //     (v: ValidRounge) => `/list/${v.url}` === router.asPath,
+  //   ) === -1
+  // ) {
+  //   return <NotFoundPage />;
+  // }
   return (
     <>
       <Layout>

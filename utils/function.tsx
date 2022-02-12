@@ -52,6 +52,54 @@ export const getMyInfo = async (result: any) => {
 
 export const getTimelinePosts = async () => {};
 
+export const getTopics = (list: string, pageParam: string) => {
+  const dummyTopicPost: TopicPost = {
+    postId: 'r8qur390wjfioajwfeio394uf90q23urq89pd3oil',
+    postType: 'topic',
+    topic: { title: '블라블라', url: 'blabla' },
+    title: '토픽 글 제목',
+    content:
+      `조회하고 있는 list는 ${list}이고` +
+      `전달된 pageParam은 ${pageParam}입니다` +
+      '블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 블라블라 ',
+    commentsCount: Math.floor(Math.random() * 5),
+    author: { nickname: '닉네임', jobSector: '외식·음료' },
+    likeCount: Math.floor(Math.random() * 5),
+    createdAt: Date.now().toString(),
+    images: [],
+  };
+
+  const generateTenTopicPosts = () => {
+    const dummyTopicPosts = [];
+    for (let i = 0; i < 10; i++) {
+      if (i % 2 === 0) {
+        const newTopicPost: TopicPost = {
+          ...dummyTopicPost,
+          postId: dummyTopicPost.postId + Math.floor(Math.random() * 1000000),
+          createdAt: (
+            parseInt(dummyTopicPost.createdAt) -
+            Math.floor(Math.random() * 30000) * 1000
+          ).toString(),
+        };
+        dummyTopicPosts.push(newTopicPost);
+      } else {
+        const newTopicPost: TopicPost = {
+          ...dummyTopicPost,
+          images: ['https://i.ibb.co/VJXmhFt/asdasd.jpg'],
+          postId: dummyTopicPost.postId + Math.floor(Math.random() * 1000000),
+          createdAt: (
+            parseInt(dummyTopicPost.createdAt) -
+            Math.floor(Math.random() * 30000) * 1000
+          ).toString(),
+        };
+        dummyTopicPosts.push(newTopicPost);
+      }
+    }
+    return dummyTopicPosts;
+  };
+  return generateTenTopicPosts();
+};
+
 export const getHomePostsInfiniteFunction = async (
   list: string,
   pageParam: number,

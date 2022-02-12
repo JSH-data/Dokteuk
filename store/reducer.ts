@@ -83,6 +83,20 @@ const scroll = createSlice({
   },
 });
 
+// 임시
+const topicPost = createSlice({
+  name: 'posts',
+  initialState: { posts: <any>[] },
+  reducers: {
+    setData(state, action) {
+      console.log('setData 실행');
+      state.posts = action.payload;
+    },
+  },
+});
+
+export const setDataAction = topicPost.actions.setData; // 임시
+
 export const setViewAction = view.actions.setViewPosts;
 export const resetViewAction = view.actions.resetViewPosts;
 export const initialViewAction = view.actions.initialViewPosts;
@@ -94,12 +108,15 @@ const rootReducer = (
     user: UserState;
     view: ViewPosts;
     scroll: { scrollY: number };
+    posts: any;
   },
   action: AnyAction,
 ) => {
   {
     switch (action.type) {
       case HYDRATE:
+        // console.log(state);
+        // return state;
         let userState: UserState = {
           user: {
             nickname: '',
@@ -113,9 +130,10 @@ const rootReducer = (
           status: 'standby',
           error: '',
         };
+
         if (action.payload.user.user.nickname) userState = action.payload.user;
         else userState = state.user;
-        if (state.view.view.length === 0)
+        if (state.view.view.length === 0) {
           return {
             ...action.payload,
             view:
@@ -123,8 +141,9 @@ const rootReducer = (
                 ? { view: [], searchValue: '' }
                 : state.view,
             user: userState,
+            posts: state.posts,
           };
-        else
+        } else
           return {
             user: userState,
             view:
@@ -132,12 +151,14 @@ const rootReducer = (
                 ? { view: [], searchValue: '' }
                 : state.view,
             scroll: { scrollY: state.scroll.scrollY },
+            posts: state.posts,
           };
       default:
         const combineReducer = combineReducers({
           user: userSlice.reducer,
           view: view.reducer,
           scroll: scroll.reducer,
+          posts: topicPost.reducer,
         });
         return combineReducer(state, action);
     }

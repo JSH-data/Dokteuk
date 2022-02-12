@@ -36,6 +36,7 @@ export interface StoreState {
   user: UserState;
   view: ViewPosts;
   scroll: { scrollY: number };
+  // data: any;
 }
 export interface SearchResult {
   result: Array<TopicPost | RoungePost>;
