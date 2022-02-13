@@ -20,31 +20,49 @@
 // };
 // export default Test;
 import type { NextPage } from 'next';
-import Comment from '@components/comment/Comment';
 import { useSelector } from 'react-redux';
 import { RootReducer } from '@store/reducer';
+import { addDoc, collection, Timestamp } from 'firebase/firestore';
+import { db } from '@firebase/firebase';
+import { useRouter } from 'next/router';
 
 const Test: NextPage = () => {
-  return <Comment id="asdasdasd" />;
-  //   return (
-  //     <>
-  //       <InputComponent changeFn={setTitle} />
-  //       <InputComponent changeFn={setContent} />
-  //       <button
-  //         onClick={async () => {
-  //           const timeStamp = new Date();
-  //           const detailTimeStamp = timeStamp.getTime();
-  //           await addDoc(collection(db, 'post'), {
-  //             userId: 't86KPfYScWfiVyg76XRgmWMGbMf2',
-  //             content,
-  //             title,
-  //             timestamp: detailTimeStamp,
-  //           });
-  //         }}
-  //       >
-  //         게시물 만들기
-  //       </button>
-  //     </>
-  //   );
+  const router = useRouter();
+  const { nickname, id, jobSector } = useSelector(
+    (state: RootReducer) => state.user.user,
+  );
+
+  const counter = {
+    nickname: '닉네임',
+    id: '아이디',
+    jobSector: '닉네임',
+  };
+
+  const chatOpen = async () => {
+    const chatRoom = await addDoc(collection(db, 'chat'), {
+      users: [
+        { nickname: nickname, id: id, job: jobSector },
+        { nickname: counter.nickname, id: counter.id, job: counter.jobSector },
+      ],
+      updatedAt: Timestamp.now(),
+      lastChat: '',
+      lastVisited: { [id]: Timestamp.now(), [counter.id]: Timestamp.now() },
+      userIds: [id, counter.id],
+    });
+    // console.log({ [id]: Timestamp.now(), [counter.id]: Timestamp.now() });
+    // console.log(chatRoom.id);
+    router.push(`/chat/${chatRoom.id}`);
+  };
+  return (
+    <div>
+      <button
+        onClick={() => {
+          chatOpen();
+        }}
+      >
+        채팅방 열기
+      </button>
+    </div>
+  );
 };
 export default Test;

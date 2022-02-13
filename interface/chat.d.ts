@@ -1,26 +1,21 @@
 type queryType = string | string[] | undefined;
 
 interface Person {
+  id: string;
   nickname: string;
   job: string;
 }
 
 interface ChatRoom {
   id?: string;
-  users?: person[];
+  users?: Person[];
+  userIds?: string[];
   other?: person;
-  last_chat: string | undefined;
-  create_at?: Timestamp;
-  update_at: Timestamp;
-  last_visited: {
+  lastChat: string | undefined;
+  updateAt: Timestamp;
+  lastVisited: {
     [k: string]: Timestamp;
   };
-  user:
-    | {
-        nickname: string;
-        job: string;
-      }
-    | undefined;
 }
 
 interface ChatText {
@@ -28,13 +23,7 @@ interface ChatText {
   from: string;
   msg?: string;
   img?: string;
-  create_at: Timestamp;
-  user:
-    | {
-        nickname: string;
-        job: string;
-      }
-    | undefined;
+  createAt: Timestamp;
 }
 
 interface ImgProps {
@@ -53,6 +42,7 @@ interface FileType {
 }
 
 interface UserType {
+  id: string;
   nickname: string;
   job: string;
 }

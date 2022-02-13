@@ -2,10 +2,10 @@ import styled from '@emotion/styled';
 
 const ChatSetting = ({
   onToggle,
-  onLeaveChat,
+  onExitChat,
 }: {
   onToggle: () => void;
-  onLeaveChat: () => void;
+  onExitChat: () => void;
 }) => {
   return (
     <Background>
@@ -13,7 +13,7 @@ const ChatSetting = ({
         <OptionButton>
           <div className="text">채팅방을 나가시겠습니까?</div>
           <Line />
-          <div className="exit" onClick={onLeaveChat}>
+          <div className="exit" onClick={onExitChat}>
             채팅방 나가기
           </div>
         </OptionButton>

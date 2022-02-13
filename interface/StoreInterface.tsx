@@ -17,10 +17,9 @@ export interface UserInfo {
   nickname: string;
   jobSector: string;
   validRounges: Array<ValidRounge>;
-  myChattings: Array<MyChatting>;
   hasNewNotification: boolean;
   id: string;
-  post: Array<string>;
+  posts: Array<string>;
   email: string;
 }
 

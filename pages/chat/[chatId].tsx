@@ -41,8 +41,7 @@ import debounce from 'lodash/debounce';
 import ImgPreviewModal from '@components/ImgPreviewModal';
 import ChatSetting from '@components/ChatSetting';
 
-const ChatRoom = ({ nickname, job }: { nickname: string; job: string }) => {
-  const user = useMemo(() => ({ nickname, job }), [nickname, job]);
+const ChatRoom = ({ user }: { user: UserType }) => {
   const [messages, setMessages] = useState<ChatText[]>([]);
   const [newMessage, setNewMessage] = useState<boolean>(false);
   const [lastMessage, setLastMessage] = useState<ChatText>();
@@ -66,8 +65,8 @@ const ChatRoom = ({ nickname, job }: { nickname: string; job: string }) => {
     setIsClickedHeader(!isClickedHeader);
   };
 
-  const onLeaveChat = () => {
-    exitChat(chatId, user);
+  const onExitChat = () => {
+    exitChat(chatId, user.id);
     router.replace(`/chatting`);
   };
 
@@ -84,11 +83,11 @@ const ChatRoom = ({ nickname, job }: { nickname: string; job: string }) => {
 
   const onSendMessage = async (img?: string) => {
     if (img) {
-      await sendMessage(chatId, img, 'img', user);
+      await sendMessage(chatId, img, 'img', user.id);
     } else {
       const value = inputValue.current!.value;
       inputValue.current!.value = '';
-      await sendMessage(chatId, value, 'msg', user);
+      await sendMessage(chatId, value, 'msg', user.id);
     }
     setIsScrollUp(false);
   };
@@ -102,30 +101,26 @@ const ChatRoom = ({ nickname, job }: { nickname: string; job: string }) => {
   }, 500);
 
   const getInitData = useCallback(async () => {
-    const { initMessage, _startKey, _endKey } = await getChatMessages(
-      chatId,
-      user,
-    );
+    const { initMessage, _startKey, _endKey } = await getChatMessages(chatId);
     setMessages(initMessage);
     setLastMessage(initMessage[0]);
     setStartKey(_startKey);
 
-    return chatMessages(chatId, setMessages, _endKey, user);
-  }, [user, chatId]);
+    return chatMessages(chatId, setMessages, _endKey);
+  }, [chatId]);
 
   const getMessages = useCallback(
     async (prevScrollHeight) => {
       const { moreMessage, _startKey } = await moreChatMessages(
         chatId,
         startKey,
-        user,
       );
       setMessages((current) => [...current, ...moreMessage]);
       setStartKey(_startKey);
       scrollKeep(prevScrollHeight);
       setScrollPosition(prevScrollHeight);
     },
-    [chatId, startKey, user],
+    [chatId, startKey],
   );
 
   const scrollKeep = (prevScrollHeight: number) => {
@@ -137,7 +132,7 @@ const ChatRoom = ({ nickname, job }: { nickname: string; job: string }) => {
     getInitData();
 
     return () => {
-      leaveChat(chatId, user);
+      leaveChat(chatId, user.id);
       getInitData();
     };
   }, [getInitData, chatId, user]);
@@ -179,7 +174,7 @@ const ChatRoom = ({ nickname, job }: { nickname: string; job: string }) => {
         />
       )}
       {isClickedHeader && (
-        <ChatSetting onToggle={onToggle} onLeaveChat={onLeaveChat} />
+        <ChatSetting onToggle={onToggle} onExitChat={onExitChat} />
       )}
       <ChatHeader>
         <ArrowBackIosNewIcon
@@ -203,8 +198,8 @@ const ChatRoom = ({ nickname, job }: { nickname: string; job: string }) => {
           {messages
             .slice()
             .reverse()
-            .map(({ id, from, msg, img }, idx) => (
-              <ChatText className={from === nickname ? 'mine' : ''} key={id}>
+            .map(({ id, from, msg, img }) => (
+              <ChatText className={from === user.id ? 'mine' : ''} key={id}>
                 {msg ? (
                   msg
                 ) : (
@@ -274,7 +269,7 @@ export default ChatRoom;
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (ctx) => {
     const data = store.getState();
-    console.log(data, '마이페이지 데이터');
+
     if (data.user.user.nickname == '') {
       // todo: 초기값을 판단하는 근거가 이상함...
       return {
@@ -287,8 +282,11 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     return {
       props: {
-        nickname: data.user.user.nickname,
-        job: data.user.user.jobSector,
+        user: {
+          nickname: data.user.user.nickname,
+          job: data.user.user.jobSector,
+          id: data.user.user.id,
+        },
       },
     };
   },

@@ -11,7 +11,7 @@ export const getMyInfo = async (result: any) => {
     nickname: result.nickname,
     jobSector: result.jobSector,
     validRounges: result.validRounges,
-    myChattings: result.myChatting,
+    // myChattings: result.myChatting,
     hasNewNotification: result.hasNewNotification,
     id: result.id,
     // nickname: '닉네임입니다',

@@ -121,20 +121,8 @@ export default function Google() {
           url: 'timeline',
         },
       ],
-      myChattings: [
-        {
-          roomName: '',
-          roomId: '',
-          isGroup: true,
-          lastMessage: {
-            content: '',
-            updatedAt: '',
-          },
-          unreadCount: 0,
-        },
-      ],
       hasNewNotification: true,
-      post: [],
+      posts: [],
       email: email,
     };
     const uid = auth.currentUser?.uid;
