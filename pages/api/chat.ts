@@ -14,6 +14,8 @@ import {
   limit,
   getDocs,
   endBefore,
+  arrayUnion,
+  deleteDoc,
 } from 'firebase/firestore';
 import { db, storage } from '../../firebase/firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -21,7 +23,7 @@ import { Dispatch, SetStateAction } from 'react';
 
 export const chatList = (
   setMyChats: Dispatch<SetStateAction<ChatRoom[]>>,
-  user: UserType,
+  user: Person,
 ) => {
   const chatListQuery = query(
     collection(db, 'chat'),
@@ -33,8 +35,9 @@ export const chatList = (
   const unsubscribe = onSnapshot(chatListQuery, (querySnapshot) => {
     const newChat: ChatRoom[] = [];
     querySnapshot.forEach((result) => {
-      const { users, lastChat, updateAt, lastVisited } = result.data();
-      const other = users.find((me: Person) => me.id !== user.id);
+      const { userIds, users, lastChat, updateAt, lastVisited } = result.data();
+      const otherId = userIds.find((me: string) => me !== user.id);
+      const other = users.find((person: Person) => person.id === otherId);
       newChat.push({
         id: result.id,
         other,
@@ -164,6 +167,7 @@ export const sendMessage = async (
   msgType: string,
   user: string,
   file?: Blob | ArrayBuffer,
+  id?: queryType,
 ) => {
   const timestamp = Timestamp.now();
 
@@ -173,11 +177,20 @@ export const sendMessage = async (
     createAt: timestamp,
   });
 
-  await updateDoc(doc(db, 'chat', chatId as string), {
-    lastChat: msgType === 'msg' ? value : '사진을 보냈습니다.',
-    updateAt: timestamp,
-    [`lastVisited.${user}`]: timestamp,
-  });
+  if (id) {
+    await updateDoc(doc(db, 'chat', chatId as string), {
+      lastChat: msgType === 'msg' ? value : '사진을 보냈습니다.',
+      updateAt: timestamp,
+      [`lastVisited.${user}`]: timestamp,
+      userIds: arrayUnion(id),
+    });
+  } else {
+    await updateDoc(doc(db, 'chat', chatId as string), {
+      lastChat: msgType === 'msg' ? value : '사진을 보냈습니다.',
+      updateAt: timestamp,
+      [`lastVisited.${user}`]: timestamp,
+    });
+  }
 
   if (msgType === 'img' && file) {
     uploadImg(message.id, file);
@@ -214,10 +227,7 @@ export const leaveChat = async (chatId: queryType, user: string) => {
 };
 
 export const exitChat = async (chatId: queryType, user: String) => {
-  const chatRoom = await getDoc(doc(db, 'chat', chatId as string));
-  const other = chatRoom.data()!.userIds.find((me: string) => me !== user);
-
   await updateDoc(doc(db, 'chat', chatId as string), {
-    userIds: arrayRemove(other),
+    userIds: arrayRemove(user),
   });
 };

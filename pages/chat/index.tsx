@@ -11,7 +11,7 @@ import {
   Notice,
 } from '../../styles/chatStyle';
 
-const Chat = ({ user }: { user: UserType }) => {
+const Chat = ({ user }: { user: Person }) => {
   const [myChats, setMyChats] = useState<ChatRoom[]>([]);
   useEffect(() => {
     const unsubscribe = chatList(setMyChats, user);
@@ -47,15 +47,13 @@ const Chat = ({ user }: { user: UserType }) => {
                       {other ? (
                         <>
                           <div>{other.nickname}</div>
-                          <div className="job">{other.job}</div>
+                          <div className="job">{other.jobSector}</div>
                         </>
                       ) : (
                         '대화방에 상대가 없습니다.'
                       )}
                     </div>
-                    <Text>
-                      {lastChat ? lastChat : '아직 나눈 대화가 없습니다.'}
-                    </Text>
+                    <Text>{lastChat}</Text>
                   </div>
                   <div>
                     <div>{`${updateAt.toDate().getMonth() + 1}월 ${updateAt
@@ -90,7 +88,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       props: {
         user: {
           nickname: data.user.user.nickname,
-          job: data.user.user.jobSector,
+          jobSector: data.user.user.jobSector,
           id: data.user.user.id,
         },
       },

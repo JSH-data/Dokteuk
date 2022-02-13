@@ -3,7 +3,7 @@ type queryType = string | string[] | undefined;
 interface Person {
   id: string;
   nickname: string;
-  job: string;
+  jobSector: string;
 }
 
 interface ChatRoom {
@@ -11,7 +11,7 @@ interface ChatRoom {
   users?: Person[];
   userIds?: string[];
   other?: person;
-  lastChat: string | undefined;
+  lastChat: string;
   updateAt: Timestamp;
   lastVisited: {
     [k: string]: Timestamp;
@@ -39,10 +39,4 @@ interface FileType {
   type: string;
   file: (Blob | ArrayBuffer)[];
   src: (string | ArrayBuffer | null)[];
-}
-
-interface UserType {
-  id: string;
-  nickname: string;
-  job: string;
 }
