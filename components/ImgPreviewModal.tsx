@@ -1,20 +1,40 @@
-import { keyframes } from '@emotion/react';
+import { Dispatch, SetStateAction } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { keyframes } from '@emotion/react';
 import { EffectCards } from 'swiper';
 import styled from '@emotion/styled';
-// import Image from 'next/image';
 import 'swiper/css';
 import 'swiper/css/effect-cards';
 
 const ImgPreviewModal = ({
   imgData,
+  setImgData,
   onFileReset,
   onSubmitImg,
 }: {
   imgData: FileType | null;
+  setImgData: Dispatch<SetStateAction<FileType | null>>;
   onFileReset: () => void;
   onSubmitImg: (k?: string) => void;
 }) => {
+  const DeleteImgHandler = (idx: number) => {
+    setImgData((current) => {
+      const newData = { ...current };
+      newData.src!.splice(idx, 1);
+      newData.file!.splice(idx, 1);
+
+      if (newData.src!.length === 0) {
+        return null;
+      }
+
+      return {
+        type: 'upload',
+        file: [...newData.file!],
+        src: [...newData.src!],
+      };
+    });
+  };
+
   return (
     <Background>
       <Modal>
@@ -23,13 +43,10 @@ const ImgPreviewModal = ({
           grabCursor={true}
           modules={[EffectCards]}
         >
-          {imgData!.src.map((img) => (
+          {imgData!.src.map((img, idx) => (
             <SwiperSlide key={img as string}>
-              <Image
-                src={img as string}
-                alt="preview-img"
-                color={Math.round(Math.random() * 0xffffff).toString(16)}
-              />
+              <Image src={img as string} alt="preview-img" />
+              <DeleteImg onClick={() => DeleteImgHandler(idx)}>X</DeleteImg>
             </SwiperSlide>
           ))}
         </SwiperStyled>
@@ -135,4 +152,12 @@ const ButtonWrapper = styled.div`
         theme.customTheme.darkMode.chatToBackgroundColor};
     }
   }
+`;
+
+const DeleteImg = styled.div`
+  color: white;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-weight: bold;
 `;

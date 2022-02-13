@@ -25,4 +25,5 @@ export const HeaderWrapperDivStyled = styled.div`
   position: fixed;
   z-index: 99;
   width: 100vw;
+  top: 0;
 `;

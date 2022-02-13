@@ -3,6 +3,7 @@ import {
   Fragment,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -131,6 +132,11 @@ const ChatRoom = ({ user }: { user: Person }) => {
       messageRef.current!.scrollHeight - prevScrollHeight;
   };
 
+  const reversedMessages = useMemo(
+    () => messages.slice().reverse(),
+    [messages],
+  );
+
   useEffect(() => {
     getInitData();
 
@@ -143,7 +149,7 @@ const ChatRoom = ({ user }: { user: Person }) => {
 
   useEffect(() => {
     const newMsg = messages[0];
-    if (isScrollUp && newMsg !== lastMessage && newMsg.from !== user.nickname) {
+    if (isScrollUp && newMsg !== lastMessage && newMsg.from !== user.id) {
       setNewMessage(true);
       return;
     } else if (!isScrollUp) {
@@ -173,6 +179,7 @@ const ChatRoom = ({ user }: { user: Person }) => {
       {imgData && (
         <ImgPreviewModal
           imgData={imgData}
+          setImgData={setImgData}
           onFileReset={onFileReset}
           onSubmitImg={onSubmitImg}
         />
@@ -188,48 +195,45 @@ const ChatRoom = ({ user }: { user: Person }) => {
         <div>{other}</div>
         <DensityMediumIcon onClick={onToggle} />
       </ChatHeader>
-      {isScrollUp && !newMessage && (
-        <PageDownBtn
-          onClick={() => {
-            setIsScrollUp(false);
-          }}
-        >
-          <KeyboardArrowDownIcon />
-        </PageDownBtn>
-      )}
       <ChatList onScroll={onScroll} ref={messageRef}>
         <ChatBox>
-          {messages
-            .slice()
-            .reverse()
-            .map(({ id, from, msg, img }) => (
-              <ChatText className={from === user.id ? 'mine' : ''} key={id}>
-                {msg ? (
-                  msg
-                ) : (
-                  <ChatImg
-                    src={img as string}
-                    alt="preview-img"
-                    onClick={() =>
-                      setImgData({
-                        type: id as string,
-                        file: [],
-                        src: [img as string],
-                      })
-                    }
-                  />
-                )}
-              </ChatText>
-            ))}
+          {reversedMessages.map(({ id, from, msg, img }) => (
+            <ChatText className={from === user.id ? 'mine' : ''} key={id}>
+              {msg ? (
+                msg
+              ) : (
+                <ChatImg
+                  src={img as string}
+                  alt="preview-img"
+                  onClick={() =>
+                    setImgData({
+                      type: id as string,
+                      file: [],
+                      src: [img as string],
+                    })
+                  }
+                />
+              )}
+            </ChatText>
+          ))}
           <div ref={bottomListRef} />
         </ChatBox>
       </ChatList>
-      {newMessage && (
-        <NewMessage onClick={() => setIsScrollUp(false)}>
-          새로운 메세지가 있습니다
-        </NewMessage>
-      )}
       <ChatInputWrapper>
+        {isScrollUp && !newMessage && (
+          <PageDownBtn
+            onClick={() => {
+              setIsScrollUp(false);
+            }}
+          >
+            <KeyboardArrowDownIcon />
+          </PageDownBtn>
+        )}
+        {newMessage && (
+          <NewMessage onClick={() => setIsScrollUp(false)}>
+            새로운 메세지가 있습니다
+          </NewMessage>
+        )}
         <label htmlFor="file">
           <AddIcon style={{ cursor: 'pointer', color: 'white' }} />
         </label>

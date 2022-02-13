@@ -19,6 +19,7 @@ export const NewMessage = styled.div`
   line-height: 30px;
   text-align: center;
   position: absolute;
+  left: 0;
   bottom: 60px;
   cursor: pointer;
   background: ${({ theme }: any) =>
@@ -50,12 +51,13 @@ export const ChatHeader = styled.div`
 
 export const ChatList = styled.div`
   padding-top: 60px;
-  height: calc(100vh - 60px);
-  overflow: scroll;
+  height: 100vh;
+  overflow-y: scroll;
 `;
 
 export const ChatBox = styled.ul`
   padding: 30px;
+  padding-bottom: 90px;
   margin: 0;
   color: black;
 `;
@@ -95,6 +97,9 @@ export const ChatImg = styled.img`
 `;
 
 export const ChatInputWrapper = styled.div`
+  position: fixed;
+  bottom: 0;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -145,6 +150,9 @@ export const SendIconStyled = styled(SendIcon)`
 `;
 
 export const PageDownBtn = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 40px;
   height: 40px;
   position: absolute;
@@ -166,8 +174,9 @@ export const PageDownBtn = styled.button`
 
 export const ChatMain = styled.div`
   height: calc(100vh - 120px);
-  overflow: scroll;
+  overflow-y: scroll;
 `;
+
 export const EmptyChatWrapper = styled.div`
   display: flex;
   flex-direction: column;

@@ -1,3 +1,4 @@
+import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 
 const ChatSetting = ({
@@ -25,6 +26,16 @@ const ChatSetting = ({
 
 export default ChatSetting;
 
+const slideUp = keyframes`
+from {
+  opacity: 0;
+  transform: translateY(50vh);
+}
+to {
+  opacity: 1;
+  transform: translateY(0);
+}`;
+
 const Background = styled.div`
   width: 100vw;
   height: 100vh;
@@ -34,6 +45,7 @@ const Background = styled.div`
 `;
 
 const ModalWrapper = styled.div`
+  animation: ${slideUp} 0.5s ease-out forwards;
   height: 100%;
   display: flex;
   flex-direction: column;
