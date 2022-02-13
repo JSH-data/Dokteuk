@@ -178,7 +178,7 @@ const ChatRoom = ({ user }: { user: UserType }) => {
       )}
       <ChatHeader>
         <ArrowBackIosNewIcon
-          onClick={() => router.back()}
+          onClick={() => router.replace(`/chat`)}
           style={{ cursor: 'pointer' }}
         />
         <div>{other}</div>

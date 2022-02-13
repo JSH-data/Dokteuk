@@ -93,7 +93,6 @@ export const chatMessages = (
   let chatQuery;
 
   if (key) {
-    console.log('has key');
     chatQuery = query(
       collection(db, `chat/${chatId}/messages`),
       orderBy('createAt', 'desc'),
@@ -101,7 +100,6 @@ export const chatMessages = (
       limit(1),
     );
   } else {
-    console.log('no key');
     chatQuery = query(
       collection(db, `chat/${chatId}/messages`),
       orderBy('createAt', 'desc'),

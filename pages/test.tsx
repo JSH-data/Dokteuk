@@ -44,7 +44,7 @@ const Test: NextPage = () => {
         { nickname: nickname, id: id, job: jobSector },
         { nickname: counter.nickname, id: counter.id, job: counter.jobSector },
       ],
-      updatedAt: Timestamp.now(),
+      updatedAt: '',
       lastChat: '',
       lastVisited: { [id]: Timestamp.now(), [counter.id]: Timestamp.now() },
       userIds: [id, counter.id],
