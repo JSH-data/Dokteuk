@@ -106,6 +106,7 @@ const Comment: React.FC<CommentProps> = ({
             nickname={nickname}
             job={job}
             date={date}
+            userId={userId}
           ></CommentAuthorComponent>
           {nestedReplyEditor && (
             <CommentEditor
@@ -153,6 +154,7 @@ const Comment: React.FC<CommentProps> = ({
             nickname={nickname}
             job={job}
             date={date}
+            userId={userId}
           ></CommentAuthorComponent>
         </NestedCommentDiv>
       )}

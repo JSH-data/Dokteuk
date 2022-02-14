@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { updateComment } from '@utils/commentUtils';
 import ButtonComponent from '@components/items/ButtonComponent';
-import InputComponent from '@components/items/InputComponent';
-import { useSelector } from 'react-redux';
-import { RootReducer } from '@store/reducer';
+import CommentInputComponent from '@components/items/CommentInputComponent';
 
 type CommentUpdateEditorProps = {
   originComment: string;
@@ -18,8 +16,6 @@ const CommentUpdateEditor: React.FC<CommentUpdateEditorProps> = ({
 }) => {
   const [revisedComment, setRevisedComment] = useState<string>(originComment);
 
-  const userInfo = useSelector((state: RootReducer) => state.user.user);
-
   const commentUpdate = () => {
     const timeStamp = new Date();
     updateComment(revisedComment, commentId, timeStamp);
@@ -29,7 +25,7 @@ const CommentUpdateEditor: React.FC<CommentUpdateEditorProps> = ({
 
   return (
     <>
-      <InputComponent
+      <CommentInputComponent
         placeholder="수정할 댓글을 입력해주세요"
         defaultValue={revisedComment}
         changeFn={setRevisedComment}

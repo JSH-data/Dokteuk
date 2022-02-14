@@ -8,23 +8,7 @@ export const addOriginComment = async (
   userInfo: any,
   bundleId?: number,
 ) => {
-  // console.log(userInfo, 'userInfo');
-  // console.log({
-  //   text: content,
-  //   likes: 0,
-  //   pressedPerson: [],
-  //   nickname: userInfo.nickname,
-  //   job: userInfo.jobSector,
-  //   userId: userInfo.id,
-  //   postId: postId,
-  //   bundleId: bundleId,
-  //   bundleOrder: bundleId,
-  //   createdAt: currentDate,
-  //   updatedAt: '',
-  //   deletedAt: '',
-  //   isDeleted: false,
-  //   origin: true,
-  // });
+  let result: string = '';
   try {
     await addDoc(collection(db, 'comment'), {
       text: content,
@@ -42,35 +26,44 @@ export const addOriginComment = async (
       isDeleted: false,
       origin: true,
     });
-  } catch (err) {
-    alert(`${err}`);
+    result = 'success';
+  } catch (err: unknown) {
+    if (err instanceof Error) result = err.stack as string;
   }
+  return result;
 };
 
 export const addNestedComment = async (
   content: string,
   bundleId: number,
-
   detailTimeStamp: number,
   userInfo: any,
   postId: string,
 ) => {
-  await addDoc(collection(db, 'comment'), {
-    text: content,
-    likes: 0,
-    pressedPerson: [],
-    nickname: userInfo.nickname,
-    job: userInfo.jobSector,
-    userId: userInfo.id,
-    postId: postId,
-    bundleId: bundleId,
-    bundleOrder: detailTimeStamp,
-    createdAt: Date.now().toString(),
-    updatedAt: '',
-    deletedAt: '',
-    isDeleted: false,
-    origin: false,
-  });
+  let result: string = '';
+  try {
+    await addDoc(collection(db, 'comment'), {
+      text: content,
+      likes: 0,
+      pressedPerson: [],
+      nickname: userInfo.nickname,
+      job: userInfo.jobSector,
+      userId: userInfo.id,
+      postId: postId,
+      bundleId: bundleId,
+      bundleOrder: detailTimeStamp,
+      createdAt: Date.now().toString(),
+      updatedAt: '',
+      deletedAt: '',
+      isDeleted: false,
+      origin: false,
+    });
+    result = 'success';
+  } catch (err: unknown) {
+    if (err instanceof Error) result = err.message as string;
+    console.log('resu', result, err);
+  }
+  return result;
 };
 
 export const updateComment = async (

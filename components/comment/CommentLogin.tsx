@@ -15,7 +15,7 @@ const CommentLogin: React.FC = () => {
   return (
     <CommentLoginSection>
       <h4>답변을 위해 로그인해주세요!</h4>
-      <Link href={'user/login'} passHref>
+      <Link href={'/user/login'} passHref>
         <Button variant="contained" size="medium" color="secondary">
           로그인하기
         </Button>

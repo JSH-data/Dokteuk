@@ -19,8 +19,6 @@ const MyPageProfileLi = styled.div`
   justify-content: space-between;
 `;
 
-// todo: 마이페이지 리다자인
-
 const MyPageProfile: React.FC<MyPageProfileProps> = ({ email, nickname }) => {
   return (
     <MyPageProfileComponent>
@@ -34,7 +32,7 @@ const MyPageProfile: React.FC<MyPageProfileProps> = ({ email, nickname }) => {
       <div>
         <Link href={'/mypage/nickname'} passHref>
           <MyPageProfileLi>
-            <span>이메일 변경하기</span>
+            <span>닉네임 변경하기</span>
             <ArrowForwardIosIcon color="disabled" />
           </MyPageProfileLi>
         </Link>

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Comment from './CommentComponent';
 import styled from '@emotion/styled';
-import { query, where, onSnapshot, orderBy } from 'firebase/firestore';
-import { commentRef } from '@firebase/firebase';
+import { onSnapshot } from 'firebase/firestore';
+import { commentQuery } from '@firebase/firebase';
 
 const CommentListDiv = styled.div`
   width: 100%;
@@ -23,14 +23,7 @@ const CommentList: React.FC<CommentListProps> = ({
 
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const q = query(
-      commentRef,
-      where('postId', '==', `${postId}`),
-      orderBy('bundleId'),
-      orderBy('bundleOrder'),
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unSubscribe = onSnapshot(commentQuery(postId), (snapshot) => {
       const newData = snapshot.docs.map((value) => ({
         id: value.id,
         ...value.data(),
@@ -41,7 +34,7 @@ const CommentList: React.FC<CommentListProps> = ({
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => unSubscribe();
   }, []);
 
   const isClicked = (arr: any) => (arr.indexOf(userId) === -1 ? false : true); // todo: 타입 지정

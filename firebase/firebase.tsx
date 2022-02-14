@@ -1,5 +1,11 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  orderBy,
+} from 'firebase/firestore';
 import * as firebase from 'firebase/app';
 import {
   getAuth,
@@ -24,5 +30,12 @@ export const auth = getAuth(app);
 export const db = getFirestore();
 export const provider = new GoogleAuthProvider();
 export const commentRef = collection(db, 'comment');
+export const commentQuery = (postId: string) =>
+  query(
+    commentRef,
+    where('postId', '==', `${postId}`),
+    orderBy('bundleId'),
+    orderBy('bundleOrder'),
+  );
 export { firebase };
 export const storage = getStorage(app);

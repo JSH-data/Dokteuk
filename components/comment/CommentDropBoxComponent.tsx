@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '@firebase/firebase';
 import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 import { useSelector } from 'react-redux';
 import { RootReducer } from '@store/reducer';
 
@@ -13,6 +14,17 @@ type CommentDropBoxProps = {
   userId: string;
 };
 
+const open = keyframes`
+  from {
+    opacity: 0;
+    transform: translate3d(0, -7%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateZ(0);
+  }
+`;
+
 const CommentDropBoxDiv = styled.div`
   background-color: white;
   border: 1px solid grey;
@@ -22,6 +34,7 @@ const CommentDropBoxDiv = styled.div`
   position: absolute;
   right: 0;
   top: 20px;
+  animation: ${open} 0.3s ease;
 `;
 
 const CommentDropBoxOption = styled.div`
@@ -46,13 +59,9 @@ const CommentDropBox: React.FC<CommentDropBoxProps> = ({
   };
 
   useEffect(() => {
-    window.addEventListener('click', (event: MouseEvent) =>
-      handleClickOutside(event),
-    );
+    window.addEventListener('click', handleClickOutside);
     return () => {
-      window.removeEventListener('click', (event: MouseEvent) =>
-        handleClickOutside(event),
-      );
+      window.removeEventListener('click', handleClickOutside);
     };
   }, []);
 

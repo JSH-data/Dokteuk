@@ -26,7 +26,7 @@ const Comment: React.FC<CommentProps> = ({ id }) => {
   return (
     <section>
       <Container>
-        <CommentSum sum={sum} />
+        <CommentSum sum={sum} postId={id} />
       </Container>
       <Hr></Hr>
       <Container>

@@ -4,36 +4,25 @@ type inputProps = {
   placeholder?: string;
   defaultValue?: string;
   changeFn?: (value: string) => void;
-  type: string;
-  error: boolean;
-  errorText: string;
 };
 
-const InputComponent: React.FC<inputProps> = ({
+const CommentInputComponent: React.FC<inputProps> = ({
   placeholder,
   defaultValue,
   changeFn,
-  type,
-  error,
-  errorText,
 }) => {
   return (
     <TextField
-      style={{ width: '100%' }}
-      type={type}
+      style={{ width: '85%' }}
+      multiline
+      maxRows={4}
       placeholder={placeholder ?? placeholder}
       value={defaultValue ?? defaultValue}
       onChange={(event) => changeFn?.(event.target.value)}
-      error={error}
-      helperText={errorText}
-      sx={{ input: { backgroundColor: 'white' } }}
-      margin="normal"
+      sx={{ div: { backgroundColor: 'white', autocomplete: 'off' } }}
       focused={false}
-      inputProps={{
-        autoComplete: 'new-password',
-      }}
     />
   );
 };
 
-export default InputComponent;
+export default CommentInputComponent;
