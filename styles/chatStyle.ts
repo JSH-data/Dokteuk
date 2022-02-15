@@ -13,6 +13,83 @@ export {
   SendIcon,
 };
 
+// Chat_List
+export const ChatMain = styled.div`
+  padding-bottom: 60px;
+`;
+
+export const EmptyChatWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: clamp(0px, 80%, 680px);
+  height: 80px;
+  text-align: center;
+  margin: 20px auto;
+  border-radius: 10px;
+  background: ${({ theme }: any) =>
+    theme.customTheme.defaultMode.cardWrapperBackgroundColor};
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) =>
+      theme.customTheme.darkMode.cardWrapperBackgroundColor};
+  }
+`;
+
+export const ChatWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: clamp(0px, 80%, 680px);
+  height: 80px;
+  margin: 20px auto;
+  padding: 0 20px;
+  cursor: pointer;
+  border-radius: 10px;
+  background: ${({ theme }: any) =>
+    theme.customTheme.defaultMode.cardWrapperBackgroundColor};
+  & > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+
+  & .text {
+    width: clamp(0px, 75%, 450px);
+  }
+
+  & .userInfo {
+    display: flex;
+    font-size: 18px;
+    & .job {
+      padding-left: 10px;
+      font-size: 12px;
+      display: flex;
+      align-items: flex-end;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) =>
+      theme.customTheme.darkMode.cardWrapperBackgroundColor};
+  }
+`;
+
+export const Text = styled.div`
+  padding-left: 5px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+`;
+
+export const Notice = styled.div<NoticeProps>`
+  background: ${(props) => (props.isRead ? 'none' : 'red')};
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  margin: 0 auto;
+`;
+
+// Chat_Room
 export const NewMessage = styled.div`
   width: 100%;
   height: 30px;
@@ -51,8 +128,6 @@ export const ChatHeader = styled.div`
 
 export const ChatList = styled.div`
   padding-top: 60px;
-  height: 100vh;
-  overflow-y: scroll;
 `;
 
 export const ChatBox = styled.ul`
@@ -170,80 +245,4 @@ export const PageDownBtn = styled.button`
       theme.customTheme.darkMode.chatFromBackgroundColor};
     color: white;
   }
-`;
-
-export const ChatMain = styled.div`
-  height: calc(100vh - 120px);
-  overflow-y: scroll;
-`;
-
-export const EmptyChatWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: clamp(0px, 80%, 680px);
-  height: calc(100% - 40px);
-  text-align: center;
-  margin: 20px auto;
-  border-radius: 10px;
-  background: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.cardWrapperBackgroundColor};
-
-  @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) =>
-      theme.customTheme.darkMode.cardWrapperBackgroundColor};
-  }
-`;
-
-export const ChatWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: clamp(0px, 80%, 680px);
-  height: 80px;
-  margin: 20px auto;
-  padding: 0 20px;
-  cursor: pointer;
-  border-radius: 10px;
-  background: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.cardWrapperBackgroundColor};
-  & > div {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-  }
-
-  & .text {
-    width: clamp(0px, 75%, 450px);
-  }
-
-  & .userInfo {
-    display: flex;
-    font-size: 20px;
-    & .job {
-      padding-left: 10px;
-      font-size: 12px;
-      display: flex;
-      align-items: flex-end;
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) =>
-      theme.customTheme.darkMode.cardWrapperBackgroundColor};
-  }
-`;
-
-export const Text = styled.div`
-  padding-left: 5px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-`;
-
-export const Notice = styled.div<NoticeProps>`
-  background: ${(props) => (props.isRead ? 'none' : 'red')};
-  height: 20px;
-  width: 20px;
-  border-radius: 50%;
-  margin: 0 auto;
 `;

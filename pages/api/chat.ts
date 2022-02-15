@@ -193,14 +193,10 @@ export const sendMessage = async (
   }
 
   if (msgType === 'img' && file) {
-    uploadImg(message.id, file);
+    uploadBytes(ref(storage, `chat/${message.id}`), file).then(() => {
+      console.log('Uploaded a IMG!');
+    });
   }
-};
-
-export const uploadImg = (id: string, file: Blob | ArrayBuffer) => {
-  uploadBytes(ref(storage, `chat/${id}`), file).then(() => {
-    console.log('Uploaded a IMG!');
-  });
 };
 
 export const downloadImg = (key: string) => {

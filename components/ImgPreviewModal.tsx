@@ -45,8 +45,14 @@ const ImgPreviewModal = ({
         >
           {imgData!.src.map((img, idx) => (
             <SwiperSlide key={img as string}>
-              <Image src={img as string} alt="preview-img" />
-              <DeleteImg onClick={() => DeleteImgHandler(idx)}>X</DeleteImg>
+              <Image
+                src={img as string}
+                alt="preview-img"
+                upload={imgData!.type === 'upload'}
+              />
+              {imgData!.type === 'upload' && (
+                <DeleteImg onClick={() => DeleteImgHandler(idx)}>X</DeleteImg>
+              )}
             </SwiperSlide>
           ))}
         </SwiperStyled>
@@ -76,6 +82,7 @@ const Background = styled.div`
   position: fixed;
   z-index: 999;
   background: #000000bf;
+  scroll: hidden;
 `;
 
 const slideDown = keyframes`
@@ -109,19 +116,19 @@ const Modal = styled.div`
 `;
 
 const SwiperStyled = styled(Swiper)`
-  width: 240px;
+  width: clamp(0px, 80%, 240px);
   height: calc(100% - 80px);
 `;
 
-const Image = styled.img`
+const Image = styled.img<{ upload: boolean }>`
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background: #cecece;
+  background: ${(props) => (props.upload ? '#cecece' : 'none')};
   border-radius: 10px;
 
   @media (prefers-color-scheme: dark) {
-    background: #171717;
+    background: ${(props) => (props.upload ? '#171717' : 'none')};
   }
 `;
 

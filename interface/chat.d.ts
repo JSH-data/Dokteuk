@@ -26,11 +26,6 @@ interface ChatText {
   createAt: Timestamp;
 }
 
-interface ImgProps {
-  src: string;
-  alt: string;
-}
-
 interface NoticeProps {
   isRead: boolean;
 }
@@ -39,4 +34,9 @@ interface FileType {
   type: string;
   file: (Blob | ArrayBuffer)[];
   src: (string | ArrayBuffer | null)[];
+}
+
+interface ImgType {
+  file: Blob | ArrayBuffer;
+  src: string | ArrayBuffer | null;
 }
