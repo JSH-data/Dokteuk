@@ -35,6 +35,7 @@ export const getMyInfo = async (result: any) => {
     validRounges: result.validRounges,
     // myChattings: result.myChatting,
     hasNewNotification: result.hasNewNotification,
+    hasNewChatNotification: result.hasNewChatNotification,
     id: result.id,
     // nickname: '닉네임입니다',
     // jobSector: '외식·음료',

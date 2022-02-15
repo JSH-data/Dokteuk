@@ -1,5 +1,6 @@
-import { Fragment, useEffect, useMemo, useState } from 'react';
-import { chatList } from '../api/chat';
+import { Fragment, useCallback, useEffect, useState } from 'react';
+import { chatList, updateNotification } from '../api/chat';
+import { Unsubscribe } from 'firebase/firestore';
 import Link from 'next/link';
 import Layout from '@layouts/Layout';
 import wrapper from '@store/configureStore';
@@ -13,6 +14,19 @@ import {
 
 const Chat = ({ user }: { user: Person }) => {
   const [myChats, setMyChats] = useState<ChatRoom[]>([]);
+
+  const checkNotification = useCallback(() => {
+    return myChats.find((chat) => chat.lastVisited[user.id] < chat.updateAt);
+  }, [myChats, user.id]);
+
+  useEffect(() => {
+    if (checkNotification()) {
+      updateNotification(user.id, true);
+    } else {
+      updateNotification(user.id, false);
+    }
+  }, [checkNotification, user.id]);
+
   useEffect(() => {
     const unsubscribe = chatList(setMyChats, user);
 
@@ -36,6 +50,7 @@ const Chat = ({ user }: { user: Person }) => {
                   pathname: `/chat/${id}`,
                   query: {
                     other: other ? other.nickname : '대화방에 상대가 없습니다.',
+                    id: other ? other.id : null,
                   },
                 }}
                 as={`/chat/${id}`}

@@ -122,6 +122,7 @@ export default function Google() {
         },
       ],
       hasNewNotification: true,
+      hasNewChatNotification: true,
       posts: [],
       email: email,
     };

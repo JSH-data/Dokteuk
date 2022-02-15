@@ -134,6 +134,7 @@ export default function Signup() {
           },
         ],
         hasNewNotification: true,
+        hasNewChatNotification: true,
         posts: [],
         email: email,
       };

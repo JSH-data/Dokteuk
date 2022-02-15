@@ -86,15 +86,22 @@ const ChatRoom = ({ user }: { user: Person }) => {
 
   const onSendMessage = async (img?: ImgType) => {
     if (img) {
-      await sendMessage(chatId, img.src as string, 'img', user.id, img.file);
+      await sendMessage(
+        chatId,
+        img.src as string,
+        'img',
+        user.id,
+        id,
+        img.file,
+      );
     } else {
       const value = inputValue.current!.value;
       inputValue.current!.value = '';
-      if (messages.length === 0 && id) {
-        // 첫 메세지일 경우
-        await sendMessage(chatId, value, 'msg', user.id, undefined, id);
+      if (messages.length === 0) {
+        // 채팅방 개설하고 첫 메세지일 경우
+        await sendMessage(chatId, value, 'msg', user.id, id, undefined, id);
       } else {
-        await sendMessage(chatId, value, 'msg', user.id);
+        await sendMessage(chatId, value, 'msg', user.id, id);
       }
     }
   };

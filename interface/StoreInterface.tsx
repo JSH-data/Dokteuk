@@ -34,6 +34,7 @@ export interface UserInfo {
   jobSector: string;
   validRounges: Array<ValidPage>;
   hasNewNotification: boolean;
+  hasNewChatNotification: boolean;
   id: string;
   posts: Array<string>;
   email: string;

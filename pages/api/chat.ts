@@ -166,6 +166,7 @@ export const sendMessage = async (
   value: string,
   msgType: string,
   user: string,
+  otherId: queryType,
   file?: Blob | ArrayBuffer,
   id?: queryType,
 ) => {
@@ -197,6 +198,16 @@ export const sendMessage = async (
       console.log('Uploaded a IMG!');
     });
   }
+
+  if (otherId) {
+    updateNotification(otherId as string, true);
+  }
+};
+
+export const updateNotification = async (userId: string, value: boolean) => {
+  await updateDoc(doc(db, 'user', userId), {
+    hasNewChatNotification: value,
+  });
 };
 
 export const downloadImg = (key: string) => {
