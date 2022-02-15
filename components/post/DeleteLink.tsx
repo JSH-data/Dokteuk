@@ -38,7 +38,7 @@ export default function DeleteLink(props: any) {
   const handleConfirm = async (e: any) => {
     // e.stopPropagation();
     try {
-      const docRef = doc(db, 'posts', props.thisPost);
+      const docRef = doc(db, 'post', props.thisPost);
       await deleteDoc(docRef);
       setOpen(false);
       setModalOpen(true);
@@ -64,7 +64,9 @@ export default function DeleteLink(props: any) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{props.thisPostTitle}</DialogTitle>
+        <DialogTitle id="alert-dialog-title" style={{ wordBreak: 'break-all' }}>
+          {props.thisPostTitle}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             이 게시물을 삭제하시겠습니까?
@@ -87,7 +89,12 @@ export default function DeleteLink(props: any) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+            style={{ wordBreak: 'break-all' }}
+          >
             {props.thisPostTitle}
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
