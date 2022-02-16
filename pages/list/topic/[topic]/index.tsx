@@ -32,7 +32,6 @@ export default function TopicPage() {
   const topicType = router.query.topic as string;
 
   const { ref, inView } = useInView();
-  const [display, setDisplay] = useState(false);
 
   const [stopFetch, setStopFetch] = useState<boolean>(false); // 파이어베이스 연동시 사용
 
@@ -49,7 +48,7 @@ export default function TopicPage() {
       collection(db, 'post'),
       where('topic.url', '==', `${router.asPath.split('/')[3]}`),
       orderBy('createdAt', 'desc'),
-      limit(10),
+      limit(2),
     );
     const snapshots = await getDocs(q);
     const topics: Array<TopicPost> = [];
@@ -73,7 +72,6 @@ export default function TopicPage() {
       };
       topics.push(returnData);
     });
-    if (topics.length < 10) setStopFetch(true);
     setEnd(snapshots.docs[snapshots.docs.length - 1]);
     dispatch(
       setDataAction({
@@ -81,15 +79,32 @@ export default function TopicPage() {
         key: router.asPath.split('/')[3],
       }),
     );
+    if (topics.length < 2) {
+      setStopFetch(true);
+    }
   };
 
-  const getMoreNotification = async () => {
+  const getMoreNotification = async (lastNum: number) => {
+    const postRef = collection(db, 'post');
+    let lastSnap;
+    if (end === 0) {
+      const after = query(
+        postRef,
+        where('topic.url', '==', `${router.asPath.split('/')[3]}`),
+        orderBy('createdAt', 'desc'),
+        limit(lastNum),
+      );
+      const current = await getDocs(after);
+      lastSnap = current.docs[current.docs.length - 1];
+    } else {
+      lastSnap = end;
+    }
     const q = query(
-      collection(db, 'post'),
+      postRef,
       where('topic.url', '==', `${router.asPath.split('/')[3]}`),
       orderBy('createdAt', 'desc'),
-      limit(10),
-      startAfter(end),
+      limit(2),
+      startAfter(lastSnap),
     );
     const snapshots = await getDocs(q);
     const topics: Array<TopicPost> = [];
@@ -114,7 +129,9 @@ export default function TopicPage() {
       topics.push(returnData);
     });
 
-    if (topics.length < 10) setStopFetch(true);
+    if (topics.length < 2) {
+      setStopFetch(true);
+    }
     setEnd(snapshots.docs[snapshots.docs.length - 1]);
     dispatch(
       setDataAction({
@@ -126,43 +143,28 @@ export default function TopicPage() {
   useEffect(() => {
     if (data.length === 0 || router.asPath.split('/')[3] !== key) {
       getTopicPost();
-
-      // dispatch(
-      //   setDataAction({
-      //     data: getTopics(topicType, 'test'),
-      //     key: router.asPath.split('/')[3],
-      //   }),
-      // );
     }
   }, []);
 
   useEffect(() => {
-    if (data[0]?.title) {
-      setDisplay(true);
-    }
-  }, [data]);
-
-  useEffect(() => {
+    console.log(inView, stopFetch, data.length, key);
     if (
       inView === true &&
       stopFetch === false &&
-      data.length >= 10 &&
+      data.length >= 2 &&
       key == router.asPath.split('/')[3]
     ) {
-      // const newtPosts = getTopics(topicType, 'test');
-      getMoreNotification();
-      // dispatch(
-      //   setDataAction({
-      //     data: [...data, ...newtPosts],
-      //     key: router.asPath.split('/')[3],
-      //   }),
-      // );
+      getMoreNotification(data.length);
     }
   }, [inView]);
+
+  if (!data[0]?.title) {
+    return <Layout>로딩 중...</Layout>;
+  }
+
   return (
     <Layout>
-      {display &&
-        data.length !== 0 &&
+      {data.length !== 0 &&
         data.map((post: any, idx: number) => {
           return idx == data.length - 2 ? (
             <TestTopicCard topicCardData={post} key={idx} />
@@ -174,23 +176,3 @@ export default function TopicPage() {
     </Layout>
   );
 }
-
-// export const getServerSideProps: GetServerSideProps =
-//   wrapper.getServerSideProps((store) => async (ctx) => {
-//     const type = ctx.query.topic;
-//     const data = store.getState();
-//     console.log('@@@@@@@@@@', data.tempData, 'asdasd');
-
-//     // if (data.tempData.key !== type) {
-//     //   store.dispatch(
-//     //     setDataAction({
-//     //       data: [],
-//     //       key: type,
-//     //     }),
-//     //   );
-//     // }
-
-//     return {
-//       props: {},
-//     };
-//   });

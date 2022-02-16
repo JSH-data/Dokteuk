@@ -200,8 +200,7 @@ const rootReducer = (
           status: 'standby',
           error: '',
         };
-        console.log(action.payload.tempData, '페이로드');
-        console.log(state.tempData, '스테이트');
+
         if (action.payload.user.user.nickname) userState = action.payload.user;
         else userState = state.user;
         if (state.view.view.length === 0) {

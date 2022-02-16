@@ -25,19 +25,17 @@ import {
 import { db } from '@firebase/firebase';
 import { getDateTime } from '@utils/function';
 import { useInView } from 'react-intersection-observer';
-import { setTempDataInitializing } from '@store/reducer';
 
-const Notification: NextPage = ({
-  userId,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  // const userInfo = useSelector((state: RootReducer) => state.user.user);
+const Notification: NextPage = () => {
   const { data, key } = useSelector(
     (state: RootReducer) => state.tempData.tempData,
   );
 
+  const { user } = useSelector((state: RootReducer) => state.user);
+
   const [stopFetch, setStopFetch] = useState<boolean>(false); // 파이어베이스 연동시 사용
   const [end, setEnd] = useState<any>(0);
-  const [display, setDisplay] = useState(false);
+  // const [display, setDisplay] = useState(true);
 
   const { ref, inView } = useInView();
 
@@ -46,16 +44,16 @@ const Notification: NextPage = ({
   const getNotification = async () => {
     const q = await query(
       collection(db, 'notification'),
-      where('userId', '==', `${userId}`),
+      where('userId', '==', `${user.id}`),
       orderBy('createdAt', 'desc'),
-      limit(10),
+      limit(2),
     );
     const snapshots = await getDocs(q);
     const dataArr: any = [];
     snapshots.forEach((snapshot) => {
       dataArr.push(snapshot.data());
     });
-    if (dataArr.length < 10) setStopFetch(true);
+    if (dataArr.length < 2) setStopFetch(true);
 
     setEnd(snapshots.docs[snapshots.docs.length - 1]);
     dispatch(
@@ -66,27 +64,42 @@ const Notification: NextPage = ({
     );
   };
 
-  useEffect(() => {
-    if (data[0]?.postUrl) {
-      setDisplay(true);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data[0]?.postUrl) {
+  //     setDisplay(true);
+  //   }
+  // }, [data]);
 
-  const getMoreNotification = async () => {
+  const getMoreNotification = async (lastNum: number) => {
+    const notiRef = collection(db, 'notification');
+    let lastSnap;
+    if (end === 0) {
+      const after = query(
+        notiRef,
+        where('userId', '==', `${user.id}`),
+        orderBy('createdAt', 'desc'),
+        limit(lastNum),
+      );
+      const current = await getDocs(after);
+      lastSnap = current.docs[current.docs.length - 1];
+    } else {
+      lastSnap = end;
+    }
+
     const q = query(
-      collection(db, 'notification'),
-      where('userId', '==', `${userId}`),
+      notiRef,
+      where('userId', '==', `${user.id}`),
       orderBy('createdAt', 'desc'),
-      limit(10),
-      startAfter(end),
+      limit(2),
+      startAfter(lastSnap),
     );
     const snapshots = await getDocs(q);
     const dataArr: any = [];
     snapshots.forEach((snapshot) => {
       dataArr.push(snapshot.data());
     });
-
-    if (dataArr.length < 10) setStopFetch(true);
+    setEnd(snapshots.docs[snapshots.docs.length - 1]);
+    if (dataArr.length < 2) setStopFetch(true);
 
     dispatch(
       setDataAction({
@@ -103,20 +116,23 @@ const Notification: NextPage = ({
   }, []);
 
   useEffect(() => {
-    notificationCheck(userId);
+    notificationCheck(user.id);
   }, []);
 
   useEffect(() => {
     if (
       inView === true &&
       stopFetch === false &&
-      data.length >= 10 &&
+      data.length >= 2 &&
       key == 'notification'
     ) {
-      console.log(inView, stopFetch, data.length);
-      getMoreNotification();
+      getMoreNotification(data.length);
     }
   }, [inView]);
+
+  if (!data[0]?.postUrl) {
+    return <Layout>로딩 중...</Layout>;
+  }
 
   return (
     <>
@@ -128,8 +144,7 @@ const Notification: NextPage = ({
       <Layout>
         <Container>
           <div style={{ marginTop: '30px' }}>
-            {display &&
-              data.length != 0 &&
+            {data.length != 0 &&
               data.map((v: any, i: number) => (
                 <NotificationCard
                   key={i}
@@ -150,32 +165,29 @@ const Notification: NextPage = ({
 };
 export default Notification;
 
-export const getServerSideProps: GetServerSideProps =
-  wrapper.getServerSideProps((store) => async (ctx) => {
-    console.log('버튼클릭 서버');
+// export const getServerSideProps: GetServerSideProps =
+//   wrapper.getServerSideProps((store) => async (ctx) => {
+//     const data = store.getState();
 
-    const data = store.getState();
-    console.log('@@@@@@@@@@', data.tempData, 'asdasd');
-    if (data.tempData.key !== 'notification') {
-      console.log('sss');
-      await store.dispatch(
-        setTempDataInitializing({
-          data: [],
-          key: 'notification',
-        }),
-      );
-    }
+//     if (data.tempData.key !== 'notification') {
+//       await store.dispatch(
+//         setTempDataInitializing({
+//           data: [],
+//           key: 'notification',
+//         }),
+//       );
+//     }
 
-    if (data.user.user.nickname == '') {
-      return {
-        redirect: {
-          destination: '/user/login',
-          permanent: false,
-        },
-      };
-    }
+//     if (data.user.user.nickname == '') {
+//       return {
+//         redirect: {
+//           destination: '/user/login',
+//           permanent: false,
+//         },
+//       };
+//     }
 
-    return {
-      props: { userId: data.user.user.id },
-    };
-  });
+//     return {
+//       props: { userId: data.user.user.id },
+//     };
+//   });
