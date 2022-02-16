@@ -18,7 +18,6 @@ import {
 import {
   NewMessage,
   ChatHeader,
-  ChatList,
   ChatBox,
   ChatText,
   ChatImg,
@@ -27,6 +26,9 @@ import {
   InputBox,
   SendIconStyled,
   PageDownBtn,
+  DateWrapper,
+  Line,
+  Date,
   KeyboardArrowDownIcon,
   ArrowBackIosNewIcon,
   DensityMediumIcon,
@@ -34,6 +36,7 @@ import {
 } from '../../styles/chatStyle';
 import { useRouter } from 'next/router';
 import { Timestamp } from 'firebase/firestore';
+import { getDate } from '../../utils/function';
 import { encodeFile } from '../../utils/upload';
 import wrapper from '@store/configureStore';
 import debounce from 'lodash/debounce';
@@ -214,30 +217,47 @@ const ChatRoom = ({ user }: { user: Person }) => {
         <div>{other}</div>
         <DensityMediumIcon onClick={onToggle} />
       </ChatHeader>
-      <ChatList ref={listRef}>
+      <div ref={listRef}>
         <ChatBox>
-          {reversedMessages.map(({ id, from, msg, img }) => (
-            <ChatText className={from === user.id ? 'mine' : ''} key={id}>
-              {msg ? (
-                msg
-              ) : (
-                <ChatImg
-                  src={img as string}
-                  alt="preview-img"
-                  onClick={() =>
-                    setImgData({
-                      type: id as string,
-                      file: [],
-                      src: [img as string],
-                    })
-                  }
-                />
+          {reversedMessages.map(({ id, from, msg, img, createAt }, idx) => (
+            <div key={id}>
+              {(idx === 0 ||
+                getDate(createAt).isAnotherDay(
+                  reversedMessages[idx - 1].createAt,
+                )) && (
+                <DateWrapper>
+                  <Line />
+                  <Date>
+                    {`${
+                      getDate(createAt).isAnotherYear()
+                        ? `${getDate(createAt).year}년 `
+                        : ``
+                    }${getDate(createAt).month}월 ${getDate(createAt).date}일`}
+                  </Date>
+                </DateWrapper>
               )}
-            </ChatText>
+              <ChatText className={from === user.id ? 'mine' : ''}>
+                {msg ? (
+                  msg
+                ) : (
+                  <ChatImg
+                    src={img as string}
+                    alt="preview-img"
+                    onClick={() =>
+                      setImgData({
+                        type: id as string,
+                        file: [],
+                        src: [img as string],
+                      })
+                    }
+                  />
+                )}
+              </ChatText>
+            </div>
           ))}
           <div ref={bottomRef} />
         </ChatBox>
-      </ChatList>
+      </div>
       <ChatInputWrapper className="input">
         {!isBottom && !newMessage && (
           <PageDownBtn onClick={onPageDown}>

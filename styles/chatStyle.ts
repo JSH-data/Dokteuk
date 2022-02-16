@@ -118,13 +118,8 @@ export const ChatHeader = styled.div`
   }
 `;
 
-export const ChatList = styled.div`
-  padding-top: 60px;
-`;
-
 export const ChatBox = styled.ul`
-  padding: 30px;
-  padding-bottom: 90px;
+  padding: 60px 30px 90px 30px;
   margin: 0;
   color: black;
 `;
@@ -227,5 +222,37 @@ export const PageDownBtn = styled.button`
   @media (prefers-color-scheme: dark) {
     background: ${({ theme }: any) => theme.blackGray};
     color: white;
+  }
+`;
+
+export const DateWrapper = styled.div`
+  height: 20px;
+  padding: 50px 0 30px 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+export const Line = styled.div`
+  width: 100%;
+  border-bottom: 1px solid ${({ theme }: any) => theme.lightGray};
+
+  @media (prefers-color-scheme: dark) {
+    border-bottom: 1px solid ${({ theme }: any) => theme.darkGray};
+  }
+`;
+
+export const Date = styled.div`
+  position: absolute;
+  padding: 0 20px;
+  left: 50%;
+  transform: translate(-50%);
+  font-size: 14px;
+  color: ${({ theme }: any) => theme.middleGray};
+  background: ${({ theme }: any) => theme.whiteGray};
+
+  @media (prefers-color-scheme: dark) {
+    background: #111113;
+    color: ${({ theme }: any) => theme.lightGray};
   }
 `;

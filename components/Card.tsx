@@ -459,7 +459,7 @@ export const TopicCard = forwardRef(function TopicCardWithRef(
                     </CardAuthorNickname>
                   </CardAuthorJobSectorWrapperStyled>
                 </TopicCardContentWrapper>
-                {topicCardData.images.length !== 0 && (
+                {topicCardData.images && topicCardData.images.length !== 0 && (
                   <ImgComponent urls={topicCardData.images} />
                 )}
               </TopicCardMainStyled>

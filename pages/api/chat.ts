@@ -1,6 +1,5 @@
 import {
   collection,
-  getDoc,
   doc,
   onSnapshot,
   addDoc,

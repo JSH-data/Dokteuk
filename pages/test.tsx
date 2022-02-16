@@ -34,8 +34,8 @@ const Test: NextPage = () => {
 
   const counter = {
     nickname: 'test',
-    id: 'DY5rKFODWEdrTtV0AL1XzBtjNPE3',
-    jobSector: '사무직',
+    id: 'x8DRFXmtC8ReDKlTAtIsRyjEKKF3',
+    jobSector: '서비스',
   };
 
   const postData = {
@@ -50,8 +50,8 @@ const Test: NextPage = () => {
         { nickname, id, jobSector },
         {
           nickname: 'test',
-          id: 'DY5rKFODWEdrTtV0AL1XzBtjNPE3',
-          jobSector: '사무직',
+          id: 'x8DRFXmtC8ReDKlTAtIsRyjEKKF3',
+          jobSector: '서비스',
         },
       ],
       lastVisited: { [id]: Timestamp.now(), [counter.id]: Timestamp.now() },

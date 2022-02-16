@@ -20,6 +20,7 @@ import {
   where,
   startAt,
   startAfter,
+  Timestamp,
 } from 'firebase/firestore';
 import { faker } from '@faker-js/faker';
 import { getAuth } from 'firebase/auth';
@@ -522,4 +523,26 @@ export const getDateTime = (dateNumberString: string): string => {
     return `${dateObject.getMonth() + 1}.${dateObject.getDate()}`;
   }
   return '';
+};
+
+export const getDate = (time: Timestamp) => {
+  const now = Timestamp.now().toDate().getFullYear();
+  const year = time.toDate().getFullYear();
+  const month = time.toDate().getMonth() + 1;
+  const date = time.toDate().getDate();
+
+  return {
+    isAnotherDay: (prevTime: Timestamp) => {
+      const prevYear = prevTime.toDate().getFullYear();
+      const prevMonth = prevTime.toDate().getMonth() + 1;
+      const prevDate = prevTime.toDate().getDate();
+      return year > prevYear || month > prevMonth || date > prevDate;
+    },
+    isAnotherYear: () => {
+      return now !== year;
+    },
+    year,
+    month,
+    date,
+  };
 };

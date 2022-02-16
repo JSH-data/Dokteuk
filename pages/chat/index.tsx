@@ -1,5 +1,6 @@
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { chatList, updateNotification } from '../api/chat';
+import { getDateTime } from '../../utils/function';
 import Link from 'next/link';
 import Layout from '@layouts/Layout';
 import wrapper from '@store/configureStore';
@@ -70,9 +71,9 @@ const Chat = ({ user }: { user: Person }) => {
                     <Text>{lastChat}</Text>
                   </div>
                   <div>
-                    <div>{`${updateAt.toDate().getMonth() + 1}월 ${updateAt
-                      .toDate()
-                      .getDate()}일`}</div>
+                    <div>
+                      {getDateTime((updateAt.seconds * 1000).toString())}
+                    </div>
                     <Notice isRead={lastVisited[user.id] >= updateAt} />
                   </div>
                 </ChatWrapper>
