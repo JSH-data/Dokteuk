@@ -23,13 +23,10 @@ const MyPageheader = styled.div`
   font-size: 1.2rem;
   line-height: 1.2rem;
   font-weight: bold;
-  background-color: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.footerMenuBackgroundColor};
+  background-color: ${({ theme }: any) => theme.mainColorViolet};
   @media (prefers-color-scheme: dark) {
-    background-color: ${({ theme }: any) =>
-      theme.customTheme.darkMode.footerMenuBackgroundColor};
-    ${({ theme }: any) =>
-      `border-top: 2px solid ${theme.customTheme.darkMode.footerBordertopColor};`};
+    background-color: ${({ theme }: any) => theme.mainColorBlack};
+    ${({ theme }: any) => `border-top: 2px solid ${theme.blackGray};`};
   }
 `;
 

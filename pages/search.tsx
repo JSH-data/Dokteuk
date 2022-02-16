@@ -171,8 +171,7 @@ export const getServerSideProps: GetServerSideProps = async (
 export default WrappedSearch;
 
 const SearchPageWrapperDiv = styled.div`
-  background-color: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.searchPageWrapperBackgroundColor};
+  background-color: ${({ theme }: any) => theme.whiteGray};
   color: rgb(81, 81, 83);
   display: flex;
   flex-direction: column;
@@ -185,8 +184,7 @@ const SearchPageWrapperDiv = styled.div`
   // border-top: solid 1px rgb(59, 59, 61);
   // border-bottom: solid 1px rgb(59, 59, 61);
   @media (prefers-color-scheme: dark) {
-    background-color: ${({ theme }: any) =>
-      theme.customTheme.darkMode.searchPageWrapperBackgroundColor};
+    background-color: ${({ theme }: any) => theme.mainColorBlack};
   }
 `;
 const SearchResultsWrapperDiv = styled.div`
@@ -195,28 +193,22 @@ const SearchResultsWrapperDiv = styled.div`
 `;
 
 const SearchWrapperStyled = styled.div`
-  background-color: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.headerMenuBackgroundColor};
+  background-color: ${({ theme }: any) => theme.mainColorViolet};
   height: 60px;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  ${({ theme }: any) =>
-    `border-bottom: 2px solid ${theme.customTheme.defaultMode.searchWrapperBorderBottomColor}`};
+  ${({ theme }: any) => `border-bottom: 2px solid ${theme.whiteGray}`};
   @media (prefers-color-scheme: dark) {
-    background-color: ${({ theme }: any) =>
-      theme.customTheme.darkMode.headerMenuBackgroundColor};
-    ${({ theme }: any) =>
-      `border-bottom: 2px solid ${theme.customTheme.darkMode.searchWrapperBorderBottomColor}`};
+    background-color: ${({ theme }: any) => theme.mainColorBlack};
+    ${({ theme }: any) => `border-bottom: 2px solid ${theme.blackGray}`};
   }
 `;
 const InputStyled = styled.input`
-  background-color: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.searchInputBackgroundColor};
-  color: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.searchInputTextColor};
+  background-color: white;
+  color: black;
   border: 0;
   border-radius: 10px;
   height: 30px;
@@ -226,10 +218,8 @@ const InputStyled = styled.input`
   padding-left: 36px;
   transition: 0.3s;
   @media (prefers-color-scheme: dark) {
-    background-color: ${({ theme }: any) =>
-      theme.customTheme.darkMode.searchInputBackgroundColor};
-    color: ${({ theme }: any) =>
-      theme.customTheme.darkMode.searchInputTextColor};
+    background-color: ${({ theme }: any) => theme.blackGray};
+    color: ${({ theme }: any) => theme.middleGray};
   }
 `;
 

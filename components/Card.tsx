@@ -22,8 +22,7 @@ const Wrapper = styled.div`
 `;
 const CardWrapper = styled.div`
   width: 100%;
-  background-color: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.cardWrapperBackgroundColor};
+  background-color: white;
   height: 200px;
   border-radius: 10px;
   margin: 17px 8px 0 8px;
@@ -35,8 +34,7 @@ const CardWrapper = styled.div`
   align-items: center;
   max-width: 680px;
   @media (prefers-color-scheme: dark) {
-    background-color: ${({ theme }: any) =>
-      theme.customTheme.darkMode.cardWrapperBackgroundColor};
+    background-color: ${({ theme }: any) => theme.mainColorBlack};
   }
 `;
 const OneDepthNestedLink = styled(Link)`
@@ -49,19 +47,15 @@ const TopicWrapperDivStyled = styled.div`
     font-size: 8px;
     font-weight: 500;
     margin-bottom: 4px;
-    background-color: ${({ theme }: any) =>
-      theme.customTheme.defaultMode.topicWrapperBackgroundColor};
+    background-color: ${({ theme }: any) => theme.mainColorViolet};
     border-radius: 20px;
     padding: 4px 12px 4px 12px;
-    color: ${({ theme }: any) =>
-      theme.customTheme.defaultMode.topicWrapperTextColor};
+    color: black;
   }
   @media (prefers-color-scheme: dark) {
     & div {
-      background-color: ${({ theme }: any) =>
-        theme.customTheme.darkMode.topicWrapperBackgroundColor};
-      color: ${({ theme }: any) =>
-        theme.customTheme.darkMode.topicWrapperTextColor};
+      background-color: ${({ theme }: any) => theme.blackGray};
+      color: ${({ theme }: any) => theme.lightGray};
       // color: red;
     }
   }

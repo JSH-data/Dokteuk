@@ -317,12 +317,34 @@ const Main = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
+  padding-bottom: 30px;
 `;
 
 const WrapContents = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  & .MuiOutlinedInput-input {
+    color: black;
+  }
+  & .MuiOutlinedInput-root {
+    border: 1px solid ${({ theme }: any) => theme.darkGray};
+  }
+
+  @media (prefers-color-scheme: dark) {
+    & .MuiOutlinedInput-input {
+      color: white;
+    }
+    & .MuiOutlinedInput-root {
+      border: 1px solid ${({ theme }: any) => theme.lightGray};
+    }
+    & .MuiFormHelperText-root {
+      color: ${({ theme }: any) => theme.lightGray};
+    }
+    & .MuiSvgIcon-root {
+      color: ${({ theme }: any) => theme.lightGray};
+    }
+  }
 `;
 
 const WrapInput = styled.div`

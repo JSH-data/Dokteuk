@@ -1,14 +1,12 @@
 import styled from '@emotion/styled';
 
 const ChattingWrapperDivStyled = styled.div`
-  background-color: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.headerMenuBackgroundColor};
+  background-color: ${({ theme }: any) => theme.mainColorViolet};
   height: 60px;
   width: 100%;
 
   @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) =>
-      theme.customTheme.darkMode.headerMenuBackgroundColor};
+    background: ${({ theme }: any) => theme.mainColorBlack};
   }
 `;
 

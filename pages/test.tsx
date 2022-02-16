@@ -20,78 +20,52 @@
 // };
 // export default Test;
 import type { NextPage } from 'next';
-import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootReducer } from '@store/reducer';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
 import { db } from '@firebase/firebase';
 import { useRouter } from 'next/router';
-import Comment from '@components/comment/Comment';
 
 const Test: NextPage = () => {
-  // const router = useRouter();
-  // const { nickname, id, jobSector } = useSelector(
-  //   (state: RootReducer) => state.user.user,
-  // );
+  const router = useRouter();
+  const { nickname, id, jobSector } = useSelector(
+    (state: RootReducer) => state.user.user,
+  );
 
-  // const counter = {
-  //   nickname: '닉네임',
-  //   id: '아이디',
-  //   jobSector: '닉네임',
-  // };
+  const counter = {
+    nickname: 'test',
+    id: 'DY5rKFODWEdrTtV0AL1XzBtjNPE3',
+    jobSector: '사무직',
+  };
 
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  // const chatOpen = async () => {
-  //   const chatRoom = await addDoc(collection(db, 'chat'), {
-  //     users: [
-  //       { nickname, id, jobSector },
-  //       {
-  //         nickname: counter.nickname,
-  //         id: counter.id,
-  //         jobSector: counter.jobSector,
-  //       },
-  //     ],
-  //     lastVisited: { [id]: Timestamp.now(), [counter.id]: Timestamp.now() },
-  //     userIds: [id],
-  //   });
-  //   router.push(
-  //     `/chat/${chatRoom.id}?other=${counter.nickname}&id=${counter.id}`,
-  //     `/chat/${chatRoom.id}`,
-  //   );
-  // };
+  const chatOpen = async () => {
+    const chatRoom = await addDoc(collection(db, 'chat'), {
+      users: [
+        { nickname, id, jobSector },
+        {
+          nickname: 'test',
+          id: 'DY5rKFODWEdrTtV0AL1XzBtjNPE3',
+          jobSector: '사무직',
+        },
+      ],
+      lastVisited: { [id]: Timestamp.now(), [counter.id]: Timestamp.now() },
+      userIds: [id],
+    });
+    router.push(
+      `/chat/${chatRoom.id}?other=${counter.nickname}&id=${counter.id}`,
+      `/chat/${chatRoom.id}`,
+    );
+  };
   return (
-    <>
-      {/* <input
-        type={'text'}
-        value={title}
-        onChange={(e) => {
-          setTitle(e.currentTarget.value);
-        }}
-      />
-      <input
-        type={'text'}
-        value={content}
-        onChange={(e) => {
-          setContent(e.currentTarget.value);
-        }}
-      />
+    <div>
       <button
-        type={'button'}
-        onClick={async () => {
-          // console.log(content, title);
-          await addDoc(collection(db, 'post'), {
-            content,
-            title,
-            timestamp: Timestamp.now(),
-            userId: 'OqsoJIxuNqNFnHPc2ifZAcG4t3f1',
-          });
+        onClick={() => {
+          chatOpen();
         }}
       >
-        더미{' '}
-      </button> */}
-      <Comment id="asdasdasd" />
-    </>
+        채팅방 열기
+      </button>
+    </div>
   );
 };
 export default Test;

@@ -122,6 +122,21 @@ const WrapContents = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  & .MuiOutlinedInput-input {
+    color: black;
+  }
+  & .MuiOutlinedInput-root {
+    border: 1px solid ${({ theme }: any) => theme.darkGray};
+  }
+  @media (prefers-color-scheme: dark) {
+    & .MuiOutlinedInput-input {
+      color: white;
+    }
+    & .MuiOutlinedInput-root {
+      border: 1px solid ${({ theme }: any) => theme.lightGray};
+    }
+  }
 `;
 
 const WrapInput = styled.div`

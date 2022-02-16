@@ -9,8 +9,7 @@ import { useSelector } from 'react-redux';
 import { UserState, ValidRounge, UserInfo } from '@interface/StoreInterface';
 import { RootReducer } from '../../store/reducer';
 const SwiperStyled = styled(Swiper)`
-  background-color: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.headerMenuBackgroundColor};
+  background-color: ${({ theme }: any) => theme.mainColorViolet};
   height: 60px;
   width: 100%;
   & .swiper-pagination-bullet {
@@ -24,8 +23,7 @@ const SwiperStyled = styled(Swiper)`
   }
   & .swiper-slide {
     // color: rgba(93, 93, 95, 0.9); // swiper 양 옆 글자 색
-    color: ${({ theme }: any) =>
-      theme.customTheme.defaultMode.swiperSlideTextColor};
+    color: ${({ theme }: any) => theme.lightGray};
     text-align: center;
     font-size: 0.8rem;
     line-height: 1.6rem;
@@ -41,11 +39,9 @@ const SwiperStyled = styled(Swiper)`
     margin-top: 16px;
   }
   @media (prefers-color-scheme: dark) {
-    background-color: ${({ theme }: any) =>
-      theme.customTheme.darkMode.headerMenuBackgroundColor};
+    background-color: ${({ theme }: any) => theme.mainColorBlack};
     & .swiper-slide {
-      color: ${({ theme }: any) =>
-        theme.customTheme.darkMode.swiperSlideTextColor};
+      color: ${({ theme }: any) => theme.darkGray};
     }
     & .swiper-slide-active {
       color: rgba(255, 255, 255, 0.9);

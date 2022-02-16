@@ -21,10 +21,8 @@ export const MyPageProfileComponent = styled.article`
     opacity: 0.8;
   }
 
-  background-color: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.cardWrapperBackgroundColor};
+  background-color: white;
   @media (prefers-color-scheme: dark) {
-    background-color: ${({ theme }: any) =>
-      theme.customTheme.darkMode.cardWrapperBackgroundColor};
+    background-color: ${({ theme }: any) => theme.mainColorBlack};
   }
 `;

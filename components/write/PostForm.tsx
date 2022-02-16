@@ -9,6 +9,7 @@ import {
   Typography,
   TextField,
   Modal,
+  styled,
 } from '@mui/material';
 import {
   getStorage,
@@ -51,6 +52,39 @@ import { StoreState, UserState } from '@interface/StoreInterface';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { ValidRounge } from '../../interface/StoreInterface';
 import Layout from '@layouts/Layout';
+
+const ContainerStyled = styled(Container)`
+  & .MuiInput-input {
+    color: black;
+  }
+  & .MuiInput-root {
+    border-bottom: 1px solid black;
+  }
+  & label {
+    color: ${({ theme }: any) => theme.darkGray};
+  }
+  & .MuiOutlinedInput-notchedOutline {
+    border: 1px solid black;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    & .MuiInput-input {
+      color: white;
+    }
+    & label {
+      color: ${({ theme }: any) => theme.lightGray};
+    }
+    & .MuiInput-root {
+      border-bottom: 1px solid white;
+    }
+    & .MuiOutlinedInput-notchedOutline {
+      border: 1px solid white;
+    }
+    & .MuiSvgIcon-root {
+      color: white;
+    }
+  }
+`;
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -383,7 +417,7 @@ const PostForm = ({ from }: { from: string }) => {
 
   return (
     <Layout>
-      <Container maxWidth="sm">
+      <ContainerStyled maxWidth="sm">
         <Box sx={{ minWidth: 120, mt: 6 }}>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">등록위치</InputLabel>
@@ -628,7 +662,7 @@ const PostForm = ({ from }: { from: string }) => {
             </Typography>
           </Box>
         </Modal>
-      </Container>
+      </ContainerStyled>
     </Layout>
   );
 };

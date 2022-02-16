@@ -100,8 +100,7 @@ const Modal = styled.div`
   width: clamp(0px, 80%, 680px);
   height: 80%;
   padding: 30px 15px;
-  background-color: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.chatFromBackgroundColor};
+  background-color: ${({ theme }: any) => theme.whiteGray};
   border-radius: 14px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   animation: ${slideDown} 0.5s ease-out forwards;
@@ -110,8 +109,7 @@ const Modal = styled.div`
   flex-direction: column;
 
   @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) =>
-      theme.customTheme.darkMode.chatFromBackgroundColor};
+    background: ${({ theme }: any) => theme.blackGray};
   }
 `;
 
@@ -146,8 +144,7 @@ const ButtonWrapper = styled.div`
     height: 50px;
   }
   & button.send {
-    background: ${({ theme }: any) =>
-      theme.customTheme.defaultMode.chatToBackgroundColor};
+    background: ${({ theme }: any) => theme.mainColorPink};
   }
 
   @media (prefers-color-scheme: dark) {
@@ -155,8 +152,7 @@ const ButtonWrapper = styled.div`
       color: white;
     }
     & button.send {
-      background: ${({ theme }: any) =>
-        theme.customTheme.darkMode.chatToBackgroundColor};
+      background: ${({ theme }: any) => theme.mainColorBlue};
     }
   }
 `;

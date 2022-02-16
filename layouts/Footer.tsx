@@ -13,8 +13,7 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { StoreState } from '@interface/StoreInterface';
 
 const FooterDiv = styled.footer`
-  ${({ theme }: any) =>
-    `border-top: 2px solid ${theme.customTheme.defaultMode.footerBordertopColor};`};
+  ${({ theme }: any) => `border-top: 2px solid ${theme.whiteGray};`};
 
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -26,60 +25,55 @@ const FooterDiv = styled.footer`
   bottom: 0;
   position: fixed;
   z-index: 99;
-  background-color: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.footerMenuBackgroundColor};
+  background-color: ${({ theme }: any) => theme.mainColorViolet};
   @media (prefers-color-scheme: dark) {
-    background-color: ${({ theme }: any) =>
-      theme.customTheme.darkMode.footerMenuBackgroundColor};
-    ${({ theme }: any) =>
-      `border-top: 2px solid ${theme.customTheme.darkMode.footerBordertopColor};`};
+    background-color: ${({ theme }: any) => theme.mainColorBlack};
+    ${({ theme }: any) => `border-top: 2px solid ${theme.blackGray};`};
   }
 `;
 const FooterDivNotLoggedIn = styled(FooterDiv)`
   grid-template-columns: 1fr 1fr 1fr;
 `;
 const HomeOutlinedIconStyled = styled(HomeOutlinedIcon)`
-  color: ${({ theme }: any) => theme.customTheme.defaultMode.footerIconColor};
+  color: white;
   @media (prefers-color-scheme: dark) {
-    color: ${({ theme }: any) => theme.customTheme.darkMode.footerIconColor};
+    color: ${({ theme }: any) => theme.middleGray};
   }
 `;
 const SearchOutlinedIconStyled = styled(SearchOutlinedIcon)`
-  color: ${({ theme }: any) => theme.customTheme.defaultMode.footerIconColor};
+  color: white;
   @media (prefers-color-scheme: dark) {
-    color: ${({ theme }: any) => theme.customTheme.darkMode.footerIconColor};
+    color: ${({ theme }: any) => theme.middleGray};
   }
 `;
 
 const ForumOutlinedIconStyled = styled(ForumOutlinedIcon)`
-  color: ${({ theme }: any) => theme.customTheme.defaultMode.footerIconColor};
+  color: white;
   @media (prefers-color-scheme: dark) {
-    color: ${({ theme }: any) => theme.customTheme.darkMode.footerIconColor};
+    color: ${({ theme }: any) => theme.middleGray};
   }
 `;
 const NotificationsNoneOutlinedIconStyled = styled(
   NotificationsNoneOutlinedIcon,
 )`
-  color: ${({ theme }: any) => theme.customTheme.defaultMode.footerIconColor};
+  color: white;
   @media (prefers-color-scheme: dark) {
-    color: ${({ theme }: any) => theme.customTheme.darkMode.footerIconColor};
+    color: ${({ theme }: any) => theme.middleGray};
   }
 `;
 const MoreHorizOutlinedIconStyled = styled(MoreHorizOutlinedIcon)`
-  color: ${({ theme }: any) => theme.customTheme.defaultMode.footerIconColor};
+  color: white;
   @media (prefers-color-scheme: dark) {
-    color: ${({ theme }: any) => theme.customTheme.darkMode.footerIconColor};
+    color: ${({ theme }: any) => theme.middleGray};
   }
 `;
 const BorderColorOutlinedIconStyled = styled(BorderColorOutlinedIcon)`
   // color: rgba(247, 227, 227, 1);
-  background-color: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.footerWriteIconBackgroundColor};
+  background-color: ${({ theme }: any) => theme.mainColorVioletLight};
   border-radius: 50%;
   padding: 1px;
   @media (prefers-color-scheme: dark) {
-    background-color: ${({ theme }: any) =>
-      theme.customTheme.darkMode.footerWriteIconBackgroundColor};
+    background-color: ${({ theme }: any) => theme.mainColorRed};
   }
 `;
 const DivStyled = styled.div`
@@ -89,9 +83,9 @@ const NotLoggedInElementWrapperDivStyled = styled.div`
   display: flex;
   justify-content: center;
   gap: 4px;
-  color: ${({ theme }: any) => theme.customTheme.defaultMode.footerIconColor};
+  color: white;
   @media (prefers-color-scheme: dark) {
-    color: ${({ theme }: any) => theme.customTheme.darkMode.footerIconColor};
+    color: ${({ theme }: any) => theme.middleGray};
   }
 `;
 const Footer = () => {

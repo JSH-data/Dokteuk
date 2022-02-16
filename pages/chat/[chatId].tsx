@@ -1,6 +1,5 @@
 import {
   ChangeEvent,
-  Fragment,
   useCallback,
   useEffect,
   useMemo,
@@ -289,7 +288,7 @@ const ChatRoom = ({ user }: { user: Person }) => {
 export default ChatRoom;
 
 export const getServerSideProps = wrapper.getServerSideProps(
-  (store) => async (ctx) => {
+  (store) => async () => {
     const data = store.getState();
 
     if (data.user.user.nickname == '') {

@@ -27,12 +27,10 @@ export const EmptyChatWrapper = styled.div`
   text-align: center;
   margin: 20px auto;
   border-radius: 10px;
-  background: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.cardWrapperBackgroundColor};
+  background: white;
 
   @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) =>
-      theme.customTheme.darkMode.cardWrapperBackgroundColor};
+    background: ${({ theme }: any) => theme.mainColorBlack};
   }
 `;
 
@@ -45,8 +43,7 @@ export const ChatWrapper = styled.div`
   padding: 0 20px;
   cursor: pointer;
   border-radius: 10px;
-  background: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.cardWrapperBackgroundColor};
+  background: white;
   & > div {
     display: flex;
     flex-direction: column;
@@ -69,8 +66,7 @@ export const ChatWrapper = styled.div`
   }
 
   @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) =>
-      theme.customTheme.darkMode.cardWrapperBackgroundColor};
+    background: ${({ theme }: any) => theme.mainColorBlack};
   }
 `;
 
@@ -99,12 +95,10 @@ export const NewMessage = styled.div`
   left: 0;
   bottom: 60px;
   cursor: pointer;
-  background: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.chatToBackgroundColor};
+  background: ${({ theme }: any) => theme.mainColorPink};
 
   @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) =>
-      theme.customTheme.darkMode.chatToBackgroundColor};
+    background: ${({ theme }: any) => theme.mainColorBlue};
   }
 `;
 
@@ -116,13 +110,11 @@ export const ChatHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 60px;
-  background: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.headerMenuBackgroundColor};
+  background: ${({ theme }: any) => theme.mainColorViolet};
   padding: 0 20px;
 
   @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) =>
-      theme.customTheme.darkMode.headerMenuBackgroundColor};
+    background: ${({ theme }: any) => theme.mainColorBlack};
   }
 `;
 
@@ -138,11 +130,9 @@ export const ChatBox = styled.ul`
 `;
 
 export const ChatText = styled.li`
-  color: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.searchInputTextColor};
+  color: black;
   list-style: none;
-  background: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.chatFromBackgroundColor};
+  background: white;
   padding: 20px;
   width: 50%;
   min-height: 60px;
@@ -151,18 +141,15 @@ export const ChatText = styled.li`
   border-radius: 20px;
   box-shadow: 0px 1px 1px 0 #00000036;
   &.mine {
-    background: ${({ theme }: any) =>
-      theme.customTheme.defaultMode.chatToBackgroundColor};
+    background: ${({ theme }: any) => theme.mainColorPink};
     margin-left: auto;
   }
 
   @media (prefers-color-scheme: dark) {
     color: white;
-    background: ${({ theme }: any) =>
-      theme.customTheme.darkMode.chatFromBackgroundColor};
+    background: ${({ theme }: any) => theme.blackGray};
     &.mine {
-      background: ${({ theme }: any) =>
-        theme.customTheme.darkMode.chatToBackgroundColor};
+      background: ${({ theme }: any) => theme.mainColorBlue};
     }
   }
 `;
@@ -179,13 +166,11 @@ export const ChatInputWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 60px;
-  background: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.footerMenuBackgroundColor};
+  background: ${({ theme }: any) => theme.mainColorViolet};
   padding: 0 20px;
 
   @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) =>
-      theme.customTheme.darkMode.footerMenuBackgroundColor};
+    background: ${({ theme }: any) => theme.mainColorBlack};
   }
 `;
 
@@ -237,12 +222,10 @@ export const PageDownBtn = styled.button`
   bottom: 80px;
   right: 30px;
   box-shadow: 0px 1px 1px 0 #00000036;
-  background: ${({ theme }: any) =>
-    theme.customTheme.defaultMode.chatFromBackgroundColor};
+  background: ${({ theme }: any) => theme.whiteGray};
 
   @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) =>
-      theme.customTheme.darkMode.chatFromBackgroundColor};
+    background: ${({ theme }: any) => theme.blackGray};
     color: white;
   }
 `;
