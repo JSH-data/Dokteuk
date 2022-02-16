@@ -15,6 +15,7 @@ type MyPageMorePostProp = {
 
 const MyPageMorePost: React.FC<MyPageMorePostProp> = ({ userId }) => {
   const { ref, inView } = useInView();
+
   const { posts, firstFetch, stopFetch, getPosts } = usePosts(userId);
   // const [posts, setPosts] = useState<Post[]>([]);
   // const [stopFetch, setStopFetch] = useState<boolean>(false);
@@ -85,7 +86,7 @@ const MyPageMorePost: React.FC<MyPageMorePostProp> = ({ userId }) => {
 
             {posts.map((post, idx) => (
               <>
-                {posts.length - 1 == idx ? (
+                {/* {posts.length - 1 == idx ? (
                   <MyPagePost
                     key={idx}
                     title={post.title}
@@ -98,7 +99,7 @@ const MyPageMorePost: React.FC<MyPageMorePostProp> = ({ userId }) => {
                     title={post.title}
                     content={post.content}
                   />
-                )}
+                )} */}
               </>
             ))}
           </MyPageChangeCom>

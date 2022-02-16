@@ -5,7 +5,6 @@ import type {
 } from 'next';
 import MyPageNickName from '@components/mypage/MyPageNickname';
 import MyPagePassword from '@components/mypage/MyPagePassword';
-import MyPageMorePost from '@components/mypage/MyPageMorePost';
 import wrapper from '@store/configureStore';
 
 const ChangePage: NextPage = ({
@@ -18,9 +17,6 @@ const ChangePage: NextPage = ({
 
     case 'password':
       return <MyPagePassword />;
-
-    case 'posts':
-      return <MyPageMorePost userId={userId} />;
 
     default:
       return <></>;
@@ -40,7 +36,6 @@ export const getServerSideProps: GetServerSideProps =
     }
 
     const data = store.getState();
-    console.log(data, '마이페이지 데이터');
     if (data.user.user.nickname == '') {
       return {
         redirect: {

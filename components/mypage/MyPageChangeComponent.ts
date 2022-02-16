@@ -14,4 +14,5 @@ export const MyPageChangeCom = styled.article`
   & h1 {
     margin-left: 1rem;
   }
+  padding-bottom: 50px;
 `;

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-const LoadingDiv = styled.div`
+export const LoadingDiv = styled.div`
   position: fixed;
   bottom: 0;
   top: 0;
@@ -8,5 +8,3 @@ const LoadingDiv = styled.div`
   backgroundcolor: black;
   opacity: 0.3;
 `;
-
-export default LoadingDiv;

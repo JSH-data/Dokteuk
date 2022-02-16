@@ -7,7 +7,8 @@ import { useInView } from 'react-intersection-observer';
 import { useSelector, useDispatch } from 'react-redux';
 import { setDataAction } from '@store/reducer';
 import { RootReducer } from '@store/reducer';
-import LoadingDiv from '@components/items/LoadingDiv';
+import styled from '@emotion/styled';
+// import { LoadingDiv } from '@components/items/LoadingDiv';
 
 import {
   collection,
@@ -141,7 +142,6 @@ export default function TopicPage() {
   }, []);
 
   useEffect(() => {
-    console.log(inView, stopFetch, data.length, key);
     if (
       inView === true &&
       stopFetch === false &&
@@ -174,3 +174,13 @@ export default function TopicPage() {
     </Layout>
   );
 }
+
+const LoadingDiv = styled.div`
+  position: fixed;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  backgroundcolor: black;
+  opacity: 0.3;
+`;

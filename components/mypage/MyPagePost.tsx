@@ -1,9 +1,13 @@
 import styled from '@emotion/styled';
+import Link from 'next/link';
 
 type MyPagePost = {
   title: string;
   content: string;
-  refObj?: any;
+  postId: string;
+  postType: string;
+  url: any;
+  // refObj?: any;
 };
 
 const MyPagePostLi = styled.li`
@@ -24,12 +28,20 @@ const MyPagePostLi = styled.li`
   }
 `;
 
-const MyPagePost: React.FC<MyPagePost> = ({ title, content, refObj }) => {
+const MyPagePost: React.FC<MyPagePost> = ({
+  title,
+  content,
+  postId,
+  postType,
+  url,
+}) => {
   return (
-    <MyPagePostLi>
-      <h4 ref={refObj}>{title}</h4>
-      <div>{content}</div>
-    </MyPagePostLi>
+    <Link href={`/list/${postType}/${url.url}/${postId}`}>
+      <MyPagePostLi>
+        <h4>{title}</h4>
+        <div>{content}</div>
+      </MyPagePostLi>
+    </Link>
   );
 };
 

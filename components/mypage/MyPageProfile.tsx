@@ -43,7 +43,7 @@ const MyPageProfile: React.FC<MyPageProfileProps> = ({ email, nickname }) => {
           </MyPageProfileLi>
         </Link>
 
-        <Link href={'/mypage/posts'} passHref>
+        <Link href={'/mypage/mypost'} passHref>
           <MyPageProfileLi>
             <span>내가 작성한 게시물 보기</span>
             <ArrowForwardIosIcon color="disabled" />

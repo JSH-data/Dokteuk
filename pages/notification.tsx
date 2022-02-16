@@ -9,7 +9,7 @@ import { notificationCheck } from '@utils/notificationUpdate';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootReducer } from '@store/reducer';
 import { setDataAction } from '@store/reducer';
-import LoadingDiv from '@components/items/LoadingDiv';
+import { LoadingDiv } from '@components/items/LoadingDiv';
 import {
   collection,
   query,
