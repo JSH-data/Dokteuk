@@ -3,10 +3,11 @@ import CommentLogin from '@components/comment/CommentLogin';
 import CommentEditor from '@components/comment/CommentEditor';
 import CommentSum from '@components/comment/CommentSum';
 import Container from '@mui/material/Container';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styled from '@emotion/styled';
 import { useSelector } from 'react-redux';
 import { RootReducer } from '@store/reducer';
+import { PostData } from '@interface/comment';
 
 const Hr = styled.hr`
   border-top: 0px;
@@ -14,11 +15,7 @@ const Hr = styled.hr`
   margin-bottom: 20px;
 `;
 
-type CommentProps = {
-  id: string;
-};
-
-const Comment: React.FC<CommentProps> = ({ id }) => {
+const Comment = ({ postData }: { postData: PostData }) => {
   const [sum, setSum] = useState<number>(0);
 
   const userId = useSelector((state: RootReducer) => state.user.user.id);
@@ -26,12 +23,12 @@ const Comment: React.FC<CommentProps> = ({ id }) => {
   return (
     <section>
       <Container>
-        <CommentSum sum={sum} postId={id} />
+        <CommentSum sum={sum} postId={postData.id} />
       </Container>
       <Hr></Hr>
       <Container>
-        <CommentList setSum={setSum} postId={id} userId={userId} />
-        {userId ? <CommentEditor postId={id} /> : <CommentLogin />}
+        <CommentList setSum={setSum} userId={userId} postData={postData} />
+        {userId ? <CommentEditor postData={postData} /> : <CommentLogin />}
       </Container>
     </section>
   );

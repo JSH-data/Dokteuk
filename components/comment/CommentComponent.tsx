@@ -8,6 +8,7 @@ import CommentDropBox from './CommentDropBoxComponent';
 import CommentEditor from './CommentEditor';
 import { useSelector } from 'react-redux';
 import { RootReducer } from '@store/reducer';
+import { PostData } from '@interface/comment';
 
 type CommentProps = {
   text: string;
@@ -20,8 +21,8 @@ type CommentProps = {
   isNested: boolean;
   bundleId: number;
   isDeleted: boolean;
-  postId: string;
   userId: string;
+  postData: PostData;
 };
 
 const CommentDiv = styled.div<{ isClicked: boolean }>`
@@ -54,8 +55,8 @@ const Comment: React.FC<CommentProps> = ({
   isNested,
   bundleId,
   isDeleted,
-  postId,
   userId,
+  postData,
 }) => {
   const [menu, setMenu] = useState(false);
 
@@ -111,8 +112,10 @@ const Comment: React.FC<CommentProps> = ({
           {nestedReplyEditor && (
             <CommentEditor
               bundleId={bundleId}
-              postId={postId}
               setNestedReply={setNestedReplyEditor}
+              userId={userId}
+              postData={postData}
+              originComment={text}
             />
           )}
         </CommentDiv>

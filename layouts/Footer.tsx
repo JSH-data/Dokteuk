@@ -9,6 +9,7 @@ import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNone
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import Badge from '@mui/material/Badge';
 
 import { StoreState } from '@interface/StoreInterface';
 
@@ -133,7 +134,16 @@ const Footer = () => {
         </Link>
       </DivStyled>
       <DivStyled>
-        <NotificationsNoneOutlinedIconStyled fontSize="medium" />
+        <Link href="/notification" passHref>
+          <Badge
+            color="error"
+            overlap="circular"
+            variant="dot"
+            invisible={myInfo.hasNewNotification ? false : true}
+          >
+            <NotificationsNoneOutlinedIconStyled fontSize="medium" />
+          </Badge>
+        </Link>
       </DivStyled>
       <DivStyled>
         <Link href="/mypage" passHref>

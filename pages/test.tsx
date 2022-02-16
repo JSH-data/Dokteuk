@@ -38,6 +38,12 @@ const Test: NextPage = () => {
     jobSector: '사무직',
   };
 
+  const postData = {
+    title: '포스트 타이틀',
+    id: '123',
+    type: 'comment',
+    ownerId: 'hPJXTVu1T3dMsXObcQPhsei7r7y1',
+  };
   const chatOpen = async () => {
     const chatRoom = await addDoc(collection(db, 'chat'), {
       users: [
@@ -65,6 +71,7 @@ const Test: NextPage = () => {
       >
         채팅방 열기
       </button>
+      {/* <Comment postData={postData} /> */}
     </div>
   );
 };

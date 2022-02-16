@@ -3,6 +3,7 @@ import Comment from './CommentComponent';
 import styled from '@emotion/styled';
 import { onSnapshot } from 'firebase/firestore';
 import { commentQuery } from '@firebase/firebase';
+import { PostData } from '@interface/comment';
 
 const CommentListDiv = styled.div`
   width: 100%;
@@ -10,20 +11,20 @@ const CommentListDiv = styled.div`
 
 type CommentListProps = {
   setSum(s: number): void;
-  postId: string;
+  postData: PostData;
   userId?: string;
 };
 
 const CommentList: React.FC<CommentListProps> = ({
   setSum,
-  postId,
+  postData,
   userId,
 }) => {
   const [comments, setComments] = useState<any>([]); // todo: 타입 지정
 
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const unSubscribe = onSnapshot(commentQuery(postId), (snapshot) => {
+    const unSubscribe = onSnapshot(commentQuery(postData.id), (snapshot) => {
       const newData = snapshot.docs.map((value) => ({
         id: value.id,
         ...value.data(),
@@ -63,7 +64,7 @@ const CommentList: React.FC<CommentListProps> = ({
               isNested={data.origin}
               bundleId={data.bundleId}
               isDeleted={data.isDeleted}
-              postId={postId}
+              postData={postData}
               userId={data.userId}
             />
           );

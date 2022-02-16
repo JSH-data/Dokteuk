@@ -7,6 +7,12 @@ import { useSelector } from 'react-redux';
 import { RootReducer } from '@store/reducer';
 import { AlertColor } from '@mui/material';
 import AlertComponent from '@components/items/AlertComponent';
+import {
+  postOwnerNotificationUpdate,
+  commentOwnerNotificationUpdate,
+} from '@utils/notificationUpdate';
+import { useRouter } from 'next/router';
+import { PostData } from '@interface/comment';
 
 const CommentEditorSection = styled.section`
   display: flex;
@@ -20,9 +26,11 @@ const CommentEditorSection = styled.section`
 `;
 
 type CommentEditorProps = {
-  postId: string;
+  postData: PostData;
   bundleId?: number;
   setNestedReply?: (v: boolean) => void;
+  userId?: string;
+  originComment?: string;
 };
 interface Alert {
   alerMessage: string;
@@ -30,9 +38,11 @@ interface Alert {
 }
 
 const CommentEditor: React.FC<CommentEditorProps> = ({
-  postId,
+  postData,
   bundleId,
   setNestedReply,
+  userId,
+  originComment,
 }) => {
   const [comment, setComment] = useState<string>('');
   const [alert, setAlert] = useState<boolean>(false);
@@ -41,6 +51,9 @@ const CommentEditor: React.FC<CommentEditorProps> = ({
     alerMessage: '',
     alerType: undefined,
   });
+  const userInfo = useSelector((state: RootReducer) => state.user.user);
+
+  const router = useRouter();
 
   const getAlertInfo = (result: string) => {
     setAlert(true);
@@ -64,8 +77,6 @@ const CommentEditor: React.FC<CommentEditorProps> = ({
     }, 2000);
   };
 
-  const userInfo = useSelector((state: RootReducer) => state.user.user);
-
   const addComment = async () => {
     if (comment.replace(' ', '') == '') return;
 
@@ -77,19 +88,29 @@ const CommentEditor: React.FC<CommentEditorProps> = ({
       bundleId = detailTimeStamp;
       const result = await addOriginComment(
         comment,
-        postId,
+        postData.id,
         userInfo,
         bundleId,
       );
+      if (userInfo.id !== postData.ownerId)
+        await postOwnerNotificationUpdate(postData, router.asPath, comment);
       getAlertInfo(result);
-    } else {
+    } else if (userId != undefined && originComment != undefined) {
       const result = await addNestedComment(
         comment,
         bundleId,
         detailTimeStamp,
         userInfo,
-        postId,
+        postData.id,
       );
+      if (userInfo.id !== userId)
+        await commentOwnerNotificationUpdate(
+          userId,
+          router.asPath,
+          postData,
+          comment,
+          originComment,
+        );
       getAlertInfo(result);
       if (setNestedReply != undefined) setNestedReply(false);
     }
