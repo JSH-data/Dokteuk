@@ -27,7 +27,9 @@ import { getDateTime } from '@utils/function';
 import { useInView } from 'react-intersection-observer';
 import { setTempDataInitializing } from '@store/reducer';
 
-const Notification: NextPage = () => {
+const Notification: NextPage = ({
+  userId,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   // const userInfo = useSelector((state: RootReducer) => state.user.user);
   const { data, key } = useSelector(
     (state: RootReducer) => state.tempData.tempData,
@@ -44,7 +46,7 @@ const Notification: NextPage = () => {
   const getNotification = async () => {
     const q = await query(
       collection(db, 'notification'),
-      where('userId', '==', `${'hPJXTVu1T3dMsXObcQPhsei7r7y1'}`),
+      where('userId', '==', `${userId}`),
       orderBy('createdAt', 'desc'),
       limit(10),
     );
@@ -73,7 +75,7 @@ const Notification: NextPage = () => {
   const getMoreNotification = async () => {
     const q = query(
       collection(db, 'notification'),
-      where('userId', '==', `${'hPJXTVu1T3dMsXObcQPhsei7r7y1'}`),
+      where('userId', '==', `${userId}`),
       orderBy('createdAt', 'desc'),
       limit(10),
       startAfter(end),
@@ -103,7 +105,7 @@ const Notification: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    notificationCheck('hPJXTVu1T3dMsXObcQPhsei7r7y1');
+    notificationCheck(userId);
   }, []);
 
   useEffect(() => {

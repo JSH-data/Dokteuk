@@ -27,7 +27,8 @@ const ImgCount = styled.div`
   z-index: 50;
 `;
 
-const ImgComponent: React.FC<ImgProps> = ({ urls }) => {
+const ImgComponent: React.FC<ImgProps> = ({ urls }: { urls: any }) => {
+  console.log(urls);
   return (
     <ImgWrapper>
       {urls.length > 1 && (
@@ -40,7 +41,7 @@ const ImgComponent: React.FC<ImgProps> = ({ urls }) => {
         width={'100%'}
         height={'100%'}
         objectFit={'cover'}
-        src={`${urls[0]}`}
+        src={`${urls[0].url}`}
         alt="test"
       />
     </ImgWrapper>

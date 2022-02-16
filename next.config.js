@@ -2,7 +2,7 @@
 
 module.exports = {
   images: {
-    domains: ['i.ibb.co'],
+    domains: ['i.ibb.co', 'firebasestorage.googleapis.com'],
   },
   reactStrictMode: false,
 };

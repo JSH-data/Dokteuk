@@ -21,7 +21,7 @@ const Comment = ({ postData }: { postData: PostData }) => {
   const userId = useSelector((state: RootReducer) => state.user.user.id);
 
   return (
-    <section>
+    <section style={{ paddingBottom: '50px' }}>
       <Container>
         <CommentSum sum={sum} postId={postData.id} />
       </Container>

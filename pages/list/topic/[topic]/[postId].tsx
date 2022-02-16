@@ -311,6 +311,14 @@ export default function TopicPost({
           </Box>
         )}
       </Container>
+      <Comment
+        postData={{
+          id: post.postId,
+          ownerId: post.userId,
+          type: post.postType,
+          title: post.title,
+        }}
+      />
     </Layout>
   );
 }
