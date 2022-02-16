@@ -91,7 +91,7 @@ export default function TopicPost({
   const { user }: any = useSelector((state: RootReducer) => state.user);
   const [post, setPost] = useState(JSON.parse(postProps));
   const [uid, setUid] = useState<string>('');
-
+  const [updateTime, setUpdateTime] = useState(0);
   //해당 게시물에 좋아요를 누른 사람의 배열과 현재 로그인한 유저의 이메일을 비교하여 판단함
   const [userLike, setUserLike] = useState(post.pressPerson.includes(uid));
   const [postLikeCount, setPostLikeCount] = useState(post.pressPerson.length);
@@ -157,14 +157,16 @@ export default function TopicPost({
       setUid(user.uid);
     } else {
       console.log('no user');
-      //console.log를 모달창으로 바꿀것
     }
   });
+
   const MomentDateChange = () => {
     const nowTime = Date.now(),
       startTime =
         post.updatedAt === ''
           ? new Date(post.createdAt.seconds * 1000)
+          : updateTime !== 0
+          ? new Date(updateTime)
           : new Date(post.updatedAt.seconds * 1000);
 
     return <Moment fromNow>{startTime}</Moment>;
@@ -188,13 +190,14 @@ export default function TopicPost({
 
   return (
     <Layout>
-      <Container maxWidth="sm">
+      <Container sx={{ maxWidth: '680px' }}>
         {editOpen ? (
           <EditPostForm
             setEditOpen={setEditOpen}
             setPost={setPost}
             thisPostId={postId}
             postInfo={post}
+            setUpdateTime={setUpdateTime}
           />
         ) : (
           <Box sx={{ minWidth: 120, mt: 6 }}>
@@ -311,14 +314,20 @@ export default function TopicPost({
           </Box>
         )}
       </Container>
-      <Comment
-        postData={{
-          id: post.postId,
-          ownerId: post.userId,
-          type: post.postType,
-          title: post.title,
-        }}
-      />
+      {editOpen ? (
+        ''
+      ) : (
+        <Container sx={{ maxWidth: '680px' }}>
+          <Comment
+            postData={{
+              id: post.postId,
+              ownerId: post.userId,
+              type: post.postType,
+              title: post.title,
+            }}
+          />
+        </Container>
+      )}
     </Layout>
   );
 }

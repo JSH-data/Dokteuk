@@ -41,7 +41,8 @@ import Link from 'next/link';
 //photoupload용 아이콘
 import CircularProgress from '@mui/material/CircularProgress';
 import { green } from '@mui/material/colors';
-
+import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
 import Fab from '@mui/material/Fab';
 import CheckIcon from '@mui/icons-material/Check';
 import SaveIcon from '@mui/icons-material/Save';
@@ -102,9 +103,8 @@ interface postSubTheme {
   url: string;
 }
 const PostForm = ({ from }: { from: string }) => {
-  //
   const dispatch = useDispatch();
-  //
+
   //이미지 업로드 부분
   const [modalOpen, setModalOpen] = useState(false);
   const [postImage, setPostImage] = useState<any>(null);
@@ -201,16 +201,6 @@ const PostForm = ({ from }: { from: string }) => {
       //console.log를 모달창으로 바꿀것
     }
   });
-
-  // useEffect(() => {
-  //   const findUserInfo = async () => {
-  //     //id로 user 파악함
-  //     const docRef = doc(db, 'user', user.id);
-  //     const docSnap = await getDoc(docRef);
-  //     setuserInfoList(docSnap.data());
-  //   };
-  //   findUserInfo();
-  // }, []);
 
   const handleClose: any = (event: any, reason: any) => {
     setOpen(!open);
@@ -358,7 +348,6 @@ const PostForm = ({ from }: { from: string }) => {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          console.log('File available at', downloadURL);
           setUrl(url);
           //[이미지 다운로드 url, firebase에 저장한 이미지 이름, 이미지 설명]
           setImgList([...imgList, [downloadURL, uploadImageName, '']]);
@@ -414,255 +403,276 @@ const PostForm = ({ from }: { from: string }) => {
   //     }, 2000);
   //   }
   // };
-
+  console.log(uid);
   return (
     <Layout>
-      <ContainerStyled maxWidth="sm">
-        <Box sx={{ minWidth: 120, mt: 6 }}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">등록위치</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={post.postType}
-              label="postMenu"
-              onChange={(e) => setPost({ ...post, postType: e.target.value })}
+      {uid === '' ? (
+        <ContainerStyled maxWidth="sm">
+          <Box sx={{ minWidth: 120, mt: 6 }}>
+            <Box sx={{ mt: 6 }}>
+              <Stack spacing={2}>
+                <Skeleton variant="rectangular" width="sm" height={58} />
+                <Skeleton variant="circular" width={40} height={40} />
+                <Skeleton variant="text" width="sm" />
+                <Skeleton variant="rectangular" width="sm" height={118} />
+                <Skeleton variant="circular" width={40} height={40} />
+                <Skeleton variant="text" width="sm" />
+                <Skeleton variant="rectangular" width="sm" height={118} />
+              </Stack>
+            </Box>
+            <Modal
+              open={true}
+              onClose={() => {
+                Router.push('/user/login');
+              }}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
             >
-              <MenuItem value={'rounge'}>라운지</MenuItem>
-              <MenuItem value={'topic'}>토픽</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-        {post.postType === 'topic' && (
-          <Box sx={{ minWidth: 120, mt: 3 }}>
+              <Box sx={style}>
+                <Typography
+                  id="modal-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{ wordBreak: 'break-word' }}
+                >
+                  로그인 후 이용해주세요
+                </Typography>
+              </Box>
+            </Modal>
+          </Box>
+        </ContainerStyled>
+      ) : (
+        <ContainerStyled maxWidth="sm">
+          <Box sx={{ minWidth: 120, mt: 6 }}>
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">토픽</InputLabel>
+              <InputLabel id="demo-simple-select-label">등록위치</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={topicMenu}
+                value={post.postType}
                 label="postMenu"
-                onChange={(e) => setTopicMenu(e.target.value)}
+                onChange={(e) => setPost({ ...post, postType: e.target.value })}
               >
-                <MenuItem value={'연말정산'}>연말정산</MenuItem>
-                <MenuItem value={'여행'}>여행</MenuItem>
-                <MenuItem value={'블라블라'}>블라블라</MenuItem>
-                <MenuItem value={'주식투자'}>주식투자</MenuItem>
+                <MenuItem value={'rounge'}>라운지</MenuItem>
+                <MenuItem value={'topic'}>토픽</MenuItem>
               </Select>
             </FormControl>
           </Box>
-        )}
-        {post.postType === 'rounge' && (
-          <Box sx={{ minWidth: 120, mt: 3 }}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">라운지</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={roungeMenu}
-                label="RoungeMenu"
-                onChange={(e) => setRoungeMenu(e.target.value)}
-              >
-                {user.validRounges &&
-                  user.validRounges.map((v: any, i: number) => {
-                    return (
-                      <MenuItem value={v.title} key={v.url}>
-                        {v.title}
-                      </MenuItem>
-                    );
-                  })}
-              </Select>
-            </FormControl>
-          </Box>
-        )}
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          open={open}
-          autoHideDuration={6000}
-        >
-          <Alert
-            onClose={handleClose}
-            severity={alertType}
-            sx={{ width: '100%' }}
+          {post.postType === 'topic' && (
+            <Box sx={{ minWidth: 120, mt: 3 }}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">토픽</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={topicMenu}
+                  label="postMenu"
+                  onChange={(e) => setTopicMenu(e.target.value)}
+                >
+                  <MenuItem value={'연말정산'}>연말정산</MenuItem>
+                  <MenuItem value={'여행'}>여행</MenuItem>
+                  <MenuItem value={'블라블라'}>블라블라</MenuItem>
+                  <MenuItem value={'주식투자'}>주식투자</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          )}
+          {post.postType === 'rounge' && (
+            <Box sx={{ minWidth: 120, mt: 3 }}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">라운지</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={roungeMenu}
+                  label="RoungeMenu"
+                  onChange={(e) => setRoungeMenu(e.target.value)}
+                >
+                  {user.validRounges &&
+                    user.validRounges.map((v: any, i: number) => {
+                      if (v.title === '타임라인' || v.title === '토픽') {
+                        return '';
+                      } else {
+                        return (
+                          <MenuItem value={v.title} key={v.url}>
+                            {v.title}
+                          </MenuItem>
+                        );
+                      }
+                    })}
+                </Select>
+              </FormControl>
+            </Box>
+          )}
+          <Snackbar
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            open={open}
+            autoHideDuration={6000}
           >
-            {alertMessage}
-          </Alert>
-        </Snackbar>
-
-        <div>
-          <TextField
-            fullWidth
-            variant="standard"
-            label="제목을 입력해주세요"
-            multiline
-            sx={{ mt: 2 }}
-            value={post.title}
-            onChange={(e) => setPost({ ...post, title: e.target.value })}
-          />
-          <TextField
-            sx={{ mt: 2 }}
-            fullWidth
-            variant="standard"
-            label="내용을 입력해주세요"
-            multiline
-            value={post.content}
-            onChange={(e) => setPost({ ...post, content: e.target.value })}
-          />
-        </div>
-        <Box sx={{ mt: 2 }}></Box>
-        {imgList &&
-          imgList.map((v: any, i: number) => {
-            return (
-              <Box
-                key={i}
-                sx={{
-                  justifyContent: 'center',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                }}
-              >
-                <img src={v[0]} style={{ maxWidth: '100%' }} alt={v[0]} />
-                <Button
-                  sx={{ position: 'relative' }}
-                  onClick={() => {
-                    deleteClick(imgList[i][1]);
-                    let delArr = [...imgList];
-                    delArr.splice(i, 1);
-                    setImgList(delArr);
+            <Alert
+              onClose={handleClose}
+              severity={alertType}
+              sx={{ width: '100%' }}
+            >
+              {alertMessage}
+            </Alert>
+          </Snackbar>
+          <div>
+            <TextField
+              fullWidth
+              variant="standard"
+              label="제목을 입력해주세요"
+              multiline
+              sx={{ mt: 2 }}
+              value={post.title}
+              onChange={(e) => setPost({ ...post, title: e.target.value })}
+            />
+            <TextField
+              sx={{ mt: 2 }}
+              fullWidth
+              variant="standard"
+              label="내용을 입력해주세요"
+              multiline
+              value={post.content}
+              onChange={(e) => setPost({ ...post, content: e.target.value })}
+            />
+          </div>
+          <Box sx={{ mt: 2 }}></Box>
+          {imgList &&
+            imgList.map((v: any, i: number) => {
+              return (
+                <Box
+                  key={i}
+                  sx={{
+                    justifyContent: 'center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
                   }}
                 >
-                  삭제하기
-                </Button>
-                <TextField
-                  sx={{ mt: 2 }}
-                  fullWidth
-                  variant="standard"
-                  label="사진에 대한 설명을 입력해주세요(선택)"
-                  multiline
-                  onChange={(e) => {
-                    let ImgArr = [...imgList];
-                    ImgArr[i][2] = e.target.value;
-                    setImgList(ImgArr);
-                  }}
-                />
-              </Box>
-            );
-          })}
+                  <img src={v[0]} style={{ maxWidth: '100%' }} alt={v[0]} />
+                  <Button
+                    sx={{ position: 'relative' }}
+                    onClick={() => {
+                      deleteClick(imgList[i][1]);
+                      let delArr = [...imgList];
+                      delArr.splice(i, 1);
+                      setImgList(delArr);
+                    }}
+                  >
+                    삭제하기
+                  </Button>
+                  <TextField
+                    sx={{ mt: 2 }}
+                    fullWidth
+                    variant="standard"
+                    label="사진에 대한 설명을 입력해주세요(선택)"
+                    multiline
+                    onChange={(e) => {
+                      let ImgArr = [...imgList];
+                      ImgArr[i][2] = e.target.value;
+                      setImgList(ImgArr);
+                    }}
+                  />
+                </Box>
+              );
+            })}
 
-        <div>
-          <label
-            htmlFor="ex_file"
-            style={{
-              display: 'inline-block',
-              fontSize: 'inherit',
-              lineHeight: 'normal',
-              verticalAlign: 'middle',
-              cursor: 'pointer',
+          <div>
+            <label
+              htmlFor="ex_file"
+              style={{
+                display: 'inline-block',
+                fontSize: 'inherit',
+                lineHeight: 'normal',
+                verticalAlign: 'middle',
+                cursor: 'pointer',
+              }}
+            >
+              <AddAPhotoIcon sx={{ mt: 4, fontSize: 40 }} />
+              <br />
+
+              {progress === 100 ? (
+                <div>업로드 완료</div>
+              ) : progress === 0 ? (
+                ''
+              ) : (
+                <div>{progress}% 업로드중...</div>
+              )}
+
+              <progress value={progress} max="100" />
+            </label>
+            <input
+              type="file"
+              id="ex_file"
+              style={{
+                position: 'absolute',
+                width: '0',
+                height: '0',
+                padding: '0',
+                margin: '-1px',
+                overflow: 'hidden',
+                clip: 'rect(0, 0, 0, 0)',
+                border: '0',
+              }}
+              onChange={handleUploadChange}
+            />
+            {/* <Button onClick={handleUpload}>Upload</Button> */}
+            <br />
+            {url}
+            <br />
+          </div>
+
+          <Box
+            sx={{
+              mt: 3,
+              display: 'flex',
+              justifyContent: 'space-between',
+              borderRadius: 1,
             }}
           >
-            {/* photoupload아이콘 */}
-            {/* 우선 미구현 */}
-            {/* <Box sx={{ position: 'relative' }}>
-            <Fab aria-label="save" color="primary" sx={buttonSx}>
-              {success ? <CheckIcon /> : <SaveIcon />}
-            </Fab>
-            {loading && (
-              <CircularProgress
-                size={68}
-                sx={{
-                  color: green[500],
-                  position: 'absolute',
-                  top: -6,
-                  left: -6,
-                  zIndex: -1,
-                }}
-              />
-            )}
-          </Box> */}
-
-            <AddAPhotoIcon sx={{ mt: 4, fontSize: 40 }} />
-            <br />
-
-            {progress === 100 ? (
-              <div>업로드 완료</div>
-            ) : progress === 0 ? (
-              ''
-            ) : (
-              <div>{progress}% 업로드중...</div>
-            )}
-
-            <progress value={progress} max="100" />
-          </label>
-          <input
-            type="file"
-            id="ex_file"
-            style={{
-              position: 'absolute',
-              width: '0',
-              height: '0',
-              padding: '0',
-              margin: '-1px',
-              overflow: 'hidden',
-              clip: 'rect(0, 0, 0, 0)',
-              border: '0',
-            }}
-            onChange={handleUploadChange}
-          />
-          {/* <Button onClick={handleUpload}>Upload</Button> */}
-          <br />
-          {url}
-          <br />
-        </div>
-
-        <Box
-          sx={{
-            mt: 3,
-            display: 'flex',
-            justifyContent: 'space-between',
-            borderRadius: 1,
-          }}
-        >
-          <Link href="/" passHref>
-            <Button variant="contained">메인으로 이동</Button>
-          </Link>
-          <Button variant="contained" onClick={onSubmit}>
-            게시물 작성
-          </Button>
-        </Box>
-        <Box
-          sx={{
-            mt: 10,
-            display: 'flex',
-            justifyContent: 'space-between',
-            borderRadius: 1,
-          }}
-        >
-          <Typography></Typography>
-        </Box>
-        <Modal
-          open={modalOpen}
-          onClose={() => {
-            Router.replace(postedUrl);
-          }}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography
-              id="modal-modal-title"
-              variant="h6"
-              component="h2"
-              style={{ wordBreak: 'break-word' }}
-            >
-              {post.title}
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              게시물을 등록하였습니다
-            </Typography>
+            <Link href="/" passHref>
+              <Button variant="contained">메인으로 이동</Button>
+            </Link>
+            <Button variant="contained" onClick={onSubmit}>
+              게시물 작성
+            </Button>
           </Box>
-        </Modal>
-      </ContainerStyled>
+          <Box
+            sx={{
+              mt: 10,
+              display: 'flex',
+              justifyContent: 'space-between',
+              borderRadius: 1,
+            }}
+          >
+            <Typography></Typography>
+          </Box>
+
+          <Modal
+            open={modalOpen}
+            onClose={() => {
+              Router.replace(postedUrl);
+            }}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <Typography
+                id="modal-modal-title"
+                variant="h6"
+                component="h2"
+                style={{ wordBreak: 'break-word' }}
+              >
+                {post.title}
+              </Typography>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                게시물을 등록하였습니다
+              </Typography>
+            </Box>
+          </Modal>
+        </ContainerStyled>
+      )}
     </Layout>
   );
 };
