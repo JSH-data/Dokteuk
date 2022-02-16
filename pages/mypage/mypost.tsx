@@ -9,6 +9,7 @@ import { useInView } from 'react-intersection-observer';
 import useGetMyPost from '@hooks/useGetMyPost';
 import { useEffect } from 'react';
 import MyPagePost from '@components/mypage/MyPagePost';
+import { LoadingDiv } from '@components/items/LoadingDiv';
 
 const MyPost: NextPage = () => {
   const { ref, inView } = useInView();
@@ -24,6 +25,14 @@ const MyPost: NextPage = () => {
       getMorePosts(data.length);
     }
   }, [inView]);
+
+  if (!data[0]?.title) {
+    return (
+      <Layout>
+        <LoadingDiv />
+      </Layout>
+    );
+  }
 
   return (
     <>

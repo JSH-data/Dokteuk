@@ -16,8 +16,7 @@ const Header: React.FC = () => {
       {headerKey === 'notification' && <TestHeader title={'알림페이지'} />}
       {headerKey === 'list' && topic == undefined && <HeaderHome />}
       {headerKey === 'chat' && <Chatting />}
-      {/* {headerKey === 'notification' && <HeaderNotification />} */}
-      {/* {headerKey === 'mypage' && <HeaderMyPage />} */}
+      {headerKey === 'mypage' && <TestHeader title={'마이페이지'} />}
     </HeaderWrapperDivStyled>
   );
 };

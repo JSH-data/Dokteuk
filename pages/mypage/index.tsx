@@ -43,7 +43,6 @@ const MyPage: NextPage = ({
         <meta name="description" content="Generate by elice Team 5" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <MyPageheader>마이페이지</MyPageheader>
       <Layout>
         <Container>
           <MyPageProfile email={email} nickname={nickname} />
