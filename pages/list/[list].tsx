@@ -69,13 +69,17 @@ const ListPage = () => {
       dispatch(setScrollAction(0));
       router.events.on(
         'routeChangeComplete',
-        () => window.scrollTo({ top: 0 }),
+        () => {
+          window.scrollTo({ top: 0 });
+        },
         // setTimeout(() => window.scrollTo({ top: 0 }), 0),
       );
     } else
       router.events.on(
         'routeChangeComplete',
-        () => window.scrollTo({ top: scrollY }),
+        () => {
+          window.scrollTo({ top: scrollY });
+        },
         // setTimeout(() => window.scrollTo({ top: scrollY }), 0),
       );
 

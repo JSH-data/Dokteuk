@@ -11,6 +11,7 @@ const CommentAuthorDiv = styled.div`
   margin-bottom: 25px;
   display: flex;
   justify-content: space-between;
+  cursor: pointer;
 `;
 
 const CommentNickname = styled.span`
@@ -43,14 +44,15 @@ const CommentAuthorComponent: React.FC<authorProps> = ({
   const openChat = async () => {
     const myInfo: ChatDefault = {
       nickname: userInfo.nickname,
-      jobSector: userInfo.job,
-      id: userInfo.userId,
+      jobSector: userInfo.jobSector,
+      id: userInfo.id,
     };
     const counterInfo: ChatDefault = {
       nickname: nickname,
       jobSector: job,
       id: userId,
     };
+
     const id = await createChatRoom(myInfo, counterInfo);
 
     router.push(
@@ -60,16 +62,14 @@ const CommentAuthorComponent: React.FC<authorProps> = ({
 
   return (
     <>
-      <CommentAuthorDiv>
+      <CommentAuthorDiv
+        onClick={() => {
+          if (userInfo.id !== userId) setToggle(true);
+        }}
+      >
         <div>{getDateTime(date)}</div>
         <div>
-          <CommentNickname
-            onClick={() => {
-              setToggle(true);
-            }}
-          >
-            {nickname}
-          </CommentNickname>
+          <CommentNickname>{nickname}</CommentNickname>
 
           {`  `}
 

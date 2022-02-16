@@ -1,19 +1,13 @@
 import { useRouter } from 'next/router';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import wrapper from '@store/configureStore';
 import Layout from '@layouts/Layout';
-import { getTopics } from '@utils/function';
 import { TestTopicCard } from '@components/Card';
 import { TopicPost } from '@interface/CardInterface';
 import { useInView } from 'react-intersection-observer';
 import { useSelector, useDispatch } from 'react-redux';
 import { setDataAction } from '@store/reducer';
 import { RootReducer } from '@store/reducer';
-import type {
-  NextPage,
-  GetServerSideProps,
-  InferGetServerSidePropsType,
-} from 'next';
+import LoadingDiv from '@components/items/LoadingDiv';
 
 import {
   collection,
@@ -159,7 +153,11 @@ export default function TopicPage() {
   }, [inView]);
 
   if (!data[0]?.title) {
-    return <Layout>로딩 중...</Layout>;
+    return (
+      <Layout>
+        <LoadingDiv />
+      </Layout>
+    );
   }
 
   return (

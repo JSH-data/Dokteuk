@@ -26,6 +26,5 @@ export const createChatRoom = async (
     },
     userIds: [myInfo.id],
   });
-
   return id;
 };

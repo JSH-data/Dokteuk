@@ -1,9 +1,5 @@
-import type {
-  NextPage,
-  GetServerSideProps,
-  InferGetServerSidePropsType,
-} from 'next';
-import wrapper from '@store/configureStore';
+import type { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import { useEffect, useState, useLayoutEffect } from 'react';
 import Layout from '@layouts/Layout';
 import { Container } from '@mui/material';
@@ -13,6 +9,7 @@ import { notificationCheck } from '@utils/notificationUpdate';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootReducer } from '@store/reducer';
 import { setDataAction } from '@store/reducer';
+import LoadingDiv from '@components/items/LoadingDiv';
 import {
   collection,
   query,
@@ -35,7 +32,7 @@ const Notification: NextPage = () => {
 
   const [stopFetch, setStopFetch] = useState<boolean>(false); // 파이어베이스 연동시 사용
   const [end, setEnd] = useState<any>(0);
-  // const [display, setDisplay] = useState(true);
+  const router = useRouter();
 
   const { ref, inView } = useInView();
 
@@ -56,6 +53,7 @@ const Notification: NextPage = () => {
     if (dataArr.length < 2) setStopFetch(true);
 
     setEnd(snapshots.docs[snapshots.docs.length - 1]);
+
     dispatch(
       setDataAction({
         data: dataArr,
@@ -63,12 +61,6 @@ const Notification: NextPage = () => {
       }),
     );
   };
-
-  // useEffect(() => {
-  //   if (data[0]?.postUrl) {
-  //     setDisplay(true);
-  //   }
-  // }, [data]);
 
   const getMoreNotification = async (lastNum: number) => {
     const notiRef = collection(db, 'notification');
@@ -115,8 +107,12 @@ const Notification: NextPage = () => {
     }
   }, []);
 
-  useEffect(() => {
-    notificationCheck(user.id);
+  useLayoutEffect(() => {
+    if (!user.id) {
+      router.push('/user/login');
+    } else {
+      notificationCheck(user.id);
+    }
   }, []);
 
   useEffect(() => {
@@ -131,7 +127,11 @@ const Notification: NextPage = () => {
   }, [inView]);
 
   if (!data[0]?.postUrl) {
-    return <Layout>로딩 중...</Layout>;
+    return (
+      <Layout>
+        <LoadingDiv />
+      </Layout>
+    );
   }
 
   return (
@@ -164,30 +164,3 @@ const Notification: NextPage = () => {
   );
 };
 export default Notification;
-
-// export const getServerSideProps: GetServerSideProps =
-//   wrapper.getServerSideProps((store) => async (ctx) => {
-//     const data = store.getState();
-
-//     if (data.tempData.key !== 'notification') {
-//       await store.dispatch(
-//         setTempDataInitializing({
-//           data: [],
-//           key: 'notification',
-//         }),
-//       );
-//     }
-
-//     if (data.user.user.nickname == '') {
-//       return {
-//         redirect: {
-//           destination: '/user/login',
-//           permanent: false,
-//         },
-//       };
-//     }
-
-//     return {
-//       props: { userId: data.user.user.id },
-//     };
-//   });

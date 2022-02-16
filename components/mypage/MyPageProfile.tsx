@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import Link from 'next/link';
 import styled from '@emotion/styled';
 import { MyPageProfileComponent } from './MyPageProfileComponent';
@@ -17,6 +16,7 @@ const MyPageProfileLi = styled.div`
   font-weight: 500;
   display: flex;
   justify-content: space-between;
+  cursor: pointer;
 `;
 
 const MyPageProfile: React.FC<MyPageProfileProps> = ({ email, nickname }) => {

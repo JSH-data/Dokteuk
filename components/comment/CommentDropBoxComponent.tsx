@@ -28,17 +28,21 @@ const open = keyframes`
 const CommentDropBoxDiv = styled.div`
   background-color: white;
   border: 1px solid grey;
-  border-radius: 10px;
+  border-radius: 3px;
   width: 100px;
   text-align: center;
   position: absolute;
-  right: 0;
+  right: 10px;
   top: 20px;
-  animation: ${open} 0.3s ease;
+  animation: ${open} 0.2s ease;
 `;
 
 const CommentDropBoxOption = styled.div`
   cursor: pointer;
+  padding: 5px;
+  &:hover {
+    background-color: #e6e6e6;
+  }
 `;
 
 const CommentDropBox: React.FC<CommentDropBoxProps> = ({
