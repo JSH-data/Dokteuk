@@ -50,7 +50,7 @@ export const chatList = (
   return unsubscribe;
 };
 
-export const getChatMessages = async (chatId: queryType) => {
+export const getChatMessages = async (chatId: QueryType) => {
   const chatQuery = query(
     collection(db, `chat/${chatId}/messages`),
     orderBy('createAt', 'desc'),
@@ -88,7 +88,7 @@ export const getChatMessages = async (chatId: queryType) => {
 };
 
 export const chatMessages = (
-  chatId: queryType,
+  chatId: QueryType,
   setMessages: Dispatch<SetStateAction<ChatText[]>>,
   key: Timestamp | null,
 ) => {
@@ -126,7 +126,7 @@ export const chatMessages = (
 };
 
 export const moreChatMessages = async (
-  chatId: queryType,
+  chatId: QueryType,
   key: Timestamp | null,
 ) => {
   const chatQuery = query(
@@ -161,13 +161,13 @@ export const moreChatMessages = async (
 };
 
 export const sendMessage = async (
-  chatId: queryType,
+  chatId: QueryType,
   value: string,
   msgType: string,
   user: string,
-  otherId: queryType,
+  otherId: QueryType,
   file?: Blob | ArrayBuffer,
-  id?: queryType,
+  id?: QueryType,
 ) => {
   const timestamp = Timestamp.now();
 
@@ -226,13 +226,13 @@ export const downloadImg = (key: string) => {
   });
 };
 
-export const leaveChat = async (chatId: queryType, user: string) => {
+export const leaveChat = async (chatId: QueryType, user: string) => {
   await updateDoc(doc(db, 'chat', chatId as string), {
     [`lastVisited.${user}`]: Timestamp.now(),
   });
 };
 
-export const exitChat = async (chatId: queryType, user: String) => {
+export const exitChat = async (chatId: QueryType, user: String) => {
   await updateDoc(doc(db, 'chat', chatId as string), {
     userIds: arrayRemove(user),
   });

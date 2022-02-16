@@ -110,8 +110,9 @@ export const ChatHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 60px;
-  background: ${({ theme }: any) => theme.mainColorViolet};
   padding: 0 20px;
+  z-index: 999;
+  background: ${({ theme }: any) => theme.mainColorViolet};
 
   @media (prefers-color-scheme: dark) {
     background: ${({ theme }: any) => theme.mainColorBlack};

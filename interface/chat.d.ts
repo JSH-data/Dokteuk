@@ -1,4 +1,4 @@
-type queryType = string | string[] | undefined;
+type QueryType = string | string[] | undefined;
 
 interface Person {
   id: string;
