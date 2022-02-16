@@ -1,4 +1,5 @@
 import { firebaseAdmin } from '@firebase/firebaseAdmin';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const validate = async (token: string) => {
   // Check that the user has a valid token
@@ -37,7 +38,10 @@ const validate = async (token: string) => {
   return result;
 };
 
-export default async (req: any, res: any) => {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   try {
     // Check if there is a token and if not return undefined.
     const { token } = JSON.parse(req.headers.authorization || '{}');
@@ -59,4 +63,4 @@ export default async (req: any, res: any) => {
     const result = undefined;
     return res.status(200).send(result);
   }
-};
+}

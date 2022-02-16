@@ -1,10 +1,14 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useReducer } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from '@emotion/styled';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { signOut } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signOut,
+} from 'firebase/auth';
 import { db, auth } from '@firebase/firebase';
 import {
   doc,
@@ -17,58 +21,75 @@ import {
 import { getStorage, ref, uploadString } from 'firebase/storage';
 import { useRouter } from 'next/router';
 import MenuItem from '@mui/material/MenuItem';
-import { UserInputData, userInputInitialState, jobSectors } from './constants';
-import { getAuth } from 'firebase/auth';
+import {
+  userInputInitialState,
+  jobSectors,
+  UserInputData,
+  InputHelperText,
+} from './constants';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {
   userInputValidation,
   inputErrorCheck,
 } from '@utils/userInputValidation';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+
 const reducer = (state: UserInputData, action: any) => {
   return {
     ...state,
     [action.type]: { value: action.payload.value, error: action.payload.error },
   };
 };
-export default function Google() {
+
+export default function Signup() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const storage = getStorage();
   const [inputState, inputDispatch] = useReducer(
     reducer,
     userInputInitialState,
   );
+
   const [imageUrl, setImageUrl] = useState<string>('');
   const [imageExt, setImageExt] = useState<string>('');
   const [nicknameBtnChecked, setNicknameBtnChecked] = useState<boolean>(false);
-  const storage = getStorage();
-  const { email, nickname, jobSector } = inputState;
-  useEffect(() => {
-    const auth = getAuth();
-    const curUser = auth.currentUser;
-    console.log('google account');
-    inputDispatch({
-      type: 'email',
-      payload: { value: curUser?.email, error: '' },
-    });
-    console.log(inputState);
-  }, []);
+  const [emailBtnChecked, setEmailBtnChecked] = useState<boolean>(false);
+  const { email, password, checkPassword, nickname, jobSector } = inputState;
+  console.log(inputState);
+  const createUserWithEmail = async () => {
+    try {
+      const { user: result } = await createUserWithEmailAndPassword(
+        auth,
+        email.value,
+        password.value,
+      );
+      sendEmailVerification(result);
+      return result.uid;
+    } catch (err: any) {
+      console.error(err);
+    }
+  };
 
   const SignUpSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const uid = auth.currentUser?.uid as string;
-    if (!uid) {
-      alert('다시 로그인 해주세요!');
-      router.push('/user/login');
+    if (checkPassword.value !== password.value) {
+      alert('비밀번호가 다릅니다!');
+      inputDispatch({
+        type: 'checkPassword',
+        payload: { value: checkPassword.value, error: '비밀번호가 다릅니다!' },
+      });
+      return;
     }
     if (!imageUrl) {
       alert('증명서 파일을 찾을 수 없습니다!');
       return;
     }
     const success = inputErrorCheck(inputState);
+
     if (success) {
+      const uid = (await createUserWithEmail()) as string;
       const userData = {
         nickname: nickname.value,
         jobSector: jobSector.value,
@@ -85,6 +106,7 @@ export default function Google() {
             title: jobSector.value,
             url: jobSectors.find((v) => v.title === jobSector.value)
               ?.url as string,
+            // type error 잡아야 함
           },
         ],
         id: uid,
@@ -93,10 +115,10 @@ export default function Google() {
         posts: [],
         email: email.value,
       };
-      uploadImg(uid!);
+
+      uploadImg(uid);
       console.log('success');
-      const docSnap = await setDoc(doc(db, 'user', uid!), userData);
-      console.log(docSnap);
+      await setDoc(doc(db, 'user', uid), userData);
       await signOut(auth);
       router.push('/user/login');
     }
@@ -112,13 +134,39 @@ export default function Google() {
     }
   };
 
+  const checkEmail = async () => {
+    const emailCheckQuery = query(
+      collection(db, 'user'),
+      where('email', '==', email.value),
+    );
+    let emailHelperText;
+    const emailCheckSnap = await getDocs(emailCheckQuery);
+    if (emailCheckSnap.docs.length !== 0 || email.value.length < 3) {
+      emailHelperText = '사용 불가능한 이메일 입니다!';
+      alert(emailHelperText);
+    } else {
+      if (email.error) {
+        alert(email.error);
+        return;
+      }
+      emailHelperText = '';
+      alert('사용 가능한 이메일 입니다!');
+      setEmailBtnChecked(true);
+    }
+
+    inputDispatch({
+      type: 'email',
+      payload: { value: email.value, error: emailHelperText },
+    });
+  };
+
   const checkNickname = async () => {
     const nicknameCheckQuery = query(
       collection(db, 'user'),
       where('nickname', '==', nickname.value),
     );
-    const nicknameCheckSnap = await getDocs(nicknameCheckQuery);
     let nicknameHelperText;
+    const nicknameCheckSnap = await getDocs(nicknameCheckQuery);
     if (nicknameCheckSnap.docs.length !== 0 || nickname.value.length < 3) {
       nicknameHelperText = '사용 불가능한 닉네임 입니다!';
       alert(nicknameHelperText);
@@ -135,7 +183,8 @@ export default function Google() {
   };
 
   const onImageChange = (e: any) => {
-    const image = e.target.files[0]!;
+    console.log(e.target.name);
+    const image = e.target.files[0] as File;
     const reader = new FileReader();
     reader.readAsDataURL(image);
     reader.onloadend = (finishedEvent: any) => {
@@ -154,10 +203,12 @@ export default function Google() {
     if (name === 'nickname' && nicknameBtnChecked) {
       setNicknameBtnChecked(false);
     }
+    if (name === 'email' && emailBtnChecked) {
+      setEmailBtnChecked(false);
+    }
     const error = userInputValidation(name, value);
     inputDispatch({ type: name, payload: { value, error } });
   };
-
   return (
     <>
       <Main>
@@ -166,8 +217,58 @@ export default function Google() {
           <WrapContents>
             <WrapInput>
               <Label>Email</Label>
-              <TextFields required disabled name="email" value={email.value} />
+              <TextFields
+                required
+                error={email.error ? true : false}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <CheckButton
+                        type="button"
+                        onClick={checkEmail}
+                        disabled={emailBtnChecked}
+                      >
+                        중복확인
+                      </CheckButton>
+                    </InputAdornment>
+                  ),
+                }}
+                placeholder="Email 주소를 입력해 주세요."
+                name="email"
+                value={email.value}
+                onChange={onInputChange}
+                helperText={email.error}
+              />
             </WrapInput>
+            <WrapInput>
+              <Label>비밀번호</Label>
+              <TextFields
+                required
+                type="password"
+                error={password.error ? true : false}
+                placeholder="비밀번호는 6자리 이상 입력해주세요."
+                variant="outlined"
+                margin="dense"
+                name="password"
+                value={password.value}
+                onChange={onInputChange}
+                helperText={password.error}
+              />
+              <Label>비밀번호 확인</Label>
+              <TextFields
+                required
+                type="password"
+                error={checkPassword.error ? true : false}
+                placeholder="비밀번호를 한 번더 입력해 주세요."
+                variant="outlined"
+                margin="dense"
+                name="checkPassword"
+                value={checkPassword.value}
+                onChange={onInputChange}
+                helperText={checkPassword.error}
+              />
+            </WrapInput>
+
             <WrapInput>
               <Label>닉네임</Label>
               <TextFields
@@ -202,6 +303,7 @@ export default function Google() {
                 style={{ display: 'flex', flexDirection: 'column' }}
               >
                 <Input
+                  name="image"
                   accept="image/*"
                   id="contained-button-file"
                   type="file"
@@ -248,7 +350,11 @@ export default function Google() {
                 ))}
               </TextFields>
             </WrapInput>
-            <SubmitButton type="submit" disabled={!nicknameBtnChecked}>
+
+            <SubmitButton
+              type="submit"
+              disabled={!(nicknameBtnChecked && emailBtnChecked)}
+            >
               <GroupAddIcon style={{ marginRight: '10px' }} />
               회원가입
             </SubmitButton>
@@ -297,8 +403,6 @@ const WrapImageUpload = styled.div`
 `;
 
 const CheckButton = styled.button`
-  display: flex;
-  align-items: center;
   background: #8946a6;
   border-radius: 5px;
   border: none;

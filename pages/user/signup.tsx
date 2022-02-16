@@ -1,317 +1,83 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
+import Link from 'next/link';
 import styled from '@emotion/styled';
-import InputAdornment from '@mui/material/InputAdornment';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-  signOut,
-} from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { useDispatch } from 'react-redux';
+import { doc, getDoc } from 'firebase/firestore';
 import { db, auth } from '@firebase/firebase';
-import {
-  doc,
-  setDoc,
-  getDocs,
-  collection,
-  query,
-  where,
-} from 'firebase/firestore';
-import { getStorage, ref, uploadString } from 'firebase/storage';
 import { useRouter } from 'next/router';
-import MenuItem from '@mui/material/MenuItem';
-import { UserInfo } from '@interface/StoreInterface';
-import nookies from 'nookies';
-import { firebaseAdmin } from '@firebase/firebaseAdmin';
-import { InferGetServerSidePropsType, GetServerSidePropsContext } from 'next';
-const jobSectors = [
-  '외식·음료',
-  '매장관리·판매',
-  '서비스',
-  '사무직',
-  '고객상담·리서치·영업',
-  '생산·건설·노무',
-  'IT·기술',
-  '디자인',
-];
-type InputHelperText = {
-  email: string;
-  password: string;
-  checkPassword: string;
-  nickname: string;
-  jobSector: string;
-};
-
-export default function Signup() {
+import { setNewUserInfo } from '@store/reducer';
+import GoogleIcon from '@mui/icons-material/Google';
+import EmailIcon from '@mui/icons-material/Email';
+import LoginIcon from '@mui/icons-material/Login';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+export default function SignUpIndex() {
   const router = useRouter();
+  const provider = new GoogleAuthProvider();
   const dispatch = useDispatch();
-  const storage = getStorage();
 
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [checkPassword, setCheckPassword] = useState<string>('');
-  const [nickname, setNickname] = useState<string>('');
-  const [isGoogle, setIsGoogle] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
-  const [imageUrl, setImageUrl] = useState<string>('');
-  const [imageExt, setImageExt] = useState<string>('');
-  const [inputHelpers, setInputHelpers] = useState<InputHelperText>({
-    email: '',
-    password: '6자리 이상 입력 해 주세요',
-    checkPassword: '비밀번호가 같지 않습니다.',
-    nickname: '',
-    jobSector: '직종을 선택 해 주세요',
-  });
-  const [jobSector, setJobSector] = useState('');
-
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    let helperText;
-    if (name === 'email') {
-      setEmail(value);
-    } else if (name === 'password') {
-      if (value.length >= 6) {
-        helperText = '사용 가능한 비밀번호 입니다!';
-      }
-      setPassword(value);
-    } else if (name === 'checkPassword') {
-      if (password !== value) {
-        helperText = '비밀번호가 다릅니다!';
-      } else {
-        helperText = '비밀번호가 같습니다!';
-      }
-      setCheckPassword(value);
-    } else if (name === 'nickname') setNickname(value);
-    else if (name === 'jobSector') setJobSector(value);
-
-    const newInputHelpers = {
-      ...inputHelpers,
-      [name]: helperText,
-    };
-
-    setInputHelpers(newInputHelpers);
-    // switch (name) {
-    //   case 'password':
-    //     if (value.length < 6) {
-    //     }
-    // }
-
-    // const newUserInputs: any = {
-    //   ...userInputs,
-    //   [name]: value,
-    // };
-    // setUserInputs(newUserInputs);
-  };
-
-  const createUserWithEmail = async () => {
+  const checkSignIn = async () => {
     try {
-      const { user: result } = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password,
-      );
-      sendEmailVerification(result);
-      return result.uid;
+      const result = await signInWithPopup(auth, provider);
+      return result.user.uid;
     } catch (err: any) {
-      setError(err.code);
+      console.error(err);
     }
   };
 
-  const SignUpSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (checkPassword !== password) {
-      alert('비밀번호가 다릅니다!');
-    } else {
-      const userInitData: Omit<UserInfo, 'id'> = {
-        nickname: nickname,
-        jobSector: jobSector,
-        validRounges: [
-          {
-            title: '타임라인',
-            url: 'timeline',
-          },
-        ],
-        hasNewNotification: true,
-        hasNewChatNotification: true,
-        posts: [],
-        email: email,
-      };
-      const user_id = await createUserWithEmail();
-      uploadImg(user_id!);
-      console.log('success');
-      await setDoc(doc(db, 'user', user_id!), userInitData);
-      await signOut(auth);
+  const loginWithGoogle = async () => {
+    const uid = await checkSignIn();
+    const docSnap = await getDoc(doc(db, 'user', uid as string));
+    if (docSnap.exists()) {
+      dispatch(setNewUserInfo(docSnap.data()));
       router.push('/');
-    }
-  };
-
-  const uploadImg = async (uid: string) => {
-    const imageName = `${uid}.${imageExt}`;
-    const imgRef = ref(storage, imageName);
-    try {
-      await uploadString(imgRef, imageUrl, 'data_url');
-    } catch (e: any) {
-      console.error(e);
-    }
-  };
-
-  const checkNickname = async () => {
-    const nicknameCheckQuery = query(
-      collection(db, 'user'),
-      where('nickname', '==', nickname),
-    );
-    let nicknameHelperText;
-    const nicknameCheckSnap = await getDocs(nicknameCheckQuery);
-    if (nicknameCheckSnap.docs.length !== 0 || nickname.length < 3) {
-      nicknameHelperText = '사용 불가능한 닉네임 입니다!';
     } else {
-      nicknameHelperText = '사용 가능한 닉네임 입니다!';
+      router.push('/user/google');
     }
-    const newInputHelper = {
-      ...inputHelpers,
-      nickname: nicknameHelperText,
-    };
-
-    setInputHelpers(newInputHelper);
   };
 
-  const onImageChange = (e: any) => {
-    const image = e.target.files[0]!;
-    const reader = new FileReader();
-    reader.readAsDataURL(image);
-    reader.onloadend = (finishedEvent: any) => {
-      const {
-        currentTarget: { result },
-      } = finishedEvent;
-      setImageUrl(result);
-    };
-    setImageExt(e.target.value.split('.')[1]);
-    e.target.value = '';
-  };
-  const onClearImg = () => setImageUrl('');
   return (
     <>
       <Main>
         <h1 style={{ color: '#8946A6' }}>회원가입</h1>
-        <form onSubmit={SignUpSubmitHandler}>
-          <WrapContents>
-            <WrapInput>
-              <Label>Email</Label>
-              <TextFields
-                required
-                placeholder="Email 주소를 입력해 주세요."
-                name="email"
-                value={email}
-                onChange={onInputChange}
-                helperText={inputHelpers.email}
-              />
-            </WrapInput>
-            <WrapInput>
-              <Label>비밀번호</Label>
-              <TextFields
-                required
-                type="password"
-                placeholder="비밀번호는 6자리 이상 입력해주세요."
-                variant="outlined"
-                margin="dense"
-                name="password"
-                value={password}
-                onChange={onInputChange}
-                helperText={inputHelpers.password}
-              />
-              <TextFields
-                required
-                type="password"
-                placeholder="비밀번호를 한 번더 입력해 주세요."
-                variant="outlined"
-                margin="dense"
-                name="checkPassword"
-                value={checkPassword}
-                onChange={onInputChange}
-                helperText={inputHelpers.checkPassword}
-              />
-            </WrapInput>
-
-            <WrapInput>
-              <Label>닉네임</Label>
-              <TextFields
-                required
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <CheckButton type="button" onClick={checkNickname}>
-                        중복확인
-                      </CheckButton>
-                    </InputAdornment>
-                  ),
-                }}
-                variant="outlined"
-                margin="dense"
-                name="nickname"
-                placeholder="닉네임을 입력해 주세요."
-                value={nickname}
-                onChange={onInputChange}
-                helperText={inputHelpers.nickname}
-              />
-            </WrapInput>
-            <WrapImageUpload>
-              <Label>증명서</Label>
-              <label
-                htmlFor="contained-button-file"
-                style={{ display: 'flex', flexDirection: 'column' }}
-              >
-                <Input
-                  accept="image/*"
-                  id="contained-button-file"
-                  type="file"
-                  onChange={onImageChange}
-                />
-                <Button
-                  variant="contained"
-                  component="span"
-                  style={{ background: '#8946a6', marginLeft: 10 }}
-                >
-                  파일 선택
-                </Button>
-              </label>
-              <Button
-                variant="contained"
-                component="span"
-                onClick={onClearImg}
-                style={{ background: '#8946a6', marginLeft: 10 }}
-              >
-                사진 지우기
-              </Button>
-            </WrapImageUpload>
-            {imageUrl && (
-              <img src={imageUrl} alt={imageUrl} width="150px" height="200px" />
-            )}
-            <WrapInput>
-              <Label>직종</Label>
-              <TextFields
-                select
-                variant="outlined"
-                margin="dense"
-                name="jobSector"
-                value={jobSector}
-                onChange={onInputChange}
-                helperText={inputHelpers.jobSector}
-              >
-                {jobSectors.map((value, idx) => (
-                  <MenuItem key={idx} value={value}>
-                    {value}
-                  </MenuItem>
-                ))}
-              </TextFields>
-            </WrapInput>
-            <SubmitButton type="submit">회원가입</SubmitButton>
-          </WrapContents>
-        </form>
+        <WrapContents>
+          <WrapInput>
+            <Link href="/user/email" passHref>
+              <SignupButton>
+                <EmailIcon />
+                이메일 계정으로 회원가입
+              </SignupButton>
+            </Link>
+            <SignupButton onClick={loginWithGoogle}>
+              <GoogleIcon />
+              구글 계정으로 회원가입
+            </SignupButton>
+          </WrapInput>
+          <WrapButton>
+            <Label>이미 가입되어 있으시다면</Label>
+          </WrapButton>
+          <Link href="/user/login" passHref>
+            <SignupButton>
+              <LoginIcon />
+              로그인 페이지로 이동하기
+            </SignupButton>
+          </Link>
+        </WrapContents>
       </Main>
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext,
+) => {
+  if (!context.req.headers.referer) {
+    context.res.statusCode = 302;
+    context.res.setHeader('Location', `/`);
+    context.res.end();
+  }
+  return { props: {} };
+};
 
 const Main = styled.div`
   display: flex;
@@ -354,26 +120,26 @@ const WrapInput = styled.div`
   width: 100%;
 `;
 
-const WrapImageUpload = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin: 20px;
-  width: 100%;
-`;
-
-const CheckButton = styled.button`
+const Button = styled.button`
   background: #8946a6;
   border-radius: 5px;
   border: none;
   color: white;
-  width: 60px;
-  height: 24px;
-  margin: 5px;
+  width: 200px;
+  height: 50px;
   font-size: 12px;
   cursor: pointer;
+  vertical-align: middle;
   :hover {
     opacity: 0.8;
   }
+`;
+
+const WrapButton = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 20px;
+  width: 313px;
 `;
 
 const SubmitButton = styled.button`
@@ -393,16 +159,18 @@ const SubmitButton = styled.button`
 const Label = styled.label`
   color: #8946a6;
   margin: 5px;
-  ::after {
-    content: '*';
-    color: red;
-  }
 `;
-const Input = styled('input')({
-  display: 'none',
-});
 
-const TextFields = styled(TextField)`
-  color: #8946a6;
+const SignupButton = styled(Button)`
+  background: #8946a6;
+  border-radius: 5px;
+  border: none;
+  color: white;
+  width: 100%;
   margin: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  :hover {
+    opacity: 0.8;
+  }
 `;

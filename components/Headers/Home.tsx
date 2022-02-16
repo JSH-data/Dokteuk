@@ -66,6 +66,7 @@ const HeaderHome: React.FC = () => {
         url: `/list/${v.url}`,
       })),
     );
+
   if (headerLinks.length === 0) {
     headerLinks.push({ title: '토픽', url: 'topic' });
   }
