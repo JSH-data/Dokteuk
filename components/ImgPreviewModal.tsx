@@ -86,19 +86,20 @@ const Background = styled.div`
 `;
 
 const slideDown = keyframes`
-from {
-  opacity: 0;
-  transform: translateY(-80vh);
-}
-to {
-  opacity: 1;
-  transform: translateY(10%);
-}`;
+  from {
+    opacity: 0;
+    transform: translateY(-80vh);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(15%);
+  }
+`;
 
 const Modal = styled.div`
   margin: 0 auto;
   width: clamp(0px, 80%, 680px);
-  height: 80%;
+  height: 75%;
   padding: 30px 15px;
   background-color: ${({ theme }: any) => theme.whiteGray};
   border-radius: 14px;
@@ -114,8 +115,8 @@ const Modal = styled.div`
 `;
 
 const SwiperStyled = styled(Swiper)`
-  width: clamp(0px, 80%, 240px);
-  height: calc(100% - 80px);
+  width: clamp(0px, 80%, 300px);
+  height: calc(100% - 100px);
 `;
 
 const Image = styled.img<{ upload: boolean }>`
@@ -133,7 +134,7 @@ const Image = styled.img<{ upload: boolean }>`
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-around;
-  padding-top: 30px;
+  padding-top: 50px;
 
   & button {
     color: black;
