@@ -14,9 +14,11 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import { getStorage, ref, uploadString } from 'firebase/storage';
+
 import { useRouter } from 'next/router';
 import MenuItem from '@mui/material/MenuItem';
+import { UserInfo, Rounge } from '@interface/StoreInterface';
+import { HomeListUrlString } from '@interface/GetPostsInterface';
 import { UserInputData, userInputInitialState, jobSectors } from './constants';
 import { getAuth } from 'firebase/auth';
 import {
@@ -27,15 +29,29 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { validateData, getOcrData } from '@utils/ocrDataValidation';
+import { uploadImg } from '@utils/signupForm';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
 const reducer = (state: UserInputData, action: any) => {
   return {
     ...state,
     [action.type]: { value: action.payload.value, error: action.payload.error },
   };
 };
+type OcrData = {
+  b_no: string;
+  start_dt: string;
+  p_nm: string;
+};
 export default function Google() {
   const router = useRouter();
   const dispatch = useDispatch();
+
   const [inputState, inputDispatch] = useReducer(
     reducer,
     userInputInitialState,
@@ -43,7 +59,13 @@ export default function Google() {
   const [imageUrl, setImageUrl] = useState<string>('');
   const [imageExt, setImageExt] = useState<string>('');
   const [nicknameBtnChecked, setNicknameBtnChecked] = useState<boolean>(false);
-  const storage = getStorage();
+  const [imageOcrChecked, setImageOcrChecked] = useState<boolean>(false);
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [ocrData, setOcrData] = useState<OcrData>({
+    b_no: '',
+    start_dt: '',
+    p_nm: '',
+  });
   const { email, nickname, jobSector } = inputState;
   useEffect(() => {
     const auth = getAuth();
@@ -55,6 +77,10 @@ export default function Google() {
     });
     console.log(inputState);
   }, []);
+
+  const handleClose = () => {
+    setDialogOpen(false);
+  };
 
   const SignUpSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -69,7 +95,7 @@ export default function Google() {
     }
     const success = inputErrorCheck(inputState);
     if (success) {
-      const userData = {
+      const userData: UserInfo = {
         nickname: nickname.value,
         jobSector: jobSector.value,
         validRounges: [
@@ -84,8 +110,8 @@ export default function Google() {
           {
             title: jobSector.value,
             url: jobSectors.find((v) => v.title === jobSector.value)
-              ?.url as string,
-          },
+              ?.url as HomeListUrlString,
+          } as Rounge,
         ],
         id: uid,
         hasNewNotification: false,
@@ -93,22 +119,10 @@ export default function Google() {
         posts: [],
         email: email.value,
       };
-      uploadImg(uid!);
-      console.log('success');
-      const docSnap = await setDoc(doc(db, 'user', uid!), userData);
-      console.log(docSnap);
+      uploadImg(uid, imageExt, imageUrl);
+      const docSnap = await setDoc(doc(db, 'user', uid), userData);
       await signOut(auth);
       router.push('/user/login');
-    }
-  };
-
-  const uploadImg = async (uid: string) => {
-    const imageName = `${uid}.${imageExt}`;
-    const imgRef = ref(storage, imageName);
-    try {
-      await uploadString(imgRef, imageUrl, 'data_url');
-    } catch (e: any) {
-      console.error(e);
     }
   };
 
@@ -134,6 +148,36 @@ export default function Google() {
     });
   };
 
+  const getImageToString = async () => {
+    const result = await getOcrData(imageUrl, imageExt);
+    if (!result) {
+      alert('증명서에서 데이터를 가지고 오지 못했습니다!');
+      resetOcrData();
+    } else {
+      const { b_no, p_nm, start_dt } = result as OcrData;
+      const newOcrData = { b_no, p_nm, start_dt };
+      setOcrData(newOcrData);
+      setDialogOpen(true);
+    }
+  };
+
+  const validateOcrData = async () => {
+    const validateResult = await validateData(ocrData);
+    if (validateResult) {
+      alert('인증 성공!');
+      setImageOcrChecked(true);
+      handleClose();
+    } else {
+      alert('인증 실패! 증명서를 다시 확인 해 주세요!');
+      handleClose();
+    }
+  };
+
+  const resetOcrData = () => {
+    const resetOcrData = { b_no: '', p_nm: '', start_dt: '' };
+    setOcrData(resetOcrData);
+  };
+
   const onImageChange = (e: any) => {
     const image = e.target.files[0]!;
     const reader = new FileReader();
@@ -146,8 +190,16 @@ export default function Google() {
     };
     setImageExt(e.target.value.split('.')[1]);
     e.target.value = '';
+    setImageOcrChecked(false);
+
+    resetOcrData();
   };
-  const onClearImg = () => setImageUrl('');
+
+  const onClearImg = () => {
+    setImageUrl('');
+    setImageOcrChecked(false);
+    resetOcrData();
+  };
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -227,7 +279,22 @@ export default function Google() {
               </Button>
             </WrapImageUpload>
             {imageUrl && (
-              <img src={imageUrl} alt={imageUrl} width="150px" height="200px" />
+              <>
+                <img
+                  src={imageUrl}
+                  alt={imageUrl}
+                  width="150px"
+                  height="200px"
+                />
+                <OcrButton
+                  type="button"
+                  variant="contained"
+                  disabled={imageOcrChecked}
+                  onClick={getImageToString}
+                >
+                  인증하기
+                </OcrButton>
+              </>
             )}
             <WrapInput>
               <Label>직종</Label>
@@ -254,6 +321,31 @@ export default function Google() {
             </SubmitButton>
           </WrapContents>
         </form>
+        <>
+          <Dialog
+            open={dialogOpen}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {'아래의 정보로 인증하시겠습니까?'}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                <text>사업자등록번호: {ocrData.b_no}</text>
+                <text>대표자: {ocrData.p_nm}</text>
+                <text>개업년월일: {ocrData.start_dt}</text>
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={validateOcrData} autoFocus>
+                인증하기
+              </Button>
+              <Button onClick={handleClose}>다시 올리기</Button>
+            </DialogActions>
+          </Dialog>
+        </>
       </Main>
     </>
   );
@@ -348,4 +440,16 @@ const Input = styled('input')({
 const TextFields = styled(TextField)`
   color: #8946a6;
   margin: 5px;
+`;
+
+const OcrButton = styled(Button)`
+  background: #8946a6;
+  margin-top: 15px;
+  :disabled {
+    background: 'gray';
+  }
+  :hover {
+    opacity: 0.8;
+    background: #8946a6;
+  }
 `;

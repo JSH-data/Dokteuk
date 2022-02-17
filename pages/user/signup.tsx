@@ -11,6 +11,7 @@ import GoogleIcon from '@mui/icons-material/Google';
 import EmailIcon from '@mui/icons-material/Email';
 import LoginIcon from '@mui/icons-material/Login';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+
 export default function SignUpIndex() {
   const router = useRouter();
   const provider = new GoogleAuthProvider();
@@ -73,7 +74,7 @@ export const getServerSideProps: GetServerSideProps = async (
 ) => {
   if (!context.req.headers.referer) {
     context.res.statusCode = 302;
-    context.res.setHeader('Location', `/`);
+    context.res.setHeader('Location', `/user/email`);
     context.res.end();
   }
   return { props: {} };

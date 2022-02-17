@@ -1,17 +1,11 @@
+import { Rounge } from '@interface/StoreInterface';
+
 export type UserInputData = {
   email: { value: string; error: string };
   password: { value: string; error: string };
   checkPassword: { value: string; error: string };
   nickname: { value: string; error: string };
   jobSector: { value: string; error: string };
-};
-
-export type InputHelperText = {
-  email: string;
-  password: string;
-  checkPassword: string;
-  nickname: string;
-  jobSector: string;
 };
 
 export const userInputInitialState: UserInputData = {
@@ -22,7 +16,7 @@ export const userInputInitialState: UserInputData = {
   jobSector: { value: '', error: '직종을 선택해 주세요' },
 };
 
-export const jobSectors = [
+export const jobSectors: Array<Rounge> = [
   { title: '외식·음료', url: 'food-service' },
   { title: '매장관리·판매', url: 'store' },
   { title: '서비스', url: 'service' },

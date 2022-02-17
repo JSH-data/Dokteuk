@@ -101,12 +101,12 @@ export default function Login() {
               />
             </WrapInput>
             <WrapButton>
-              <Button>
-                <GroupAddIcon style={{ marginRight: '10px' }} />
-                <Link href="/user/signup" passHref>
+              <Link href="/user/signup" passHref>
+                <Button type="button">
+                  <GroupAddIcon style={{ marginRight: '10px' }} />
                   회원가입
-                </Link>
-              </Button>
+                </Button>
+              </Link>
 
               <Button type="button" onClick={loginWithGoogle}>
                 <GoogleIcon style={{ marginRight: '10px' }} />
