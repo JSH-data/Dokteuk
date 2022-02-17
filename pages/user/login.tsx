@@ -75,7 +75,7 @@ export default function Login() {
   return (
     <>
       <Main>
-        <h1 style={{ color: '#8946A6' }}>로그인</h1>
+        <Title>로그인</Title>
         <form onSubmit={SignUpSubmitHandler}>
           <WrapContents>
             <WrapInput>
@@ -133,6 +133,15 @@ export const getServerSideProps: GetServerSideProps = async (
   }
   return { props: {} };
 };
+
+const Title = styled.h1`
+  color: ${({ theme }: any) => theme.mainColorViolet};
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+  }
+`;
+
 const Main = styled.div`
   display: flex;
   align-items: center;
@@ -148,14 +157,15 @@ const WrapContents = styled.div`
     color: black;
   }
   & .MuiOutlinedInput-root {
-    border: 1px solid ${({ theme }: any) => theme.darkGray};
+    border: 1px solid ${({ theme }: any) => theme.lightGray};
   }
+
   @media (prefers-color-scheme: dark) {
     & .MuiOutlinedInput-input {
       color: white;
     }
     & .MuiOutlinedInput-root {
-      border: 1px solid ${({ theme }: any) => theme.lightGray};
+      border: 1px solid ${({ theme }: any) => theme.darkGray};
     }
   }
 `;
@@ -168,7 +178,7 @@ const WrapInput = styled.div`
 `;
 
 const Button = styled.button`
-  background: #8946a6;
+  background: ${({ theme }: any) => theme.mainColorViolet};
   border-radius: 5px;
   border: none;
   color: white;
@@ -176,8 +186,15 @@ const Button = styled.button`
   height: 35px;
   font-size: 12px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   :hover {
     opacity: 0.8;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
   }
 `;
 
@@ -189,7 +206,7 @@ const WrapButton = styled.div`
 `;
 
 const SubmitButton = styled.button`
-  background: #8946a6;
+  background: ${({ theme }: any) => theme.mainColorViolet};
   border-radius: 5px;
   border: none;
   color: white;
@@ -197,12 +214,23 @@ const SubmitButton = styled.button`
   height: 58px;
   font-size: 20px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   :hover {
     opacity: 0.8;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
   }
 `;
 
 const Label = styled.label`
-  color: #8946a6;
+  color: ${({ theme }: any) => theme.mainColorViolet};
   margin: 5px;
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+  }
 `;

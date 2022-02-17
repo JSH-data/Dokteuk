@@ -9,8 +9,8 @@ import {
   Typography,
   TextField,
   Modal,
-  styled,
 } from '@mui/material';
+import styled from '@emotion/styled';
 import {
   getStorage,
   ref,
@@ -55,35 +55,41 @@ import { ValidRounge } from '../../interface/StoreInterface';
 import Layout from '@layouts/Layout';
 
 const ContainerStyled = styled(Container)`
-  & .MuiInput-input {
+  & .MuiOutlinedInput-input {
     color: black;
-  }
-  & .MuiInput-root {
-    border-bottom: 1px solid black;
   }
   & label {
     color: ${({ theme }: any) => theme.darkGray};
   }
   & .MuiOutlinedInput-notchedOutline {
-    border: 1px solid black;
+    border: 1px solid ${({ theme }: any) => theme.darkGray};
   }
 
   @media (prefers-color-scheme: dark) {
-    & .MuiInput-input {
+    & .MuiOutlinedInput-input {
       color: white;
     }
     & label {
       color: ${({ theme }: any) => theme.lightGray};
     }
     & .MuiInput-root {
-      border-bottom: 1px solid white;
+      color: white;
+      border-bottom: 1px solid ${({ theme }: any) => theme.darkGray};
     }
     & .MuiOutlinedInput-notchedOutline {
-      border: 1px solid white;
+      border: 1px solid ${({ theme }: any) => theme.darkGray};
     }
     & .MuiSvgIcon-root {
-      color: white;
+      color: ${({ theme }: any) => theme.lightGray};
     }
+  }
+`;
+
+const ButtonStyled = styled(Button)`
+  background: ${({ theme }: any) => theme.mainColorViolet};
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
   }
 `;
 
@@ -552,7 +558,7 @@ const PostForm = ({ from }: { from: string }) => {
                 >
                   <img src={v[0]} style={{ maxWidth: '100%' }} alt={v[0]} />
                   <Button
-                    sx={{ position: 'relative' }}
+                    sx={{ position: 'relative', color: 'red' }}
                     onClick={() => {
                       deleteClick(imgList[i][1]);
                       let delArr = [...imgList];
@@ -632,11 +638,11 @@ const PostForm = ({ from }: { from: string }) => {
             }}
           >
             <Link href="/" passHref>
-              <Button variant="contained">메인으로 이동</Button>
+              <ButtonStyled variant="contained">메인으로 이동</ButtonStyled>
             </Link>
-            <Button variant="contained" onClick={onSubmit}>
+            <ButtonStyled variant="contained" onClick={onSubmit}>
               게시물 작성
-            </Button>
+            </ButtonStyled>
           </Box>
           <Box
             sx={{

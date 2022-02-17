@@ -40,7 +40,7 @@ export default function SignUpIndex() {
   return (
     <>
       <Main>
-        <h1 style={{ color: '#8946A6' }}>회원가입</h1>
+        <Title>회원가입</Title>
         <WrapContents>
           <WrapInput>
             <Link href="/user/email" passHref>
@@ -79,6 +79,14 @@ export const getServerSideProps: GetServerSideProps = async (
   }
   return { props: {} };
 };
+
+const Title = styled.h1`
+  color: ${({ theme }: any) => theme.mainColorViolet};
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+  }
+`;
 
 const Main = styled.div`
   display: flex;
@@ -122,7 +130,7 @@ const WrapInput = styled.div`
 `;
 
 const Button = styled.button`
-  background: #8946a6;
+  background: ${({ theme }: any) => theme.mainColorViolet};
   border-radius: 5px;
   border: none;
   color: white;
@@ -131,8 +139,18 @@ const Button = styled.button`
   font-size: 12px;
   cursor: pointer;
   vertical-align: middle;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  & > svg {
+    margin-right: 10px;
+  }
   :hover {
     opacity: 0.8;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
   }
 `;
 
@@ -143,27 +161,16 @@ const WrapButton = styled.div`
   width: 313px;
 `;
 
-const SubmitButton = styled.button`
-  background: #8946a6;
-  border-radius: 5px;
-  border: none;
-  color: white;
-  width: 173px;
-  height: 58px;
-  font-size: 20px;
-  cursor: pointer;
-  :hover {
-    opacity: 0.8;
+const Label = styled.label`
+  color: ${({ theme }: any) => theme.mainColorViolet};
+  margin: 5px;
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
   }
 `;
 
-const Label = styled.label`
-  color: #8946a6;
-  margin: 5px;
-`;
-
 const SignupButton = styled(Button)`
-  background: #8946a6;
   border-radius: 5px;
   border: none;
   color: white;

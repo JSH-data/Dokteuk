@@ -46,15 +46,15 @@ const TopicWrapperDivStyled = styled.div`
   & div {
     font-size: 8px;
     font-weight: 500;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
     background-color: ${({ theme }: any) => theme.mainColorViolet};
     border-radius: 20px;
     padding: 4px 12px 4px 12px;
-    color: black;
+    color: white;
   }
   @media (prefers-color-scheme: dark) {
     & div {
-      background-color: ${({ theme }: any) => theme.blackGray};
+      background-color: #2f2f32;
       color: ${({ theme }: any) => theme.lightGray};
       // color: red;
     }
@@ -63,7 +63,7 @@ const TopicWrapperDivStyled = styled.div`
 
 const CardDividerStyled = styled.div`
   width: calc(100% + 48px);
-  background-color: rgb(39, 39, 41);
+  background-color: ${({ theme }: any) => theme.lightGray};
   height: 0.5px;
   margin-left: -24px;
   margin-bottom: 8px;
@@ -131,11 +131,17 @@ const CardMiddleDotStyled = styled.div`
 `;
 const CardAuthorNickname = styled.div`
   font-size: 0.6rem;
-  color: rgb(184, 191, 210);
+  color: ${({ theme }: any) => theme.middleGray};
 `;
 const CardBottomWrapperStyled = styled.div`
   display: flex;
   height: 20px;
+  align-items: center;
+
+  & > div {
+    display: flex;
+    align-items: center;
+  }
 `;
 const CardStatWrapper = styled.div`
   font-size: 1rem;

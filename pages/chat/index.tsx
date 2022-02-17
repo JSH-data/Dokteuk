@@ -20,7 +20,7 @@ const Chat = ({ user }: { user: Person }) => {
     } else {
       updateNotification(user.id, false);
     }
-  }, [checkNotification, user.id]);
+  }, [checkNotification, user.id, user]);
 
   useEffect(() => {
     const unsubscribe = chatList(setMyChats, user);

@@ -127,10 +127,14 @@ const Footer = () => {
       </DivStyled>
       <DivStyled>
         <Link href="/chat" passHref>
-          <ForumWrapper>
+          <Badge
+            color="error"
+            overlap="circular"
+            variant="dot"
+            invisible={myInfo.hasNewChatNotification ? false : true}
+          >
             <ForumOutlinedIconStyled fontSize="medium" />
-            {myInfo.hasNewChatNotification && <Notice />}
-          </ForumWrapper>
+          </Badge>
         </Link>
       </DivStyled>
       <DivStyled>
@@ -160,17 +164,3 @@ const Footer = () => {
 };
 
 export default Footer;
-
-const ForumWrapper = styled.div`
-  position: relative;
-`;
-
-const Notice = styled.div`
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: red;
-  position: absolute;
-  top: 0;
-  left: calc(50% + 5px);
-`;

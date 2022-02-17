@@ -213,7 +213,7 @@ export default function Google() {
   return (
     <>
       <Main>
-        <h1 style={{ color: '#8946A6' }}>회원가입</h1>
+        <Title>회원가입</Title>
         <form onSubmit={SignUpSubmitHandler}>
           <WrapContents>
             <WrapInput>
@@ -259,24 +259,19 @@ export default function Google() {
                   type="file"
                   onChange={onImageChange}
                 />
-                <Button
-                  variant="contained"
-                  component="span"
-                  style={{ background: '#8946a6', marginLeft: 10 }}
-                >
+                <ButtonStyled variant="contained" component="span">
                   <CameraAltIcon style={{ marginRight: '5px' }} />
                   파일 선택
-                </Button>
+                </ButtonStyled>
               </label>
-              <Button
+              <ButtonStyled
                 variant="contained"
                 component="span"
                 onClick={onClearImg}
-                style={{ background: '#8946a6', marginLeft: 10 }}
               >
                 <DeleteForeverIcon style={{ marginRight: '5px' }} />
                 사진 지우기
-              </Button>
+              </ButtonStyled>
             </WrapImageUpload>
             {imageUrl && (
               <>
@@ -362,6 +357,14 @@ export const getServerSideProps: GetServerSideProps = async (
   return { props: {} };
 };
 
+const Title = styled.h1`
+  color: ${({ theme }: any) => theme.mainColorViolet};
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+  }
+`;
+
 const Main = styled.div`
   display: flex;
   align-items: center;
@@ -372,6 +375,27 @@ const WrapContents = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  & .MuiOutlinedInput-input {
+    color: black;
+  }
+  & .MuiOutlinedInput-root {
+    border: 1px solid ${({ theme }: any) => theme.lightGray};
+  }
+
+  @media (prefers-color-scheme: dark) {
+    & .MuiOutlinedInput-input {
+      color: white;
+    }
+    & .MuiOutlinedInput-root {
+      border: 1px solid ${({ theme }: any) => theme.darkGray};
+    }
+    & .MuiSvgIcon-root {
+      color: ${({ theme }: any) => theme.lightGray};
+    }
+    & .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
+      text-fill-color: ${({ theme }: any) => theme.darkGray};
+    }
+  }
 `;
 
 const WrapInput = styled.div`
@@ -388,10 +412,17 @@ const WrapImageUpload = styled.div`
   width: 100%;
 `;
 
+const ButtonStyled = styled(Button)<{ component: string }>`
+  margin-left: 10px;
+  background: ${({ theme }: any) => theme.mainColorViolet};
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
+  }
+`;
+
 const CheckButton = styled.button`
-  display: flex;
-  align-items: center;
-  background: #8946a6;
+  background: ${({ theme }: any) => theme.mainColorViolet};
   border-radius: 5px;
   border: none;
   color: white;
@@ -406,10 +437,14 @@ const CheckButton = styled.button`
   :disabled {
     background: gray;
   }
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
+  }
 `;
 
 const SubmitButton = styled.button`
-  background: #8946a6;
+  background: ${({ theme }: any) => theme.mainColorViolet};
   border-radius: 5px;
   border: none;
   color: white;
@@ -417,20 +452,31 @@ const SubmitButton = styled.button`
   height: 58px;
   font-size: 20px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   :hover {
     opacity: 0.8;
   }
   :disabled {
     background: gray;
   }
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
+  }
 `;
 
 const Label = styled.label`
-  color: #8946a6;
+  color: ${({ theme }: any) => theme.mainColorViolet};
   margin: 5px;
   ::after {
     content: '*';
     color: red;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
   }
 `;
 const Input = styled('input')({
@@ -438,18 +484,25 @@ const Input = styled('input')({
 });
 
 const TextFields = styled(TextField)`
-  color: #8946a6;
+  color: ${({ theme }: any) => theme.mainColorViolet};
   margin: 5px;
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+  }
 `;
 
 const OcrButton = styled(Button)`
-  background: #8946a6;
+  background: ${({ theme }: any) => theme.mainColorViolet};
   margin-top: 15px;
   :disabled {
     background: 'gray';
   }
   :hover {
     opacity: 0.8;
-    background: #8946a6;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
   }
 `;
