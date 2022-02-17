@@ -12,6 +12,7 @@ type CommentDropBoxProps = {
   setModify(v: boolean): void;
   commentId: string;
   userId: string;
+  isNested: boolean;
 };
 
 const open = keyframes`
@@ -51,6 +52,7 @@ const CommentDropBox: React.FC<CommentDropBoxProps> = ({
   setModify,
   commentId,
   userId,
+  isNested,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const userLoginInfo = useSelector((state: RootReducer) => state.user.user.id);
@@ -75,7 +77,7 @@ const CommentDropBox: React.FC<CommentDropBoxProps> = ({
 
   return (
     <CommentDropBoxDiv ref={menuRef}>
-      {
+      {isNested && (
         <CommentDropBoxOption
           onClick={() => {
             if (setNestedReply) setNestedReply(true);
@@ -85,7 +87,7 @@ const CommentDropBox: React.FC<CommentDropBoxProps> = ({
         >
           대댓글 달기
         </CommentDropBoxOption>
-      }
+      )}
 
       {userId == userLoginInfo && (
         <>

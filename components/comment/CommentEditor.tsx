@@ -46,7 +46,7 @@ const CommentEditor: React.FC<CommentEditorProps> = ({
 }) => {
   const [comment, setComment] = useState<string>('');
   const [alert, setAlert] = useState<boolean>(false);
-
+  const [timer_, setTimer_] = useState<null | NodeJS.Timeout>(null);
   const [alertInfo, setAlertInfo] = useState<Alert>({
     alerMessage: '',
     alerType: undefined,
@@ -56,25 +56,27 @@ const CommentEditor: React.FC<CommentEditorProps> = ({
   const router = useRouter();
   let timer: any;
   const getAlertInfo = (result: string) => {
-    setAlert(true);
-    if (result === 'success')
+    if (result === 'success') {
       setAlertInfo({
         alerMessage: '댓글 작성 성공!',
         alerType: 'success',
       });
-    else {
+    } else {
       setAlertInfo({
         alerMessage: '댓글 작성 실패!',
         alerType: 'error',
       });
     }
-    timer = setTimeout(() => {
-      setAlert(false);
-      setAlertInfo({
-        alerMessage: '',
-        alerType: undefined,
-      });
-    }, 2000);
+    setAlert(true);
+    setTimer_(
+      setTimeout(() => {
+        setAlert(false);
+        setAlertInfo({
+          alerMessage: '',
+          alerType: undefined,
+        });
+      }, 2000),
+    );
   };
 
   const addComment = async () => {
@@ -85,17 +87,20 @@ const CommentEditor: React.FC<CommentEditorProps> = ({
     const detailTimeStamp = timeStamp.getTime();
 
     if (!bundleId) {
+      // bundleId가 없다는 것은 대댓글이 아니라는 의미
       bundleId = detailTimeStamp;
       const result = await addOriginComment(
         comment,
         postData.id,
         userInfo,
         bundleId,
-      );
+      ); // 댓글 생성
       if (userInfo.id !== postData.ownerId)
+        // 댓글을 생성하고 댓글자와 포스트자가 동일하지 않다면 포스트 주인의 상태를 업데이트합니다.
         await postOwnerNotificationUpdate(postData, router.asPath, comment);
       getAlertInfo(result);
     } else if (userId != undefined && originComment != undefined) {
+      // 대댓글인경우 원댓글의 주인의 아이디와 코멘트가 있다
       const result = await addNestedComment(
         comment,
         bundleId,
@@ -103,7 +108,8 @@ const CommentEditor: React.FC<CommentEditorProps> = ({
         userInfo,
         postData.id,
       );
-      if (userInfo.id !== userId)
+      if (userInfo.id !== userId) {
+        // 대댓글 작성자원 원댓글 작성자가 동일하지 않은 경우에만 원댓글 작성자의 상태를 업데이트 합니다.
         await commentOwnerNotificationUpdate(
           userId,
           router.asPath,
@@ -111,15 +117,17 @@ const CommentEditor: React.FC<CommentEditorProps> = ({
           comment,
           originComment,
         );
+      }
       getAlertInfo(result);
-      if (setNestedReply != undefined) setNestedReply(false);
+      // if (setNestedReply != undefined) setNestedReply(false);
     }
     setComment('');
   };
 
   useEffect(() => {
     return () => {
-      clearTimeout(timer);
+      if (timer_ !== null) clearTimeout(timer_);
+      setTimer_(null);
     };
   }, []);
 

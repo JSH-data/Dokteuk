@@ -61,7 +61,6 @@ export const addNestedComment = async (
     result = 'success';
   } catch (err: unknown) {
     if (err instanceof Error) result = err.message as string;
-    console.log('resu', result, err);
   }
   return result;
 };

@@ -93,6 +93,7 @@ const Comment: React.FC<CommentProps> = ({
                   setModify={setModify}
                   commentId={commentId}
                   userId={userId}
+                  isNested={isNested}
                 />
               )}
             </div>
@@ -137,12 +138,13 @@ const Comment: React.FC<CommentProps> = ({
                 userId={userId}
               />
               <MenuIcon onClick={() => setMenu(!menu)} />
-              {!isDeleted && menu && userInfo && (
+              {!isDeleted && menu && userInfo == userId && (
                 <CommentDropBox
                   setMenu={setMenu}
                   setModify={setModify}
                   commentId={commentId}
                   userId={userId}
+                  isNested={isNested}
                 />
               )}
             </div>

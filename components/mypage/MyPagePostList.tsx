@@ -30,11 +30,11 @@ const MyPagePostList: React.FC<MyPagePostListProps> = ({ userId }) => {
     <MyPageProfileComponent>
       <h1>내가 작성한 게시물</h1>
       <ul>
-        {posts.map((post: any, idx: number) => {
+        {/* {posts.map((post: any, idx: number) => {
           return (
             <MyPagePost key={idx} title={post.title} content={post.content} />
           );
-        })}
+        })} */}
       </ul>
     </MyPageProfileComponent>
   );
