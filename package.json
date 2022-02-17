@@ -20,7 +20,7 @@
     "algoliasearch": "^4.12.1",
     "axios": "^0.25.0",
     "browser-image-compression": "^1.0.17",
-    "firebase": "^9.6.4",
+    "firebase": "^9.6.6",
     "firebase-admin": "^10.0.2",
     "firebase-tools": "^10.1.4",
     "framer-motion": "^6.2.3",

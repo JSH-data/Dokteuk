@@ -29,7 +29,7 @@ import {
 } from 'firebase/firestore';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { db, firebase } from '@firebase/firebase';
-import { Box } from '@mui/system';
+import { Box } from '@mui/material';
 
 import Router from 'next/router';
 //select 부분을 위해서 사용
@@ -317,18 +317,16 @@ const PostForm = ({ from }: { from: string }) => {
       updateDoc(docPostRef, PostUpdate);
       //유저에 게시물 id 추가
       setModalOpen(true);
-      //나중에 topic 페이지로 이동하도록 변경하기
+
       setPostedUrl(`/list/rounge/${postRounge.url}/${newId}`);
     }
-    //원하는 타겟으로 나중에 변경하기
+
     if (from === 'timeline' || from === postRounge) {
       // 이전 [rounge] 페이지에서 현재 [rounge] 페이지 글 작성 또는 이전 페이지가 timeline
       dispatch(resetViewAction()); // 서버상태와 동기화를 위해 초기화
     }
   };
 
-  //이미지 업로드
-  //수정중, 복원이 어렵다면 notepad에 적어놓은거로 다시 돌려놓을것
   const handleUploadChange = (e: any) => {
     if (e.target.files[0]) {
       setPostImage(e.target.files[0]);
@@ -355,61 +353,29 @@ const PostForm = ({ from }: { from: string }) => {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setUrl(url);
-          //[이미지 다운로드 url, firebase에 저장한 이미지 이름, 이미지 설명]
           setImgList([...imgList, [downloadURL, uploadImageName, '']]);
         });
       },
     );
-    //postImage가 계속 남아있어 지속적으로 업로드되는 것을 방지함
   };
 
   function deleteClick(targetPicture: string) {
     const storage = getStorage();
 
-    // Create a reference to the file to delete
     const desertRef = ref(storage, 'images/' + targetPicture);
 
-    // Delete the file
     deleteObject(desertRef)
       .then(() => {
-        console.log('사진이 삭제되었습니다.');
-        // File deleted successfully
+        showAlert('info', `사진이 삭제되었습니다`);
       })
       .catch((error) => {
-        console.log(error);
+        showAlert(
+          'error',
+          `사진 삭제 중 오류가 발생했습니다 다시 시도해 주세요`,
+        );
       });
   }
 
-  //업로드 확인 버튼부분 구현
-  // const buttonSx = {
-  //   ...(success && {
-  //     bgcolor: green[500],
-  //     '&:hover': {
-  //       bgcolor: green[700],
-  //     },
-  //   }),
-  // };
-
-  // useEffect(() => {
-  //   return () => {
-  //     clearTimeout(timer.current);
-  //   };
-  // }, []);
-
-  // const handleButtonClick = () => {
-  //   if (!loading && progress !== 0 && progress !== 100) {
-  //     setSuccess(false);
-  //     setLoading(true);
-  //   } else if (loading && progress === 100) {
-  //     setSuccess(true);
-  //     setLoading(false);
-  //     timer.current = window.setTimeout(() => {
-  //       setSuccess(false);
-  //       setLoading(false);
-  //     }, 2000);
-  //   }
-  // };
-  console.log(uid);
   return (
     <Layout>
       {uid === '' ? (
@@ -623,7 +589,6 @@ const PostForm = ({ from }: { from: string }) => {
               }}
               onChange={handleUploadChange}
             />
-            {/* <Button onClick={handleUpload}>Upload</Button> */}
             <br />
             {url}
             <br />

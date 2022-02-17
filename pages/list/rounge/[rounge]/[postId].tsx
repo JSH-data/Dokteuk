@@ -5,38 +5,21 @@ import {
 } from '@store/reducer';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useDispatch } from 'react-redux';
+import { Box, Container, Divider, Modal, Typography } from '@mui/material';
+
 import {
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Container,
-  Divider,
-  Grid,
-  Modal,
-  Typography,
-} from '@mui/material';
-import moment from 'moment';
-import {
-  collection,
   getDoc,
-  getDocs,
   doc,
-  query,
-  where,
-  onSnapshot,
-  getDocsFromServer,
   updateDoc,
   arrayUnion,
   arrayRemove,
 } from 'firebase/firestore';
-import Link from 'next/link';
-import React, { useContext, useEffect, useState } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { db } from '@firebase/firebase';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { useAuth } from '@hooks/Auth';
+
 import Comment from '@components/comment/Comment';
 import type { RootReducer } from 'store/reducer';
 import { useSelector } from 'react-redux';
@@ -44,8 +27,7 @@ import CustomSeparator from '@components/post/Separator';
 import Moment from 'react-moment';
 import 'moment/locale/ko';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { typography } from '@mui/system';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+
 import UpdateLink from '@components/post/UpdateLink';
 import DeleteLink from '@components/post/DeleteLink';
 import EditPostForm from '@components/write/EditPostForm';
@@ -55,6 +37,8 @@ import Stack from '@mui/material/Stack';
 import Router, { useRouter } from 'next/router';
 import Layout from '@layouts/Layout';
 import { StoreState, UserState } from '@interface/StoreInterface';
+import { ChatDefault, createChatRoom } from '@utils/createChatRoom';
+
 const style = {
   position: 'absolute' as 'absolute',
   top: '50%',
@@ -67,7 +51,6 @@ const style = {
   p: 4,
 };
 export const getServerSideProps: GetServerSideProps = async (
-  // context: GetServerSidePropsContext,
   context: GetServerSidePropsContext,
 ) => {
   let id;
@@ -76,21 +59,28 @@ export const getServerSideProps: GetServerSideProps = async (
   } else id = null;
   const docRef = doc(db, 'post', id as string);
   const docSnap = await getDoc(docRef);
-  if (context.req.headers.referer && context.req.url) {
+  if (JSON.stringify(docSnap.data()) === undefined) {
     return {
-      props: {
-        referer: context.req.headers.referer
-          .split('/')
-          .slice(3, context.req.headers.referer.split('/').length)
-          .join('/'),
-        postProps: JSON.stringify(docSnap.data()),
-        postId: id,
-      },
+      notFound: true,
+      props: {},
+    };
+  } else {
+    if (context.req.headers.referer && context.req.url) {
+      return {
+        props: {
+          referer: context.req.headers.referer
+            .split('/')
+            .slice(3, context.req.headers.referer.split('/').length)
+            .join('/'),
+          postProps: JSON.stringify(docSnap.data()),
+          postId: id,
+        },
+      };
+    }
+    return {
+      props: { postProps: JSON.stringify(docSnap.data()), postId: id },
     };
   }
-  return {
-    props: { postProps: JSON.stringify(docSnap.data()), postId: id },
-  };
 };
 
 export default function RoungePost({
@@ -104,7 +94,6 @@ export default function RoungePost({
 }) {
   const router = useRouter();
   const { user } = useSelector((state: RootReducer) => state.user);
-  // const [user, setUser] = useState<any>({});
   const [updateTime, setUpdateTime] = useState(0);
   const [post, setPost] = useState(JSON.parse(postProps));
   const [uid, setUid] = useState<string>('');
@@ -115,6 +104,7 @@ export default function RoungePost({
   const [postLikeCount, setPostLikeCount] = useState(post.pressPerson.length);
   const [editOpen, setEditOpen] = useState(false);
   const [accessPost, setAccessPost] = useState('');
+  const [toggle, setToggle] = useState(false);
   const dispatch = useDispatch();
 
   // 파이어스토어 업데이트, 클라이언트 상태 업데이트
@@ -142,18 +132,6 @@ export default function RoungePost({
     setPostLikeCount(newPressPerson.length);
     setIsLiked(false);
   };
-  //
-
-  // useEffect(() => {
-  // const getUser = async () => {
-  //   if (uid !== '') {
-  //     const docRef = doc(db, 'user', uid);
-  //     const docSnap = await getDoc(docRef);
-  //     setUser(docSnap.data());
-  //   }
-  // };
-  // getUser();
-  // }, [uid]);
 
   const changeLike = async (id: any, e: any) => {
     //다른 태그에 이벤트가 전달되지 않게 하기 위함
@@ -180,16 +158,13 @@ export default function RoungePost({
   const auth = getAuth();
   onAuthStateChanged(auth, (loginUser) => {
     if (loginUser) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/firebase.User
       setUid(loginUser.uid);
     } else {
       setAccessPost('noUser');
       setModalOpen(true);
-      //console.log를 모달창으로 바꿀것
     }
   });
-  console.log(updateTime);
+
   const MomentDateChange = () => {
     const nowTime = Date.now(),
       startTime =
@@ -227,6 +202,28 @@ export default function RoungePost({
       setNotRoungemodalOpen(true);
     }
   }, []);
+
+  //채팅방 열기
+
+  const onToggle = () => {
+    setToggle(false);
+  };
+  const openChat = async () => {
+    const myInfo: ChatDefault = {
+      nickname: user.nickname,
+      jobSector: user.jobSector,
+      id: uid,
+    };
+    const counterInfo: ChatDefault = {
+      nickname: post.nickname,
+      jobSector: post.job,
+      id: post.userId,
+    };
+    const id = await createChatRoom(myInfo, counterInfo);
+    router.push(
+      `/chat/${id}?other=${counterInfo.nickname}&id=${counterInfo.id}`,
+    );
+  };
 
   return (
     <Layout>
@@ -338,7 +335,21 @@ export default function RoungePost({
                   sx={{ mb: 2 }}
                   style={{ wordBreak: 'break-all' }}
                 >
-                  {post.nickname} ({post.job})
+                  {uid !== post.userId ? (
+                    <Typography
+                      component="span"
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        setToggle(true);
+                      }}
+                    >
+                      {post.nickname} ({post.job})
+                    </Typography>
+                  ) : (
+                    <Typography component="span">
+                      {post.nickname} ({post.job})
+                    </Typography>
+                  )}
                 </Typography>
                 <Typography
                   component="span"
@@ -369,8 +380,7 @@ export default function RoungePost({
                   <AccessTimeIcon sx={{ ml: 3, mr: 1 }} />
                   <MomentDateChange />
                   {post.updatedAt === '' ? '' : '(수정됨)'}
-                  {/* <DriveFileRenameOutlineIcon sx={{ ml: 3, mr: 1 }} />
-          수정하기 */}
+
                   {post.userId === uid ? (
                     <>
                       <UpdateLink
@@ -393,7 +403,6 @@ export default function RoungePost({
                   sx={{ mb: 2 }}
                   style={{ whiteSpace: 'pre-line', wordBreak: 'break-all' }}
                 >
-                  {/* <div style={{ whiteSpace: 'pre-line' }}>{post.content}</div> */}
                   {post.content}
                 </Typography>
                 <Box
@@ -436,7 +445,10 @@ export default function RoungePost({
             )
           ))}
       </Container>
-      {editOpen ? (
+      {accessPost === '' ||
+      accessPost === 'noUser' ||
+      accessPost === 'noAuthority' ||
+      editOpen ? (
         ''
       ) : (
         <Container sx={{ maxWidth: '680px' }}>

@@ -1,8 +1,5 @@
-import Link from 'next/link';
-
 import { Box, Button } from '@mui/material';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-import { useState } from 'react';
 
 export default function UpdateLink(props: any) {
   function editChange() {
