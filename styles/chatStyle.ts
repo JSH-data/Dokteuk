@@ -18,22 +18,6 @@ export const ChatMain = styled.div`
   padding-bottom: 60px;
 `;
 
-export const EmptyChatWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: clamp(0px, 80%, 680px);
-  height: 80px;
-  text-align: center;
-  margin: 20px auto;
-  border-radius: 10px;
-  background: white;
-
-  @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) => theme.mainColorBlack};
-  }
-`;
-
 export const ChatWrapper = styled.div`
   display: flex;
   justify-content: space-between;

@@ -4,13 +4,8 @@ import { getDateTime } from '../../utils/function';
 import Link from 'next/link';
 import Layout from '@layouts/Layout';
 import wrapper from '@store/configureStore';
-import {
-  ChatMain,
-  EmptyChatWrapper,
-  ChatWrapper,
-  Text,
-  Notice,
-} from '../../styles/chatStyle';
+import Empty from '@components/Empty';
+import { ChatMain, ChatWrapper, Text, Notice } from '../../styles/chatStyle';
 
 const Chat = ({ user }: { user: Person }) => {
   const [myChats, setMyChats] = useState<ChatRoom[]>([]);
@@ -39,9 +34,7 @@ const Chat = ({ user }: { user: Person }) => {
     <Layout>
       <ChatMain>
         {myChats.length === 0 ? (
-          <EmptyChatWrapper>
-            <div>아직 개설된 채팅방이 없습니다.</div>
-          </EmptyChatWrapper>
+          <Empty ment="아직 개설된 채팅방이 없습니다." />
         ) : (
           myChats.map(({ other, lastChat, updateAt, lastVisited, id }) => (
             <Fragment key={id}>

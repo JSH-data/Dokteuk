@@ -9,6 +9,7 @@ import { useInView } from 'react-intersection-observer';
 import useGetMyPost from '@hooks/useGetMyPost';
 import { useEffect } from 'react';
 import MyPagePost from '@components/mypage/MyPagePost';
+import Empty from '@components/Empty';
 import { LoadingDiv } from '@components/items/LoadingDiv';
 
 const MyPost: NextPage = () => {
@@ -30,6 +31,7 @@ const MyPost: NextPage = () => {
     return (
       <Layout>
         <LoadingDiv />
+        <Empty ment="아직 작성된 게시물이 없습니다." />
       </Layout>
     );
   }

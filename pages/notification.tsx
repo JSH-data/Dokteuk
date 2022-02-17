@@ -9,6 +9,7 @@ import { LoadingDiv } from '@components/items/LoadingDiv';
 import { getDateTime } from '@utils/function';
 import { useInView } from 'react-intersection-observer';
 import useNotification from '@hooks/useNotification';
+import Empty from '@components/Empty';
 
 const Notification: NextPage = () => {
   const { ref, inView } = useInView();
@@ -29,6 +30,7 @@ const Notification: NextPage = () => {
     return (
       <Layout>
         <LoadingDiv />
+        <Empty ment="아직 새로운 알림이 없습니다." />
       </Layout>
     );
   }
