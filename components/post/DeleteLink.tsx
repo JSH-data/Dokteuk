@@ -112,16 +112,6 @@ export default function DeleteLink(props: any) {
 
       <Modal
         open={modalOpen}
-        onClose={() => {
-          dispatch(
-            setDataAction({
-              data: [],
-              key: '',
-            }),
-          );
-          Router.back();
-          dispatch(deleteOnePostAction({ postId: props.thisPost }));
-        }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -139,6 +129,23 @@ export default function DeleteLink(props: any) {
               ? '게시물을 삭제하였습니다'
               : '삭제 중 오류가 발생하였습니다 다시 시도해 주세요'}
           </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              sx={{ mt: 2 }}
+              onClick={() => {
+                dispatch(
+                  setDataAction({
+                    data: [],
+                    key: '',
+                  }),
+                );
+                Router.back();
+                dispatch(deleteOnePostAction({ postId: props.thisPost }));
+              }}
+            >
+              확인
+            </Button>
+          </Box>
         </BoxStyled>
       </Modal>
     </div>

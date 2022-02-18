@@ -87,11 +87,13 @@ const ContainerStyled = styled(Container)`
       color: ${({ theme }: any) => theme.lightGray};
     }
     & .MuiButton-root {
-      background: ${({ theme }: any) => theme.mainColorBlue};
-      :hover {
+      MuiSkeleton-root :hover {
         opacity: 0.8;
         background: ${({ theme }: any) => theme.mainColorBlue};
       }
+    }
+    & .MuiSkeleton-root {
+      background: ${({ theme }: any) => theme.darkGray};
     }
   }
 `;
@@ -387,9 +389,6 @@ const PostForm = ({ from }: { from: string }) => {
             </Box>
             <Modal
               open={true}
-              onClose={() => {
-                Router.push('/user/login');
-              }}
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
             >
@@ -402,6 +401,16 @@ const PostForm = ({ from }: { from: string }) => {
                 >
                   로그인 후 이용해주세요
                 </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Button
+                    sx={{ mt: 2 }}
+                    onClick={() => {
+                      Router.push('/user/login');
+                    }}
+                  >
+                    확인
+                  </Button>
+                </Box>
               </BoxStyled>
             </Modal>
           </Box>
@@ -660,9 +669,6 @@ const PostForm = ({ from }: { from: string }) => {
 
           <Modal
             open={modalOpen}
-            onClose={() => {
-              Router.replace(postedUrl);
-            }}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
@@ -678,6 +684,16 @@ const PostForm = ({ from }: { from: string }) => {
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                 게시물을 등록하였습니다
               </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button
+                  sx={{ mt: 2 }}
+                  onClick={() => {
+                    Router.replace(postedUrl);
+                  }}
+                >
+                  확인
+                </Button>
+              </Box>
             </BoxStyled>
           </Modal>
         </ContainerStyled>

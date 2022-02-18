@@ -498,9 +498,6 @@ const PostForm = (props: any) => {
       </Box>
       <ModalStyled
         open={modalOpen}
-        onClose={() => {
-          props.setEditOpen(false);
-        }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -516,6 +513,16 @@ const PostForm = (props: any) => {
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             게시물을 수정하였습니다
           </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              sx={{ mt: 2 }}
+              onClick={() => {
+                props.setEditOpen(false);
+              }}
+            >
+              확인
+            </Button>
+          </Box>
         </Box>
       </ModalStyled>
       <DialogStyled

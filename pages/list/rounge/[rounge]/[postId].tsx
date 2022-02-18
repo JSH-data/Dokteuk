@@ -5,7 +5,14 @@ import {
 } from '@store/reducer';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useDispatch } from 'react-redux';
-import { Box, Container, Divider, Modal, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Modal,
+  Typography,
+} from '@mui/material';
 
 import {
   getDoc,
@@ -60,7 +67,13 @@ const DividerStyled = styled(Divider)`
     border-color: ${({ theme }: any) => theme.darkGray};
   }
 `;
-
+const ContainerStyled = styled(Container)`
+  @media (prefers-color-scheme: dark) {
+    & .MuiSkeleton-root {
+      background: ${({ theme }: any) => theme.darkGray};
+    }
+  }
+`;
 const style = {
   position: 'absolute' as 'absolute',
   top: '50%',
@@ -249,7 +262,7 @@ export default function RoungePost({
 
   return (
     <Layout>
-      <Container sx={{ maxWidth: '680px' }}>
+      <ContainerStyled sx={{ maxWidth: '680px' }}>
         {accessPost === '' ? (
           <Box sx={{ mt: 6 }}>
             <Stack spacing={2}>
@@ -277,9 +290,6 @@ export default function RoungePost({
             </Box>
             <Modal
               open={modalOpen}
-              onClose={() => {
-                Router.push('/user/login');
-              }}
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
             >
@@ -292,6 +302,16 @@ export default function RoungePost({
                 >
                   로그인 후 이용해주세요
                 </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Button
+                    sx={{ mt: 2 }}
+                    onClick={() => {
+                      Router.push('/user/login');
+                    }}
+                  >
+                    확인
+                  </Button>
+                </Box>
               </BoxStyled>
             </Modal>
           </>
@@ -310,9 +330,6 @@ export default function RoungePost({
             </Box>
             <Modal
               open={notRoungemodalOpen}
-              onClose={() => {
-                router.back();
-              }}
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
             >
@@ -325,6 +342,16 @@ export default function RoungePost({
                 >
                   해당 게시물의 라운지에 속해 있지 않아 게시물을 볼 수 없습니다
                 </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Button
+                    sx={{ mt: 2 }}
+                    onClick={() => {
+                      router.back();
+                    }}
+                  >
+                    확인
+                  </Button>
+                </Box>
               </BoxStyled>
             </Modal>
           </>
@@ -466,7 +493,7 @@ export default function RoungePost({
               </Box>
             )
           ))}
-      </Container>
+      </ContainerStyled>
       {accessPost === '' ||
       accessPost === 'noUser' ||
       accessPost === 'noAuthority' ||
