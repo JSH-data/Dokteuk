@@ -7,7 +7,27 @@ import {
 import { db } from '@firebase/firebase';
 import { auth } from '@firebase/firebase';
 
-import { doc, updateDoc } from 'firebase/firestore';
+import {
+  doc,
+  updateDoc,
+  collection,
+  where,
+  query,
+  getDocs,
+} from 'firebase/firestore';
+
+export const checkNickname = async (nickname: string) => {
+  const nicknameCheckQuery = query(
+    collection(db, 'user'),
+    where('nickname', '==', nickname),
+  );
+  const nicknameCheckSnap = await getDocs(nicknameCheckQuery);
+  if (nicknameCheckSnap.docs.length !== 0) {
+    return true;
+  } else {
+    return false;
+  }
+};
 
 export const nicknameUpdate = async (newNickname: string, userId: string) => {
   const userRef = doc(db, 'user', userId);

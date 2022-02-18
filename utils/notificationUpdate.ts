@@ -8,20 +8,23 @@ export const postOwnerNotificationUpdate = async (
   content: string,
 ) => {
   const userRef = doc(db, 'user', postData.ownerId);
-  await addDoc(collection(db, 'notification'), {
-    postId: postData.id,
-    postUrl,
-    postType: postData.type === 'topic' ? '토픽' : '라운지',
-    userId: postData.ownerId,
-    content,
-    createdAt: Date.now().toString(),
-    alertType: 'post',
-    originContent: postData.title,
-  });
-
-  await updateDoc(userRef, {
-    hasNewNotification: true,
-  });
+  try {
+    await updateDoc(userRef, {
+      hasNewNotification: true,
+    });
+    await addDoc(collection(db, 'notification'), {
+      postId: postData.id,
+      postUrl,
+      postType: postData.type === 'topic' ? '토픽' : '라운지',
+      userId: postData.ownerId,
+      content,
+      createdAt: Date.now().toString(),
+      alertType: 'post',
+      originContent: postData.title,
+    });
+  } catch (err) {
+    console.log(err);
+  }
   return;
 };
 
@@ -33,19 +36,23 @@ export const commentOwnerNotificationUpdate = async (
   originContent: string,
 ) => {
   const userRef = doc(db, 'user', userId);
-  await addDoc(collection(db, 'notification'), {
-    postId: postData.id,
-    postUrl,
-    postType: postData.type === 'topic' ? '토픽' : '라운지',
-    userId,
-    content,
-    createdAt: Date.now().toString(),
-    alertType: 'comment',
-    originContent,
-  });
-  await updateDoc(userRef, {
-    hasNewNotification: true,
-  });
+  try {
+    await updateDoc(userRef, {
+      hasNewNotification: true,
+    });
+    await addDoc(collection(db, 'notification'), {
+      postId: postData.id,
+      postUrl,
+      postType: postData.type === 'topic' ? '토픽' : '라운지',
+      userId,
+      content,
+      createdAt: Date.now().toString(),
+      alertType: 'comment',
+      originContent,
+    });
+  } catch (err) {
+    console.log(err);
+  }
   return;
 };
 

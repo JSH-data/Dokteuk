@@ -15,7 +15,7 @@ const NotificationInfo = ({ type }: { type: string }) => {
   return (
     <NotificationInfoText>
       {type === 'comment'
-        ? '내가 작성한 댓글에 대댓글이 달렸습니다'
+        ? '내가 작성한 댓글에 답글이 달렸습니다'
         : '내가 작성한 게시글에 댓글이 달렸습니다'}
     </NotificationInfoText>
   );

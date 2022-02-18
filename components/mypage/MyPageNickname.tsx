@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { nicknameUpdate } from '@utils/userUpdate';
+import { nicknameUpdate, checkNickname } from '@utils/userUpdate';
 import Head from 'next/head';
 import Link from 'next/link';
 import Layout from '@layouts/Layout';
@@ -21,9 +21,15 @@ const MyPageNickName: React.FC<MyPageNickNameProps> = ({ userId }) => {
   const router = useRouter();
 
   const nicknameChange = async () => {
+    const isDuplicated = await checkNickname(nickname);
     if (nickname.length < 3) {
       setError(true);
-      setErrorText('닉네임을 더길게 써라 ㅡㅡ');
+      setErrorText('닉네임을 3글자 이상으로 작성해주세요');
+      return;
+    } else if (isDuplicated) {
+      setError(true);
+      setErrorText('사용할 수 없는 닉네임입니다.');
+      return;
     } else {
       setError(false);
       setErrorText('');

@@ -37,7 +37,7 @@ const CommentDropBoxDiv = styled.div`
   top: 20px;
   animation: ${open} 0.2s ease;
   @media (prefers-color-scheme: dark) {
-    background-color: transparent;
+    background-color: #1c1c1e;
   }
 `;
 
@@ -66,7 +66,6 @@ const CommentDropBox: React.FC<CommentDropBoxProps> = ({
       isDeleted: true,
     });
   };
-
   useEffect(() => {
     window.addEventListener('click', handleClickOutside);
     return () => {
@@ -89,7 +88,7 @@ const CommentDropBox: React.FC<CommentDropBoxProps> = ({
             setMenu(false);
           }}
         >
-          대댓글 달기
+          답글 달기
         </CommentDropBoxOption>
       )}
 

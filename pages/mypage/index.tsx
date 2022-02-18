@@ -44,7 +44,7 @@ const MyPage: NextPage = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        <Container>
+        <Container style={{ paddingBottom: '100px' }}>
           <MyPageProfile email={email} nickname={nickname} />
         </Container>
       </Layout>
@@ -57,7 +57,6 @@ export const getServerSideProps: GetServerSideProps =
     const data = store.getState();
 
     if (data.user.user.nickname == '') {
-      // todo: 초기값을 판단하는 근거가 이상함...
       return {
         redirect: {
           destination: '/404',

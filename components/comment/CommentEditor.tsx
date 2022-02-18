@@ -95,9 +95,10 @@ const CommentEditor: React.FC<CommentEditorProps> = ({
         userInfo,
         bundleId,
       ); // 댓글 생성
-      if (userInfo.id !== postData.ownerId)
+      if (userInfo.id !== postData.ownerId) {
         // 댓글을 생성하고 댓글자와 포스트자가 동일하지 않다면 포스트 주인의 상태를 업데이트합니다.
         await postOwnerNotificationUpdate(postData, router.asPath, comment);
+      }
       getAlertInfo(result);
     } else if (userId != undefined && originComment != undefined) {
       // 대댓글인경우 원댓글의 주인의 아이디와 코멘트가 있다
@@ -108,6 +109,7 @@ const CommentEditor: React.FC<CommentEditorProps> = ({
         userInfo,
         postData.id,
       );
+
       if (userInfo.id !== userId) {
         // 대댓글 작성자원 원댓글 작성자가 동일하지 않은 경우에만 원댓글 작성자의 상태를 업데이트 합니다.
         await commentOwnerNotificationUpdate(

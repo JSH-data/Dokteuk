@@ -116,7 +116,7 @@ const Footer = () => {
   return (
     <FooterDiv>
       <DivStyled>
-        <Link href="/" passHref>
+        <Link href="/list/timeline" passHref>
           <HomeOutlinedIconStyled fontSize="medium" />
         </Link>
       </DivStyled>

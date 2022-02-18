@@ -55,3 +55,17 @@ export const DefaultListsAndTopics: {
     { title: '주식투자', url: 'stock' },
   ],
 };
+
+export function foundTopic(topic: string): string {
+  let result: string = '';
+  const topics = [
+    { title: '연말정산', url: 'hometax' },
+    { title: '여행', url: 'travel' },
+    { title: '블라블라', url: 'blabla' },
+    { title: '주식투자', url: 'stock' },
+  ];
+  for (let i = 0; i < topics.length; i++) {
+    if (topic === topics[i].url) result = topics[i].title;
+  }
+  return result;
+}

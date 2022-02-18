@@ -38,7 +38,7 @@ const CommentSum: React.FC<CommentSumProps> = ({ sum, postId }) => {
     <>
       <CommentHeader>
         {sum}
-        <span>{` `}개의 답변</span>
+        <span>{` `}개의 댓글</span>
       </CommentHeader>
     </>
   );
