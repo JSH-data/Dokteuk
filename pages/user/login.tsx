@@ -149,10 +149,6 @@ export const getServerSideProps: GetServerSideProps = async (
 
 const Title = styled.h1`
   color: ${({ theme }: any) => theme.mainColorViolet};
-
-  @media (prefers-color-scheme: dark) {
-    color: ${({ theme }: any) => theme.mainColorBlue};
-  }
 `;
 
 const Main = styled.div`
@@ -210,10 +206,6 @@ const Button = styled.button`
   :hover {
     opacity: 0.8;
   }
-
-  @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) => theme.mainColorBlue};
-  }
 `;
 
 const WrapButton = styled.div`
@@ -242,17 +234,9 @@ const SubmitButton = styled.button`
   :hover {
     opacity: 0.8;
   }
-
-  @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) => theme.mainColorBlue};
-  }
 `;
 
 const Label = styled.label`
   color: ${({ theme }: any) => theme.mainColorViolet};
   margin: 5px;
-
-  @media (prefers-color-scheme: dark) {
-    color: ${({ theme }: any) => theme.mainColorBlue};
-  }
 `;

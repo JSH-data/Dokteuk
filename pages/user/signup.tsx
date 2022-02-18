@@ -88,10 +88,6 @@ export const getServerSideProps: GetServerSideProps = async (
 
 const Title = styled.h1`
   color: ${({ theme }: any) => theme.mainColorViolet};
-
-  @media (prefers-color-scheme: dark) {
-    color: ${({ theme }: any) => theme.mainColorBlue};
-  }
 `;
 
 const Main = styled.div`
@@ -142,10 +138,6 @@ const WrapButton = styled.div`
 const Label = styled.label`
   color: ${({ theme }: any) => theme.mainColorViolet};
   margin: 5px;
-
-  @media (prefers-color-scheme: dark) {
-    color: ${({ theme }: any) => theme.mainColorBlue};
-  }
 `;
 
 const SignupButton = styled(Button)`
@@ -163,8 +155,5 @@ const SignupButton = styled(Button)`
   }
   & > svg {
     margin-right: 10px;
-  }
-  @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) => theme.mainColorBlue};
   }
 `;

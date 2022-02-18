@@ -385,10 +385,6 @@ export const getServerSideProps: GetServerSideProps = async (
 
 const Title = styled.h1`
   color: ${({ theme }: any) => theme.mainColorViolet};
-
-  @media (prefers-color-scheme: dark) {
-    color: ${({ theme }: any) => theme.mainColorBlue};
-  }
 `;
 
 const Main = styled.div`
@@ -407,6 +403,11 @@ const WrapContents = styled.div`
   & .MuiOutlinedInput-root {
     border: 1px solid ${({ theme }: any) => theme.lightGray};
   }
+  & input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #eaeaea inset;
+    border-radius: 0;
+    -webkit-text-fill-color: #000000 !important;
+  }
 
   @media (prefers-color-scheme: dark) {
     & .MuiOutlinedInput-input {
@@ -420,6 +421,12 @@ const WrapContents = styled.div`
     }
     & .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
       text-fill-color: ${({ theme }: any) => theme.darkGray};
+    }
+    & input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px #111113 inset;
+      border-radius: 0;
+      -webkit-text-fill-color: #fff !important;
+      caret-color: white;
     }
   }
 `;
@@ -449,10 +456,6 @@ const ButtonStyled = styled(Button)<{ component: string }>`
   margin-left: 10px;
   background: ${({ theme }: any) => theme.mainColorViolet};
 
-  @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) => theme.mainColorBlue};
-  }
-
   :hover {
     opacity: 0.8;
     background: ${({ theme }: any) => theme.mainColorViolet};
@@ -475,10 +478,6 @@ const CheckButton = styled.button`
   :disabled {
     background: gray;
   }
-
-  @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) => theme.mainColorBlue};
-  }
 `;
 
 const SubmitButton = styled.button`
@@ -499,10 +498,6 @@ const SubmitButton = styled.button`
   :disabled {
     background: gray;
   }
-
-  @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) => theme.mainColorBlue};
-  }
 `;
 
 const Label = styled.label`
@@ -512,10 +507,6 @@ const Label = styled.label`
     content: '*';
     color: red;
   }
-
-  @media (prefers-color-scheme: dark) {
-    color: ${({ theme }: any) => theme.mainColorBlue};
-  }
 `;
 const Input = styled('input')({
   display: 'none',
@@ -524,10 +515,6 @@ const Input = styled('input')({
 const TextFields = styled(TextField)`
   color: ${({ theme }: any) => theme.mainColorViolet};
   margin: 5px;
-
-  @media (prefers-color-scheme: dark) {
-    color: ${({ theme }: any) => theme.mainColorBlue};
-  }
 `;
 
 const OcrButton = styled(Button)`
@@ -540,19 +527,11 @@ const OcrButton = styled(Button)`
     opacity: 0.8;
     background: ${({ theme }: any) => theme.mainColorViolet};
   }
-
-  @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) => theme.mainColorBlue};
-  }
 `;
 const DialogButton = styled(Button)`
   color: ${({ theme }: any) => theme.mainColorViolet};
 
   :hover {
     opacity: 0.8;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    color: ${({ theme }: any) => theme.mainColorBlue};
   }
 `;
