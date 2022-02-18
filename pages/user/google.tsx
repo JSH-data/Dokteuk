@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { signOut } from 'firebase/auth';
 import { db, auth } from '@firebase/firebase';
-
+import FormHelperText from '@mui/material/FormHelperText';
 import {
   doc,
   setDoc,
@@ -255,8 +255,11 @@ export default function Google() {
                 placeholder="닉네임을 입력해 주세요."
                 value={nickname.value}
                 onChange={onInputChange}
-                helperText={nickname.error ? nickname.error : nicknameSuccess}
+                helperText={nickname.error}
               />
+              {nicknameSuccess && (
+                <StyledFormHelperText>{nicknameSuccess}</StyledFormHelperText>
+              )}
             </WrapInput>
             <WrapImageUpload>
               <Label>증명서</Label>
@@ -302,15 +305,7 @@ export default function Google() {
                     <FactCheckIcon style={{ marginRight: '5px' }} />
                     인증하기
                   </OcrButton>
-                  {isLoading && (
-                    <CircularProgress
-                      style={{
-                        color: '#8946a6',
-                        marginLeft: 10,
-                        marginTop: '15px',
-                      }}
-                    />
-                  )}
+                  {isLoading && <StyledCircularProgress />}
                 </WrapButton>
               </>
             )}
@@ -385,6 +380,10 @@ export const getServerSideProps: GetServerSideProps = async (
 
 const Title = styled.h1`
   color: ${({ theme }: any) => theme.mainColorViolet};
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+  }
 `;
 
 const Main = styled.div`
@@ -463,6 +462,14 @@ const ButtonStyled = styled(Button)<{ component: string }>`
     opacity: 0.8;
     background: ${({ theme }: any) => theme.mainColorViolet};
   }
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
+    :hover {
+      opacity: 0.8;
+      background: ${({ theme }: any) => theme.mainColorBlue};
+    }
+  }
 `;
 
 const CheckButton = styled.button`
@@ -477,9 +484,20 @@ const CheckButton = styled.button`
   cursor: pointer;
   :hover {
     opacity: 0.8;
+    background: ${({ theme }: any) => theme.mainColorViolet};
   }
   :disabled {
     background: gray;
+  }
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
+    :hover {
+      opacity: 0.8;
+      background: ${({ theme }: any) => theme.mainColorBlue};
+    }
+    :disabled {
+      background: gray;
+    }
   }
 `;
 
@@ -501,6 +519,9 @@ const SubmitButton = styled.button`
   :disabled {
     background: gray;
   }
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
+  }
 `;
 
 const Label = styled.label`
@@ -509,6 +530,9 @@ const Label = styled.label`
   ::after {
     content: '*';
     color: red;
+  }
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
   }
 `;
 const Input = styled('input')({
@@ -530,11 +554,52 @@ const OcrButton = styled(Button)`
     opacity: 0.8;
     background: ${({ theme }: any) => theme.mainColorViolet};
   }
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
+    :hover {
+      opacity: 0.8;
+      background: ${({ theme }: any) => theme.mainColorBlue};
+    }
+    :disabled {
+      background: 'gray';
+    }
+  }
 `;
 const DialogButton = styled(Button)`
   color: ${({ theme }: any) => theme.mainColorViolet};
 
-  :hover {
-    opacity: 0.8;
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+  }
+`;
+
+const StyledCircularProgress = styled(CircularProgress)`
+  color: ${({ theme }: any) => theme.mainColorViolet};
+  margin-left: 10px;
+  margin-top: 15px;
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+    margin-left: 10px;
+    margin-top: 15px;
+  }
+`;
+
+const StyledDialog = styled(Dialog)`
+  color: ${({ theme }: any) => theme.mainColorViolet};
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+    background: rgb(17, 17, 19);
+  }
+`;
+
+const StyledFormHelperText = styled(FormHelperText)`
+  color: ${({ theme }: any) => theme.mainColorViolet};
+  margin-left: 10px;
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+    margin-left: 10px;
   }
 `;

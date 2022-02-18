@@ -59,7 +59,7 @@ export default function SignUpIndex() {
             </WrapButton>
           </WrapInput>
           <WrapInput>
-            <h3 style={{ color: '#8946A6' }}>이미 가입되어 있으신가요?</h3>
+            <InfoText>이미 가입되어 있으신가요?</InfoText>
             <WrapButton>
               <Link href="/user/login" passHref>
                 <SignupButton>
@@ -88,6 +88,17 @@ export const getServerSideProps: GetServerSideProps = async (
 
 const Title = styled.h1`
   color: ${({ theme }: any) => theme.mainColorViolet};
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+  }
+`;
+const InfoText = styled.h3`
+  color: ${({ theme }: any) => theme.mainColorViolet};
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+  }
 `;
 
 const Main = styled.div`
@@ -135,11 +146,6 @@ const WrapButton = styled.div`
   width: 313px;
 `;
 
-const Label = styled.label`
-  color: ${({ theme }: any) => theme.mainColorViolet};
-  margin: 5px;
-`;
-
 const SignupButton = styled(Button)`
   background: ${({ theme }: any) => theme.mainColorViolet};
   border-radius: 5px;
@@ -155,5 +161,13 @@ const SignupButton = styled(Button)`
   }
   & > svg {
     margin-right: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
+
+    :hover {
+      opacity: 0.8;
+      background: ${({ theme }: any) => theme.mainColorBlue};
+    }
   }
 `;

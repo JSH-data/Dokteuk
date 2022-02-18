@@ -2,6 +2,7 @@ import React, { useState, useReducer } from 'react';
 
 import styled from '@emotion/styled';
 import InputAdornment from '@mui/material/InputAdornment';
+import FormHelperText from '@mui/material/FormHelperText';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import {
@@ -300,8 +301,11 @@ export default function Signup() {
                 name="email"
                 value={email.value}
                 onChange={onInputChange}
-                helperText={email.error ? email.error : emailSuccess}
+                helperText={email.error}
               />
+              {emailSuccess && (
+                <StyledFormHelperText>{emailSuccess}</StyledFormHelperText>
+              )}
             </WrapInput>
             <WrapInput>
               <Label>비밀번호</Label>
@@ -356,8 +360,11 @@ export default function Signup() {
                 placeholder="닉네임을 입력해 주세요."
                 value={nickname.value}
                 onChange={onInputChange}
-                helperText={nickname.error ? nickname.error : nicknameSuccess}
+                helperText={nickname.error}
               />
+              {nicknameSuccess && (
+                <StyledFormHelperText>{nicknameSuccess}</StyledFormHelperText>
+              )}
             </WrapInput>
             <WrapImageUpload>
               <Label>증명서</Label>
@@ -366,7 +373,6 @@ export default function Signup() {
                 style={{ display: 'flex', flexDirection: 'column' }}
               >
                 <Input
-                  name="image"
                   accept="image/*"
                   id="contained-button-file"
                   type="file"
@@ -404,15 +410,7 @@ export default function Signup() {
                     <FactCheckIcon style={{ marginRight: '5px' }} />
                     인증하기
                   </OcrButton>
-                  {isLoading && (
-                    <CircularProgress
-                      style={{
-                        color: '#8946a6',
-                        marginLeft: 10,
-                        marginTop: '15px',
-                      }}
-                    />
-                  )}
+                  {isLoading && <StyledCircularProgress />}
                 </WrapButton>
               </>
             )}
@@ -489,6 +487,10 @@ export const getServerSideProps: GetServerSideProps = async (
 
 const Title = styled.h1`
   color: ${({ theme }: any) => theme.mainColorViolet};
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+  }
 `;
 
 const Main = styled.div`
@@ -556,7 +558,17 @@ const ButtonStyled = styled(Button)<{ component: string }>`
 
   :hover {
     opacity: 0.8;
+
     background: ${({ theme }: any) => theme.mainColorViolet};
+  }
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
+    :hover {
+      opacity: 0.8;
+      @media (prefers-color-scheme: dark) {
+        background: ${({ theme }: any) => theme.mainColorBlue};
+      }
+    }
   }
 `;
 
@@ -575,6 +587,9 @@ const CheckButton = styled.button`
   }
   :disabled {
     background: gray;
+  }
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
   }
 `;
 
@@ -596,6 +611,9 @@ const SubmitButton = styled.button`
   :disabled {
     background: gray;
   }
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
+  }
 `;
 
 const Label = styled.label`
@@ -604,6 +622,9 @@ const Label = styled.label`
   ::after {
     content: '*';
     color: red;
+  }
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
   }
 `;
 
@@ -621,6 +642,10 @@ const DialogButton = styled(Button)`
   :hover {
     opacity: 0.8;
   }
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+  }
 `;
 const OcrButton = styled(Button)`
   background: ${({ theme }: any) => theme.mainColorViolet};
@@ -631,6 +656,38 @@ const OcrButton = styled(Button)`
   :hover {
     opacity: 0.8;
     background: ${({ theme }: any) => theme.mainColorViolet};
+  }
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
+    :hover {
+      opacity: 0.8;
+      background: ${({ theme }: any) => theme.mainColorBlue};
+    }
+    :disabled {
+      background: 'gray';
+    }
+  }
+`;
+
+const StyledCircularProgress = styled(CircularProgress)`
+  color: ${({ theme }: any) => theme.mainColorViolet};
+  margin-left: 10px;
+  margin-top: 15px;
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+    margin-left: 10px;
+    margin-top: 15px;
+  }
+`;
+
+const StyledFormHelperText = styled(FormHelperText)`
+  color: ${({ theme }: any) => theme.mainColorViolet};
+  margin-left: 10px;
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+    margin-left: 10px;
   }
 `;
 
