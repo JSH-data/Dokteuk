@@ -2,15 +2,12 @@ import { firebaseAdmin } from '@firebase/firebaseAdmin';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const validate = async (token: string) => {
-  // Check that the user has a valid token
   const decodedToken = await firebaseAdmin.auth().verifyIdToken(token, true);
-  // console.log(decodedToken);
-  //const userData;
+
   let userData;
-  //Get user Firebase data from token
 
   const user = await firebaseAdmin.auth().getUser(decodedToken.uid);
-  // Get any additional user data from the Firebase DB
+
   const [UserInfo] = user.providerData;
   await firebaseAdmin
     .firestore()
@@ -25,7 +22,7 @@ const validate = async (token: string) => {
     .catch((error) => {
       console.log('Error getting document:', error);
     });
-  // Assign the user result that will be passed to your _app.js file with populated data from the getUser and db functions
+
   const result = {
     user: {
       uid: user.uid,
@@ -43,7 +40,6 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   try {
-    // Check if there is a token and if not return undefined.
     const { token } = JSON.parse(req.headers.authorization || '{}');
     if (!token) {
       return res.status(403).send({
@@ -51,15 +47,12 @@ export default async function handler(
         message: 'Auth token missing.',
       });
     }
-    // Call the validate function above that gets the user data.
+
     const result = await validate(token);
-    // console.log(result, 'zzzzzz'); // 요기!
     return res.status(200).json({
       data: result.user,
     });
   } catch (err) {
-    // Return undefined if there is no user. You may also send a different status or handle the error in any way that you wish.
-    console.log(err);
     const result = undefined;
     return res.status(200).send(result);
   }

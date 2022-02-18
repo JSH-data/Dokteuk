@@ -23,12 +23,20 @@ export default function Login() {
   const dispatch = useDispatch();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('');
+
   const onChangeInput = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     const { name, value } = e.target;
-    if (name === 'email') setEmail(value);
-    else if (name === 'password') setPassword(value);
+    if (name === 'email') {
+      setEmail(value);
+      setEmailErrorMessage('');
+    } else if (name === 'password') {
+      setPassword(value);
+      setPasswordErrorMessage('');
+    }
   };
 
   const checkSignIn = async () => {
@@ -54,8 +62,13 @@ export default function Login() {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
       return result.user.uid;
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      if (error.code === 'auth/invalid-email')
+        setEmailErrorMessage('이메일을 입력해주세요!');
+      else if (error.code === 'auth/wrong-password')
+        setPasswordErrorMessage('비밀번호를 잘못 입력하셨습니다!');
+      else if (error.code === 'auth/user-not-found')
+        setEmailErrorMessage('가입되지 않은 이메일입니다!');
     }
   };
 
@@ -78,22 +91,26 @@ export default function Login() {
               <Label>Email</Label>
               <TextField
                 required
+                error={emailErrorMessage ? true : false}
                 fullWidth
                 variant="outlined"
                 margin="dense"
                 name="email"
                 onChange={onChangeInput}
+                helperText={emailErrorMessage}
               />
             </WrapInput>
             <WrapInput>
               <Label>비밀번호</Label>
               <TextField
                 required
+                error={passwordErrorMessage ? true : false}
                 type="password"
                 variant="outlined"
                 margin="dense"
                 name="password"
                 onChange={onChangeInput}
+                helperText={passwordErrorMessage}
               />
             </WrapInput>
             <WrapButton>

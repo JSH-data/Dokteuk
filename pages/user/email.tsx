@@ -1,5 +1,5 @@
 import React, { useState, useReducer } from 'react';
-import { useDispatch } from 'react-redux';
+
 import styled from '@emotion/styled';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
@@ -57,7 +57,6 @@ const reducer = (state: UserInputData, action: UserInputDataAction) => {
 
 export default function Signup() {
   const router = useRouter();
-
   const [inputState, inputDispatch] = useReducer(
     reducer,
     userInputInitialState,
@@ -216,8 +215,6 @@ export default function Signup() {
       return true;
     } else {
       return !(nicknameBtnChecked && emailBtnChecked && imageOcrChecked);
-      // 임시로 ocr 체크는 빼놓음
-      //return !(nicknameBtnChecked && emailBtnChecked);
     }
   };
   const resetOcrData = () => {

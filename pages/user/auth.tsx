@@ -20,7 +20,7 @@ export default function AuthProvider({ children }: any) {
       }
     });
   }, []);
-  // force refresh the token every 10 minutes
+
   useEffect(() => {
     const handle = setInterval(async () => {
       const user = getAuth().currentUser;
@@ -28,7 +28,6 @@ export default function AuthProvider({ children }: any) {
       if (user) await user.getIdToken(true);
     }, 60 * 10 * 1000);
 
-    // clean up setInterval
     return () => clearInterval(handle);
   }, []);
   return (

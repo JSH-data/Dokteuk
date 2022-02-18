@@ -7,7 +7,6 @@ export const userInputChangeValidation = (
   state: UserInputData,
 ) => {
   if (name === 'email') {
-    // .test => 주어진 정규표현식 만족하는지에 따라 T/F 반환
     if (!reg_email.test(value)) return '이메일 형식에 맞춰 입력해 주세요!';
   } else if (name === 'password') {
     if (value.length < 6) {

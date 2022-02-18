@@ -17,8 +17,6 @@ export default async function handler(
     const data = await axios.post(MY_OCR_API_URL as string, req.body, headers);
 
     return res.status(200).json({ message: data.data.images[0].fields });
-
-    //return res.status(200).json({ message: req.body });
   } catch (e) {
     console.error(e);
     return res.status(500).json({ error: e });
