@@ -29,6 +29,9 @@ const MyPagePostLi = styled.li`
 
   @media (prefers-color-scheme: dark) {
     border-bottom: 1px solid ${({ theme }: any) => theme.mainColorBlue};
+    & div {
+      color: #98baf3;
+    }
   }
 `;
 

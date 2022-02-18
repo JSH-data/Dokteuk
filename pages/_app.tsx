@@ -84,7 +84,7 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(
               };
             } = await fetch(
               `http://localhost:${
-                process.env.NODE_ENV !== 'production' ? 5000 : 80
+                process.env.NODE_ENV !== 'production' ? 5001 : 80
               }/api/validate`,
               {
                 headers,
