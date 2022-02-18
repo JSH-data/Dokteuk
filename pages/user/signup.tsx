@@ -11,7 +11,7 @@ import GoogleIcon from '@mui/icons-material/Google';
 import EmailIcon from '@mui/icons-material/Email';
 import LoginIcon from '@mui/icons-material/Login';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-
+import Button from '@mui/material/Button';
 export default function SignUpIndex() {
   const router = useRouter();
   const provider = new GoogleAuthProvider();
@@ -43,26 +43,32 @@ export default function SignUpIndex() {
         <Title>회원가입</Title>
         <WrapContents>
           <WrapInput>
-            <Link href="/user/email" passHref>
-              <SignupButton>
-                <EmailIcon />
-                이메일 계정으로 회원가입
+            <WrapButton>
+              <Link href="/user/email" passHref>
+                <SignupButton>
+                  <EmailIcon style={{ marginRight: '5px' }} />
+                  <div>이메일 계정으로 회원가입</div>
+                </SignupButton>
+              </Link>
+            </WrapButton>
+            <WrapButton>
+              <SignupButton onClick={loginWithGoogle}>
+                <GoogleIcon style={{ marginRight: '5px' }} />
+                구글 계정으로 회원가입
               </SignupButton>
-            </Link>
-            <SignupButton onClick={loginWithGoogle}>
-              <GoogleIcon />
-              구글 계정으로 회원가입
-            </SignupButton>
+            </WrapButton>
           </WrapInput>
-          <WrapButton>
-            <Label>이미 가입되어 있으시다면</Label>
-          </WrapButton>
-          <Link href="/user/login" passHref>
-            <SignupButton>
-              <LoginIcon />
-              로그인 페이지로 이동하기
-            </SignupButton>
-          </Link>
+          <WrapInput>
+            <h3 style={{ color: '#8946A6' }}>이미 가입되어 있으신가요?</h3>
+            <WrapButton>
+              <Link href="/user/login" passHref>
+                <SignupButton>
+                  <LoginIcon style={{ marginRight: '5px' }} />
+                  로그인 페이지로 이동하기
+                </SignupButton>
+              </Link>
+            </WrapButton>
+          </WrapInput>
         </WrapContents>
       </Main>
     </>
@@ -92,7 +98,6 @@ const Main = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding-bottom: 30px;
 `;
 
 const WrapContents = styled.div`
@@ -124,40 +129,13 @@ const WrapContents = styled.div`
 
 const WrapInput = styled.div`
   display: flex;
+  align-items: center;
   flex-direction: column;
-  margin: 20px;
   width: 100%;
 `;
 
-const Button = styled.button`
-  background: ${({ theme }: any) => theme.mainColorViolet};
-  border-radius: 5px;
-  border: none;
-  color: white;
-  width: 200px;
-  height: 50px;
-  font-size: 12px;
-  cursor: pointer;
-  vertical-align: middle;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  & > svg {
-    margin-right: 10px;
-  }
-  :hover {
-    opacity: 0.8;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) => theme.mainColorBlue};
-  }
-`;
-
 const WrapButton = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin: 20px;
+  margin: 10px;
   width: 313px;
 `;
 
@@ -171,6 +149,7 @@ const Label = styled.label`
 `;
 
 const SignupButton = styled(Button)`
+  background: ${({ theme }: any) => theme.mainColorViolet};
   border-radius: 5px;
   border: none;
   color: white;
@@ -180,5 +159,12 @@ const SignupButton = styled(Button)`
   cursor: pointer;
   :hover {
     opacity: 0.8;
+    background: ${({ theme }: any) => theme.mainColorViolet};
+  }
+  & > svg {
+    margin-right: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.mainColorBlue};
   }
 `;

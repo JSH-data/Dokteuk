@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { MyPageProfileComponent } from './MyPageProfileComponent';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import MyPageLogOut from './MyPageLogOut';
 
 type MyPageProfileProps = {
   email: string;
@@ -49,6 +50,8 @@ const MyPageProfile: React.FC<MyPageProfileProps> = ({ email, nickname }) => {
             <ArrowForwardIosIcon color="disabled" />
           </MyPageProfileLi>
         </Link>
+
+        <MyPageLogOut />
       </div>
     </MyPageProfileComponent>
   );

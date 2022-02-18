@@ -8,6 +8,20 @@ export type UserInputData = {
   jobSector: { value: string; error: string };
 };
 
+export type OcrData = {
+  b_no: string;
+  start_dt: string;
+  p_nm: string;
+};
+
+export type UserInputDataAction = {
+  type: string;
+  payload: {
+    value: string;
+    error: string;
+  };
+};
+
 export const userInputInitialState: UserInputData = {
   email: { value: '', error: '' },
   password: { value: '', error: '' },
@@ -30,3 +44,6 @@ export const jobSectors: Array<Rounge> = [
   { title: '병원·간호·연구', url: 'hospital' },
   { title: '교육·강사', url: 'education' },
 ];
+
+export const reg_email =
+  /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;

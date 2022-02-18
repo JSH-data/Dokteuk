@@ -27,13 +27,15 @@ import {
   userInputInitialState,
   jobSectors,
   UserInputData,
+  OcrData,
+  UserInputDataAction,
 } from '@interface/constants';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {
-  userInputValidation,
-  inputErrorCheck,
+  userFormValidation,
+  userInputChangeValidation,
 } from '@utils/userInputValidation';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Dialog from '@mui/material/Dialog';
@@ -41,26 +43,20 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-
+import FactCheckIcon from '@mui/icons-material/FactCheck';
 import { validateData, getOcrData } from '@utils/ocrDataValidation';
 import { uploadImg } from '@utils/signupForm';
-
-const reducer = (state: UserInputData, action: any) => {
+import CircularProgress from '@mui/material/CircularProgress';
+import { reg_email } from '@interface/constants';
+const reducer = (state: UserInputData, action: UserInputDataAction) => {
   return {
     ...state,
     [action.type]: { value: action.payload.value, error: action.payload.error },
   };
 };
 
-type OcrData = {
-  b_no: string;
-  start_dt: string;
-  p_nm: string;
-};
-
 export default function Signup() {
   const router = useRouter();
-  const dispatch = useDispatch();
 
   const [inputState, inputDispatch] = useReducer(
     reducer,
@@ -71,16 +67,21 @@ export default function Signup() {
   const [nicknameBtnChecked, setNicknameBtnChecked] = useState<boolean>(false);
   const [emailBtnChecked, setEmailBtnChecked] = useState<boolean>(false);
   const [imageOcrChecked, setImageOcrChecked] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [ocrData, setOcrData] = useState<OcrData>({
     b_no: '',
     start_dt: '',
     p_nm: '',
   });
+
+  const [emailSuccess, setEmailSuccess] = useState<string>('');
+  const [nicknameSuccess, setNicknameSuccess] = useState<string>('');
   const { email, password, checkPassword, nickname, jobSector } = inputState;
 
   const handleClose = () => {
     setDialogOpen(false);
+    setIsLoading(false);
   };
 
   const createUserWithEmail = async () => {
@@ -92,60 +93,49 @@ export default function Signup() {
       );
       sendEmailVerification(result);
       return result.uid;
-    } catch (err: any) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
     }
   };
 
   const SignUpSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (checkPassword.value !== password.value) {
-      alert('비밀번호가 다릅니다!');
-      inputDispatch({
-        type: 'checkPassword',
-        payload: { value: checkPassword.value, error: '비밀번호가 다릅니다!' },
-      });
-      return;
-    }
+
     if (!imageUrl) {
       alert('증명서 파일을 찾을 수 없습니다!');
       return;
     }
-    const success = inputErrorCheck(inputState);
 
-    if (success) {
-      const uid = (await createUserWithEmail()) as string;
-      const userData: UserInfo = {
-        nickname: nickname.value,
-        jobSector: jobSector.value,
-        validRounges: [
-          {
-            title: '타임라인',
-            url: 'timeline',
-          },
-          {
-            title: '토픽',
-            url: 'topic',
-          },
-          {
-            title: jobSector.value,
-            url: jobSectors.find((v) => v.title === jobSector.value)
-              ?.url as HomeListUrlString,
-          } as Rounge,
-        ],
-        id: uid,
-        hasNewNotification: false,
-        hasNewChatNotification: false,
-        posts: [],
-        email: email.value,
-      };
+    const uid = (await createUserWithEmail()) as string;
+    const userData: UserInfo = {
+      nickname: nickname.value,
+      jobSector: jobSector.value,
+      validRounges: [
+        {
+          title: '타임라인',
+          url: 'timeline',
+        },
+        {
+          title: '토픽',
+          url: 'topic',
+        },
+        {
+          title: jobSector.value,
+          url: jobSectors.find((v) => v.title === jobSector.value)
+            ?.url as HomeListUrlString,
+        } as Rounge,
+      ],
+      id: uid,
+      hasNewNotification: false,
+      hasNewChatNotification: false,
+      posts: [],
+      email: email.value,
+    };
 
-      uploadImg(uid, imageExt, imageUrl);
-      console.log('success');
-      await setDoc(doc(db, 'user', uid), userData);
-      await signOut(auth);
-      router.push('/user/login');
-    }
+    uploadImg(uid, imageExt, imageUrl);
+    await setDoc(doc(db, 'user', uid), userData);
+    await signOut(auth);
+    router.push('/user/login');
   };
 
   const checkEmail = async () => {
@@ -155,16 +145,15 @@ export default function Signup() {
     );
     let emailHelperText;
     const emailCheckSnap = await getDocs(emailCheckQuery);
-    if (emailCheckSnap.docs.length !== 0 || email.value.length < 3) {
+    if (
+      emailCheckSnap.docs.length !== 0 ||
+      email.value.length < 3 ||
+      !reg_email.test(email.value)
+    ) {
       emailHelperText = '사용 불가능한 이메일 입니다!';
-      alert(emailHelperText);
     } else {
-      if (email.error) {
-        alert(email.error);
-        return;
-      }
       emailHelperText = '';
-      alert('사용 가능한 이메일 입니다!');
+      setEmailSuccess('사용 가능한 이메일 입니다!');
       setEmailBtnChecked(true);
     }
 
@@ -183,11 +172,10 @@ export default function Signup() {
     const nicknameCheckSnap = await getDocs(nicknameCheckQuery);
     if (nicknameCheckSnap.docs.length !== 0 || nickname.value.length < 3) {
       nicknameHelperText = '사용 불가능한 닉네임 입니다!';
-      alert(nicknameHelperText);
     } else {
       nicknameHelperText = '';
-      alert('사용 가능한 닉네임 입니다!');
       setNicknameBtnChecked(true);
+      setNicknameSuccess('사용 가능한 닉네임 입니다!');
     }
 
     inputDispatch({
@@ -197,7 +185,9 @@ export default function Signup() {
   };
 
   const getImageToString = async () => {
+    setIsLoading(true);
     const result = await getOcrData(imageUrl, imageExt);
+    setIsLoading(false);
     if (!result) {
       alert('증명서에서 데이터를 가지고 오지 못했습니다!');
       resetOcrData();
@@ -210,6 +200,7 @@ export default function Signup() {
   };
 
   const validateOcrData = async () => {
+    setIsLoading(true);
     const validateResult = await validateData(ocrData);
     if (validateResult) {
       alert('인증 성공!');
@@ -220,14 +211,21 @@ export default function Signup() {
       handleClose();
     }
   };
-
+  const submitButtonDisabled = () => {
+    if (userFormValidation(inputState).length !== 0) {
+      return true;
+    } else {
+      return !(nicknameBtnChecked && emailBtnChecked && imageOcrChecked);
+      // 임시로 ocr 체크는 빼놓음
+      //return !(nicknameBtnChecked && emailBtnChecked);
+    }
+  };
   const resetOcrData = () => {
     const resetOcrData = { b_no: '', p_nm: '', start_dt: '' };
     setOcrData(resetOcrData);
   };
 
   const onImageChange = (e: any) => {
-    console.log(ocrData);
     const image = e.target.files[0] as File;
     const reader = new FileReader();
     reader.readAsDataURL(image);
@@ -248,16 +246,33 @@ export default function Signup() {
     setImageOcrChecked(false);
     resetOcrData();
   };
-
+  const passwordCheck = (value: string) => {
+    let errorMessage = '';
+    if (checkPassword.value !== value) {
+      errorMessage = '비밀번호가 다릅니다!';
+    }
+    inputDispatch({
+      type: 'checkPassword',
+      payload: { value: checkPassword.value, error: errorMessage },
+    });
+  };
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
     if (name === 'nickname' && nicknameBtnChecked) {
       setNicknameBtnChecked(false);
+      setNicknameSuccess('');
     }
     if (name === 'email' && emailBtnChecked) {
       setEmailBtnChecked(false);
+      setEmailSuccess('');
     }
-    const error = userInputValidation(name, value);
+
+    if (name === 'password') {
+      passwordCheck(value);
+    }
+
+    const error = userInputChangeValidation(name, value, inputState);
     inputDispatch({ type: name, payload: { value, error } });
   };
   return (
@@ -288,7 +303,7 @@ export default function Signup() {
                 name="email"
                 value={email.value}
                 onChange={onInputChange}
-                helperText={email.error}
+                helperText={email.error ? email.error : emailSuccess}
               />
             </WrapInput>
             <WrapInput>
@@ -344,7 +359,7 @@ export default function Signup() {
                 placeholder="닉네임을 입력해 주세요."
                 value={nickname.value}
                 onChange={onInputChange}
-                helperText={nickname.error}
+                helperText={nickname.error ? nickname.error : nicknameSuccess}
               />
             </WrapInput>
             <WrapImageUpload>
@@ -382,19 +397,32 @@ export default function Signup() {
                   width="150px"
                   height="200px"
                 />
-                <OcrButton
-                  type="button"
-                  variant="contained"
-                  disabled={imageOcrChecked}
-                  onClick={getImageToString}
-                >
-                  인증하기
-                </OcrButton>
+                <WrapButton>
+                  <OcrButton
+                    type="button"
+                    variant="contained"
+                    disabled={imageOcrChecked}
+                    onClick={getImageToString}
+                  >
+                    <FactCheckIcon style={{ marginRight: '5px' }} />
+                    인증하기
+                  </OcrButton>
+                  {isLoading && (
+                    <CircularProgress
+                      style={{
+                        color: '#8946a6',
+                        marginLeft: 10,
+                        marginTop: '15px',
+                      }}
+                    />
+                  )}
+                </WrapButton>
               </>
             )}
             <WrapInput>
               <Label>직종</Label>
               <TextFields
+                required
                 select
                 error={jobSector.error ? true : false}
                 variant="outlined"
@@ -412,10 +440,7 @@ export default function Signup() {
               </TextFields>
             </WrapInput>
 
-            <SubmitButton
-              type="submit"
-              disabled={!(nicknameBtnChecked && emailBtnChecked)}
-            >
+            <SubmitButton type="submit" disabled={submitButtonDisabled()}>
               <GroupAddIcon style={{ marginRight: '10px' }} />
               회원가입
             </SubmitButton>
@@ -434,15 +459,18 @@ export default function Signup() {
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
                 사업자등록번호: {ocrData.b_no}
+                <br />
                 대표자: {ocrData.p_nm}
+                <br />
                 개업년월일: {ocrData.start_dt}
+                <br />
               </DialogContentText>
             </DialogContent>
-            <DialogActions>
-              <Button onClick={validateOcrData} autoFocus>
+            <DialogActions style={{ color: '#8946a6' }}>
+              <DialogButton onClick={validateOcrData} autoFocus>
                 인증하기
-              </Button>
-              <Button onClick={handleClose}>다시 올리기</Button>
+              </DialogButton>
+              <DialogButton onClick={handleClose}>다시 올리기</DialogButton>
             </DialogActions>
           </Dialog>
         </>
@@ -533,6 +561,11 @@ const ButtonStyled = styled(Button)<{ component: string }>`
   @media (prefers-color-scheme: dark) {
     background: ${({ theme }: any) => theme.mainColorBlue};
   }
+
+  :hover {
+    opacity: 0.8;
+    background: ${({ theme }: any) => theme.mainColorViolet};
+  }
 `;
 
 const CheckButton = styled.button`
@@ -540,8 +573,8 @@ const CheckButton = styled.button`
   border-radius: 5px;
   border: none;
   color: white;
-  width: 60px;
-  height: 24px;
+  width: 75px;
+  height: 25px;
   margin: 5px;
   font-size: 12px;
   cursor: pointer;
@@ -606,7 +639,17 @@ const TextFields = styled(TextField)`
     color: ${({ theme }: any) => theme.mainColorBlue};
   }
 `;
+const DialogButton = styled(Button)`
+  color: ${({ theme }: any) => theme.mainColorViolet};
 
+  :hover {
+    opacity: 0.8;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.mainColorBlue};
+  }
+`;
 const OcrButton = styled(Button)`
   background: ${({ theme }: any) => theme.mainColorViolet};
   margin-top: 15px;
@@ -615,9 +658,19 @@ const OcrButton = styled(Button)`
   }
   :hover {
     opacity: 0.8;
+    background: ${({ theme }: any) => theme.mainColorViolet};
   }
 
   @media (prefers-color-scheme: dark) {
     background: ${({ theme }: any) => theme.mainColorBlue};
   }
+`;
+
+const WrapButton = styled.div`
+  margin: 10px;
+  align-item: center;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
 `;

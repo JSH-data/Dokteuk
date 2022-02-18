@@ -12,13 +12,10 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db, auth } from '@firebase/firebase';
 import { useRouter } from 'next/router';
 import { setNewUserInfo } from '@store/reducer';
-
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import GoogleIcon from '@mui/icons-material/Google';
 import LoginIcon from '@mui/icons-material/Login';
-import Layout from '@layouts/Layout';
 
 export default function Login() {
   const router = useRouter();
@@ -32,15 +29,14 @@ export default function Login() {
     const { name, value } = e.target;
     if (name === 'email') setEmail(value);
     else if (name === 'password') setPassword(value);
-    console.log(e.target.value);
   };
 
   const checkSignIn = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
       return result.user.uid;
-    } catch (err: any) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -58,8 +54,8 @@ export default function Login() {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
       return result.user.uid;
-    } catch (err: any) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -146,6 +142,7 @@ const Main = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
+  margintop: 10px;
 `;
 
 const WrapContents = styled.div`
@@ -178,12 +175,16 @@ const WrapInput = styled.div`
 `;
 
 const Button = styled.button`
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
   background: ${({ theme }: any) => theme.mainColorViolet};
   border-radius: 5px;
   border: none;
   color: white;
-  width: 100px;
-  height: 35px;
+  width: 120px;
+  height: 40px;
   font-size: 12px;
   cursor: pointer;
   display: flex;
@@ -206,6 +207,10 @@ const WrapButton = styled.div`
 `;
 
 const SubmitButton = styled.button`
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
   background: ${({ theme }: any) => theme.mainColorViolet};
   border-radius: 5px;
   border: none;
