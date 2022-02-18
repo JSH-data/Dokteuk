@@ -14,7 +14,7 @@ export const EmptyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: clamp(0px, 80%, 680px);
+  max-width: 680px;
   height: 80px;
   text-align: center;
   margin: 20px auto;

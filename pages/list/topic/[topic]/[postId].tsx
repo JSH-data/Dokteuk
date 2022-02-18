@@ -37,6 +37,22 @@ import { StoreState, UserState } from '@interface/StoreInterface';
 import AuthorClickMenu from '@components/items/AuthorClickMenu';
 import { ChatDefault, createChatRoom } from '@utils/createChatRoom';
 import { useRouter } from 'next/router';
+import styled from '@emotion/styled';
+
+const DividerStyled = styled(Divider)`
+  margin: 0;
+  flex-shrink: 0;
+  border-width: 0;
+  border-style: solid;
+  border-color: ${({ theme }: any) => theme.lightGray};
+  border-bottom-width: thin;
+  margin-top: 8px;
+  margin-bottom: 16px;
+
+  @media (prefers-color-scheme: dark) {
+    border-color: ${({ theme }: any) => theme.darkGray};
+  }
+`;
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext,
@@ -288,7 +304,7 @@ export default function TopicPost({
                 ''
               )}
             </Typography>
-            <Divider sx={{ mt: 1, mb: 2 }} />
+            <DividerStyled />
             <Typography
               sx={{ mb: 2 }}
               style={{ whiteSpace: 'pre-line', wordBreak: 'break-all' }}

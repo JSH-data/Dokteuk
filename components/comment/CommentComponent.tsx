@@ -42,8 +42,12 @@ const CommentDiv = styled.div<{ isClicked: boolean }>`
   width: 100%;
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid #8946a6;
+  border-bottom: 1px solid ${({ theme }: any) => theme.mainColorViolet};
   margin-bottom: 20px;
+
+  @media (prefers-color-scheme: dark) {
+    border-bottom: 1px solid ${({ theme }: any) => theme.mainColorBlue};
+  }
 `;
 
 const NestedCommentDiv = styled.div<{ isClicked: boolean }>`
@@ -53,7 +57,11 @@ const NestedCommentDiv = styled.div<{ isClicked: boolean }>`
   flex-direction: column;
   margin-bottom: 20px;
   margin-left: auto;
-  border-bottom: 1px solid #8946a6;
+  border-bottom: 1px solid ${({ theme }: any) => theme.mainColorViolet};
+
+  @media (prefers-color-scheme: dark) {
+    border-bottom: 1px solid ${({ theme }: any) => theme.mainColorBlue};
+  }
 `;
 
 const deleteMessage = '삭제된 메시지입니다.';

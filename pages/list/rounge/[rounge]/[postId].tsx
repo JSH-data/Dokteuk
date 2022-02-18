@@ -46,6 +46,21 @@ const BoxStyled = styled(Box)`
   }
 `;
 
+const DividerStyled = styled(Divider)`
+  margin: 0;
+  flex-shrink: 0;
+  border-width: 0;
+  border-style: solid;
+  border-color: ${({ theme }: any) => theme.lightGray};
+  border-bottom-width: thin;
+  margin-top: 8px;
+  margin-bottom: 16px;
+
+  @media (prefers-color-scheme: dark) {
+    border-color: ${({ theme }: any) => theme.darkGray};
+  }
+`;
+
 const style = {
   position: 'absolute' as 'absolute',
   top: '50%',
@@ -405,7 +420,7 @@ export default function RoungePost({
                     ''
                   )}
                 </Typography>
-                <Divider sx={{ mt: 1, mb: 2 }} />
+                <DividerStyled />
                 <Typography
                   sx={{ mb: 2 }}
                   style={{ whiteSpace: 'pre-line', wordBreak: 'break-all' }}

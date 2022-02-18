@@ -48,6 +48,13 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import Layout from '@layouts/Layout';
 
 const ContainerStyled = styled(Container)`
+  & .MuiButton-root {
+    background: ${({ theme }: any) => theme.mainColorViolet};
+    :hover {
+      opacity: 0.8;
+      background: ${({ theme }: any) => theme.mainColorViolet};
+    }
+  }
   & .MuiOutlinedInput-input {
     color: black;
   }
@@ -56,6 +63,10 @@ const ContainerStyled = styled(Container)`
   }
   & .MuiOutlinedInput-notchedOutline {
     border: 1px solid ${({ theme }: any) => theme.darkGray};
+  }
+  & .MuiButton-root.MuiButton-text {
+    color: red;
+    background: none;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -75,16 +86,16 @@ const ContainerStyled = styled(Container)`
     & .MuiSvgIcon-root {
       color: ${({ theme }: any) => theme.lightGray};
     }
+    & .MuiButton-root {
+      background: ${({ theme }: any) => theme.mainColorBlue};
+      :hover {
+        opacity: 0.8;
+        background: ${({ theme }: any) => theme.mainColorBlue};
+      }
+    }
   }
 `;
 
-const ButtonStyled = styled(Button)`
-  background: ${({ theme }: any) => theme.mainColorViolet};
-
-  @media (prefers-color-scheme: dark) {
-    background: ${({ theme }: any) => theme.mainColorBlue};
-  }
-`;
 const BoxStyled = styled(Box)`
   @media (prefers-color-scheme: dark) {
     background-color: ${({ theme }: any) => theme.blackGray};
@@ -548,7 +559,10 @@ const PostForm = ({ from }: { from: string }) => {
                 >
                   <img src={v[0]} style={{ maxWidth: '100%' }} alt={v[0]} />
                   <Button
-                    sx={{ position: 'relative', color: 'red' }}
+                    sx={{
+                      position: 'relative',
+                      color: 'red',
+                    }}
                     onClick={() => {
                       deleteClick(imgList[i][1]);
                       let delArr = [...imgList];
@@ -627,11 +641,11 @@ const PostForm = ({ from }: { from: string }) => {
             }}
           >
             <Link href="/" passHref>
-              <ButtonStyled variant="contained">메인으로 이동</ButtonStyled>
+              <Button variant="contained">메인으로 이동</Button>
             </Link>
-            <ButtonStyled variant="contained" onClick={onSubmit}>
+            <Button variant="contained" onClick={onSubmit}>
               게시물 작성
-            </ButtonStyled>
+            </Button>
           </Box>
           <Box
             sx={{

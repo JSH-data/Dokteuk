@@ -83,14 +83,14 @@ export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async () => {
     const data = store.getState();
 
-    if (data.user.user.nickname == '') {
-      return {
-        redirect: {
-          destination: '/user/login',
-          permanent: false,
-        },
-      };
-    }
+    // if (data.user.user.nickname == '') {
+    //   return {
+    //     redirect: {
+    //       destination: '/user/login',
+    //       permanent: false,
+    //     },
+    //   };
+    // }
 
     return {
       props: {

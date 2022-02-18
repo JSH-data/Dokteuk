@@ -13,7 +13,7 @@ type MyPagePost = {
 const MyPagePostLi = styled.li`
   width: 80%;
   margin: 0 auto;
-  border-bottom: 1px solid #8946a6;
+  border-bottom: 1px solid ${({ theme }: any) => theme.mainColorViolet};
   padding-bottom: 10px;
   list-style: none;
   text-overflow: ellipsis;
@@ -25,6 +25,10 @@ const MyPagePostLi = styled.li`
   }
   & h4 {
     margin-bottom: 10px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    border-bottom: 1px solid ${({ theme }: any) => theme.mainColorBlue};
   }
 `;
 

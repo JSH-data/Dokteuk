@@ -11,8 +11,12 @@ import { PostData } from '@interface/comment';
 
 const Hr = styled.hr`
   border-top: 0px;
-  border-bottom: 1px solid #8946a6;
+  border-bottom: 1px solid ${({ theme }: any) => theme.mainColorViolet};
   margin-bottom: 20px;
+
+  @media (prefers-color-scheme: dark) {
+    border-bottom: 1px solid ${({ theme }: any) => theme.mainColorBlue};
+  }
 `;
 
 const Comment = ({ postData }: { postData: PostData }) => {

@@ -16,12 +16,13 @@ export {
 // Chat_List
 export const ChatMain = styled.div`
   padding-bottom: 60px;
+  margin: 0 8px;
 `;
 
 export const ChatWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  width: clamp(0px, 80%, 680px);
+  max-width: 680px;
   height: 80px;
   margin: 20px auto;
   padding: 0 20px;
