@@ -15,6 +15,7 @@ import Modal from '@mui/material/Modal';
 import { useDispatch } from 'react-redux';
 import { setDataAction } from '@store/reducer';
 import { deleteOnePostAction } from '@store/reducer';
+import styled from '@emotion/styled';
 const style = {
   position: 'absolute' as 'absolute',
   top: '50%',
@@ -26,6 +27,31 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+
+const DialogStyled = styled(Dialog)`
+  & .MuiDialog-paper {
+    background-color: white;
+    color: black;
+  }
+  & .MuiDialogContentText-root {
+    color: black;
+  }
+  @media (prefers-color-scheme: dark) {
+    & .MuiDialog-paper {
+      background-color: ${({ theme }: any) => theme.blackGray};
+      color: white;
+    }
+    & .MuiDialogContentText-root {
+      color: white;
+    }
+  }
+`;
+
+const BoxStyled = styled(Box)`
+  @media (prefers-color-scheme: dark) {
+    background-color: ${({ theme }: any) => theme.blackGray};
+  }
+`;
 
 export default function DeleteLink(props: any) {
   const dispatch = useDispatch();
@@ -62,7 +88,7 @@ export default function DeleteLink(props: any) {
         </Button>
       </Box>
 
-      <Dialog
+      <DialogStyled
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
@@ -82,7 +108,7 @@ export default function DeleteLink(props: any) {
             확인
           </Button>
         </DialogActions>
-      </Dialog>
+      </DialogStyled>
 
       <Modal
         open={modalOpen}
@@ -99,7 +125,7 @@ export default function DeleteLink(props: any) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <BoxStyled sx={style}>
           <Typography
             id="modal-modal-title"
             variant="h6"
@@ -113,7 +139,7 @@ export default function DeleteLink(props: any) {
               ? '게시물을 삭제하였습니다'
               : '삭제 중 오류가 발생하였습니다 다시 시도해 주세요'}
           </Typography>
-        </Box>
+        </BoxStyled>
       </Modal>
     </div>
   );

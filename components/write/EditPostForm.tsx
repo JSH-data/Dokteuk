@@ -18,15 +18,12 @@ import {
 import { serverTimestamp, updateDoc, doc } from 'firebase/firestore';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { db } from '@firebase/firebase';
-
-//select 부분을 위해서 사용
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 //photoupload용 아이콘
-
 import { updateOnePostAction } from 'store/reducer';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -34,11 +31,11 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+
 import Modal from '@mui/material/Modal';
 import { StoreState, UserState } from '@interface/StoreInterface';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { RoungePost } from '@interface/CardInterface';
+
+import styled from '@emotion/styled';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -51,12 +48,72 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+const ContainerStyled = styled(Container)`
+  & .MuiOutlinedInput-input {
+    color: black;
+  }
+  & label {
+    color: ${({ theme }: any) => theme.darkGray};
+  }
+  & .MuiOutlinedInput-notchedOutline {
+    border: 1px solid ${({ theme }: any) => theme.darkGray};
+  }
+
+  @media (prefers-color-scheme: dark) {
+    & .MuiOutlinedInput-input {
+      color: white;
+    }
+    & label {
+      color: ${({ theme }: any) => theme.lightGray};
+    }
+    & .MuiInput-root {
+      color: white;
+      border-bottom: 1px solid ${({ theme }: any) => theme.darkGray};
+    }
+    & .MuiOutlinedInput-notchedOutline {
+      border: 1px solid ${({ theme }: any) => theme.darkGray};
+    }
+    & .MuiSvgIcon-root {
+      color: ${({ theme }: any) => theme.lightGray};
+    }
+  }
+`;
+
+const DialogStyled = styled(Dialog)`
+  & .MuiDialog-paper {
+    background: white;
+  }
+  & .MuiDialogContentText-root {
+    color: black;
+  }
+  @media (prefers-color-scheme: dark) {
+    & .MuiDialog-paper {
+      background: ${({ theme }: any) => theme.blackGray};
+    }
+    & .MuiDialogContentText-root {
+      color: white;
+    }
+  }
+`;
+const ModalStyled = styled(Modal)`
+  & .css-1vocdem {
+    background: white;
+    color: black;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    & .css-1vocdem {
+      background: ${({ theme }: any) => theme.blackGray};
+      color: white;
+    }
+  }
+`;
+
 const PostForm = (props: any) => {
   const dispatch = useDispatch();
   const postInfo = props.postInfo;
   const [diaOpen, setDiaOpen] = useState(false);
-  // 이미지 업로드 부분
-  const [postImage, setPostImage] = useState<any>(null);
+
   const [url, setUrl] = useState('');
   const [progress, setProgress] = useState(0);
   const [imgList, setImgList] = useState<any>(
@@ -68,16 +125,12 @@ const PostForm = (props: any) => {
   //텍스트 처리
   const { user }: UserState = useSelector((state: StoreState) => state.user);
 
-  //유저
-  const [uid, setUid] = useState<string>('');
-
-  const [userInfoList, setuserInfoList] = useState<any>('');
   const [alertType, setAlertType] = useState<
     'error' | 'info' | 'success' | 'warning'
   >('success');
   const [alertMessage, setAlertMessage] = useState('');
   const [open, setOpen] = useState(false);
-  const [clickState, setClickState] = useState(true);
+
   const [post, setPost] = useState({
     title: postInfo.title,
     content: postInfo.content,
@@ -91,25 +144,9 @@ const PostForm = (props: any) => {
     images: postInfo.images,
     commentsCount: postInfo.commentsCount,
   });
-  //rougne,topic info 확인
-  const [postTopic, setPostTopic] = useState<any>({});
-  const [postRounge, setPostRounge] = useState<any>({});
 
-  const [loading, setLoading] = React.useState(false);
-  const [success, setSuccess] = React.useState(false);
-  //모달창
   const [modalOpen, setModalOpen] = useState(false);
-  //rougne,topic info 확인
-  useEffect(() => {
-    if (postInfo.topic) {
-      setPostTopic(postInfo.topic);
-    }
-    if (postInfo.rounge) {
-      setPostRounge(postInfo.rounge);
-    }
-  }, [postInfo]);
 
-  const timer = React.useRef<number>();
   const storage = getStorage();
   // Create the file metadata
   /** @type {any} */
@@ -121,14 +158,8 @@ const PostForm = (props: any) => {
     setAlertMessage(msg);
     setOpen(true);
   };
-  const auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setUid(user.uid);
-    }
-  });
 
-  const handleClose: any = (event: any, reason: any) => {
+  const handleClose = () => {
     setDiaOpen(!diaOpen);
   };
   const handAlertClose = () => {
@@ -199,7 +230,6 @@ const PostForm = (props: any) => {
 
   const handleUploadChange = (e: any) => {
     if (e.target.files[0]) {
-      setPostImage(e.target.files[0]);
       handleUpload(e.target.files[0]);
     }
   };
@@ -256,7 +286,7 @@ const PostForm = (props: any) => {
   }
 
   return (
-    <Container maxWidth="sm">
+    <ContainerStyled maxWidth="sm">
       <Box sx={{ minWidth: 120, mt: 6 }}>
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">등록위치</InputLabel>
@@ -466,7 +496,7 @@ const PostForm = (props: any) => {
       >
         <Typography></Typography>
       </Box>
-      <Modal
+      <ModalStyled
         open={modalOpen}
         onClose={() => {
           props.setEditOpen(false);
@@ -487,14 +517,13 @@ const PostForm = (props: any) => {
             게시물을 수정하였습니다
           </Typography>
         </Box>
-      </Modal>
-      <Dialog
+      </ModalStyled>
+      <DialogStyled
         open={diaOpen}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{props.thisPostTitle}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             이 게시물을 수정하시겠습니까?
@@ -506,8 +535,8 @@ const PostForm = (props: any) => {
             확인
           </Button>
         </DialogActions>
-      </Dialog>
-    </Container>
+      </DialogStyled>
+    </ContainerStyled>
   );
 };
 

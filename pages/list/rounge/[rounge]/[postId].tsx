@@ -27,7 +27,7 @@ import CustomSeparator from '@components/post/Separator';
 import Moment from 'react-moment';
 import 'moment/locale/ko';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-
+import styled from '@emotion/styled';
 import UpdateLink from '@components/post/UpdateLink';
 import DeleteLink from '@components/post/DeleteLink';
 import EditPostForm from '@components/write/EditPostForm';
@@ -38,6 +38,13 @@ import Router, { useRouter } from 'next/router';
 import Layout from '@layouts/Layout';
 import { StoreState, UserState } from '@interface/StoreInterface';
 import { ChatDefault, createChatRoom } from '@utils/createChatRoom';
+import AuthorClickMenu from '@components/items/AuthorClickMenu';
+
+const BoxStyled = styled(Box)`
+  @media (prefers-color-scheme: dark) {
+    background-color: ${({ theme }: any) => theme.blackGray};
+  }
+`;
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -197,7 +204,7 @@ export default function RoungePost({
   useEffect(() => {
     if (user.validRounges.map((v: any) => v.url).includes(post.rounge.url)) {
       setAccessPost('accessAvailable');
-    } else {
+    } else if (uid !== '') {
       setAccessPost('noAuthority');
       setNotRoungemodalOpen(true);
     }
@@ -261,7 +268,7 @@ export default function RoungePost({
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
             >
-              <Box sx={style}>
+              <BoxStyled sx={style}>
                 <Typography
                   id="modal-modal-title"
                   variant="h6"
@@ -270,7 +277,7 @@ export default function RoungePost({
                 >
                   로그인 후 이용해주세요
                 </Typography>
-              </Box>
+              </BoxStyled>
             </Modal>
           </>
         ) : accessPost === 'noAuthority' ? (
@@ -294,7 +301,7 @@ export default function RoungePost({
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
             >
-              <Box sx={style}>
+              <BoxStyled sx={style}>
                 <Typography
                   id="modal-modal-title"
                   variant="h6"
@@ -303,7 +310,7 @@ export default function RoungePost({
                 >
                   해당 게시물의 라운지에 속해 있지 않아 게시물을 볼 수 없습니다
                 </Typography>
-              </Box>
+              </BoxStyled>
             </Modal>
           </>
         ) : (
@@ -462,6 +469,7 @@ export default function RoungePost({
           />
         </Container>
       )}
+      {toggle && <AuthorClickMenu onToggle={onToggle} openChat={openChat} />}
     </Layout>
   );
 }

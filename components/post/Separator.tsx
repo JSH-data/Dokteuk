@@ -3,7 +3,12 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-
+import styled from '@emotion/styled';
+const BreadcrumbsStyled = styled(Breadcrumbs)`
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }: any) => theme.lightGray};
+  }
+`;
 export default function CustomSeparator(props: any) {
   const breadcrumbs =
     props.menu.postType === 'rounge'
@@ -45,13 +50,19 @@ export default function CustomSeparator(props: any) {
         ];
 
   return (
-    <Stack spacing={2} sx={{ mt: 4, mb: 2 }}>
-      <Breadcrumbs
+    <Stack
+      spacing={2}
+      sx={{
+        mt: 4,
+        mb: 2,
+      }}
+    >
+      <BreadcrumbsStyled
         separator={<NavigateNextIcon fontSize="small" />}
         aria-label="breadcrumb"
       >
         {breadcrumbs}
-      </Breadcrumbs>
+      </BreadcrumbsStyled>
     </Stack>
   );
 }
