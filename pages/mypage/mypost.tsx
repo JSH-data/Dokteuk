@@ -72,7 +72,10 @@ const MyPost: NextPage = () => {
                   url={v.url}
                 />
               ))}
-            <div ref={ref}></div>
+            <div
+              ref={ref}
+              style={{ height: '100px', paddingBottom: '50px' }}
+            ></div>
           </MyPageChangeCom>
         </Container>
       </Layout>

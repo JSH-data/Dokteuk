@@ -142,6 +142,7 @@ export default function TopicPage() {
   }, []);
 
   useEffect(() => {
+    console.log(inView);
     if (
       inView === true &&
       stopFetch === false &&
@@ -166,7 +167,7 @@ export default function TopicPage() {
         data.map((post: TopicPost, idx: number) => (
           <TopicPageCard topicCardData={post} key={idx} />
         ))}
-      <div ref={ref} style={{ height: '50px' }}></div>
+      <div ref={ref} style={{ height: '100px', paddingBottom: '50px' }}></div>
     </Layout>
   );
 }

@@ -555,7 +555,6 @@ export const TopicPageCard = forwardRef(function TopicCardWithRef(
 ) {
   // const { ref: cardRef, inView } = useInView();
   // console.log(Object.keys(topicCardData));
-  console.log(topicCardData);
   return (
     // <Wrapper ref={cardRef}>
     <Wrapper>

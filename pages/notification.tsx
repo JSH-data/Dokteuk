@@ -58,7 +58,10 @@ const Notification: NextPage = () => {
                 />
               ))}
           </div>
-          <div ref={ref} style={{ height: '50px' }}></div>
+          <div
+            ref={ref}
+            style={{ height: '100px', paddingBottom: '50px' }}
+          ></div>
         </Container>
       </Layout>
     </>
