@@ -14,7 +14,6 @@ import {
   getDocs,
   endBefore,
   arrayUnion,
-  deleteDoc,
 } from 'firebase/firestore';
 import { db, storage } from '@firebase/firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -37,9 +36,11 @@ export const chatList = (
       const { userIds, users, lastChat, updateAt, lastVisited } = result.data();
       const otherId = userIds.find((me: string) => me !== user.id);
       const other = users.find((person: Person) => person.id === otherId);
+      const mine = users.find((person: Person) => person.id === user.id);
       newChat.push({
         id: result.id,
         other,
+        mine,
         lastChat,
         updateAt,
         lastVisited,
@@ -235,5 +236,6 @@ export const leaveChat = async (chatId: QueryType, user: string) => {
 export const exitChat = async (chatId: QueryType, user: String) => {
   await updateDoc(doc(db, 'chat', chatId as string), {
     userIds: arrayRemove(user),
+    [`userValid.${user}`]: false,
   });
 };

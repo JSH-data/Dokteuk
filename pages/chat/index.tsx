@@ -36,43 +36,48 @@ const Chat = ({ user }: { user: Person }) => {
         {myChats.length === 0 ? (
           <Empty ment="아직 개설된 채팅방이 없습니다." />
         ) : (
-          myChats.map(({ other, lastChat, updateAt, lastVisited, id }) => (
-            <Fragment key={id}>
-              <Link
-                href={{
-                  pathname: `/chat/${id}`,
-                  query: {
-                    other: other ? other.nickname : '대화방에 상대가 없습니다.',
-                    id: other ? other.id : null,
-                  },
-                }}
-                as={`/chat/${id}`}
-                passHref
-              >
-                <ChatWrapper>
-                  <div className="text">
-                    <div className="userInfo">
-                      {other ? (
-                        <>
-                          <div>{other.nickname}</div>
-                          <div className="job">{other.jobSector}</div>
-                        </>
-                      ) : (
-                        '대화방에 상대가 없습니다.'
-                      )}
+          myChats.map(
+            ({ other, mine, lastChat, updateAt, lastVisited, id }) => (
+              <Fragment key={id}>
+                <Link
+                  href={{
+                    pathname: `/chat/${id}`,
+                    query: {
+                      other: other
+                        ? other.nickname
+                        : '대화방에 상대가 없습니다.',
+                      id: other ? other.id : null,
+                      mine: mine.nickname,
+                    },
+                  }}
+                  as={`/chat/${id}`}
+                  passHref
+                >
+                  <ChatWrapper>
+                    <div className="text">
+                      <div className="userInfo">
+                        {other ? (
+                          <>
+                            <div>{other.nickname}</div>
+                            <div className="job">{other.jobSector}</div>
+                          </>
+                        ) : (
+                          '대화방에 상대가 없습니다.'
+                        )}
+                      </div>
+                      <Text>{lastChat}</Text>
                     </div>
-                    <Text>{lastChat}</Text>
-                  </div>
-                  <div>
                     <div>
-                      {getDateTime((updateAt.seconds * 1000).toString())}
+                      <div>
+                        {getDateTime((updateAt.seconds * 1000).toString())}
+                      </div>
+                      <Notice isRead={lastVisited[user.id] >= updateAt} />
                     </div>
-                    <Notice isRead={lastVisited[user.id] >= updateAt} />
-                  </div>
-                </ChatWrapper>
-              </Link>
-            </Fragment>
-          ))
+                  </ChatWrapper>
+                </Link>
+              </Fragment>
+            ),
+          )
         )}
       </ChatMain>
     </Layout>
@@ -83,14 +88,14 @@ export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async () => {
     const data = store.getState();
 
-    // if (data.user.user.nickname == '') {
-    //   return {
-    //     redirect: {
-    //       destination: '/user/login',
-    //       permanent: false,
-    //     },
-    //   };
-    // }
+    if (data.user.user.nickname == '') {
+      return {
+        redirect: {
+          destination: '/user/login',
+          permanent: false,
+        },
+      };
+    }
 
     return {
       props: {

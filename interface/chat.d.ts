@@ -7,10 +7,11 @@ interface Person {
 }
 
 interface ChatRoom {
-  id?: string;
+  id: string;
   users?: Person[];
   userIds?: string[];
-  other?: person;
+  other: Person;
+  mine: Person;
   lastChat: string;
   updateAt: Timestamp;
   lastVisited: {

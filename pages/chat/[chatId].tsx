@@ -29,6 +29,7 @@ import {
   DateWrapper,
   Line,
   Date,
+  MyInfo,
   KeyboardArrowDownIcon,
   ArrowBackIosNewIcon,
   DensityMediumIcon,
@@ -171,16 +172,16 @@ const ChatRoom = ({ user }: { user: Person }) => {
     getInitData();
     window.addEventListener('scroll', onScroll);
 
-    if (!router.query.other) {
-      const otherData = window.localStorage.getItem('otherData');
-      setQuery(JSON.parse(otherData as string));
+    if (router.query.other) {
+      window.localStorage.setItem('queryData', JSON.stringify(query));
     } else {
-      window.localStorage.setItem('otherData', JSON.stringify(query));
+      const otherData = window.localStorage.getItem('queryData');
+      setQuery(JSON.parse(otherData as string));
     }
 
     return () => {
       window.removeEventListener('scroll', onScroll);
-      window.localStorage.removeItem('otherData');
+      window.localStorage.removeItem('queryData');
       getInitData();
       setStartKey(null);
       leaveChat(query.chatId, user.id);
@@ -238,6 +239,7 @@ const ChatRoom = ({ user }: { user: Person }) => {
       </ChatHeader>
       <div ref={listRef}>
         <ChatBox>
+          <MyInfo>{`"${query.mine}"`} 닉네임으로 채팅중 입니다.</MyInfo>
           {reversedMessages.map(({ id, from, msg, img, createAt }, idx) => (
             <div key={id}>
               {(idx === 0 ||

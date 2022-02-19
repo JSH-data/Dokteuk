@@ -210,7 +210,8 @@ export default function TopicPost({
     };
     const id = await createChatRoom(myInfo, counterInfo);
     router.push(
-      `/chat/${id}?other=${counterInfo.nickname}&id=${counterInfo.id}`,
+      `/chat/${id}?other=${counterInfo.nickname}&id=${counterInfo.id}&mine=${myInfo.nickname}`,
+      `/chat/${id}`,
     );
   };
   return (

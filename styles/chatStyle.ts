@@ -242,3 +242,18 @@ export const Date = styled.div`
     color: ${({ theme }: any) => theme.lightGray};
   }
 `;
+
+export const MyInfo = styled.div`
+  width: 100%;
+  min-height: 30px;
+  text-align: center;
+  margin-top: 20px;
+  padding: 10px;
+  word-break: break-all;
+  border-radius: 10px;
+  background: ${({ theme }: any) => theme.lightGray};
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }: any) => theme.darkGray};
+  }
+`;
