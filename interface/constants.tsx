@@ -45,5 +45,5 @@ export const jobSectors: Array<Rounge> = [
   { title: '교육·강사', url: 'education' },
 ];
 
-export const reg_email =
+export const regEmail =
   /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;

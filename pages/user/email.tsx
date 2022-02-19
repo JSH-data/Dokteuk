@@ -48,7 +48,7 @@ import FactCheckIcon from '@mui/icons-material/FactCheck';
 import { validateData, getOcrData } from '@utils/ocrDataValidation';
 import { uploadImg } from '@utils/signupForm';
 import CircularProgress from '@mui/material/CircularProgress';
-import { reg_email } from '@interface/constants';
+import { regEmail } from '@interface/constants';
 const reducer = (state: UserInputData, action: UserInputDataAction) => {
   return {
     ...state,
@@ -148,7 +148,7 @@ export default function Signup() {
     if (
       emailCheckSnap.docs.length !== 0 ||
       email.value.length < 3 ||
-      !reg_email.test(email.value)
+      !regEmail.test(email.value)
     ) {
       emailHelperText = '사용 불가능한 이메일 입니다!';
     } else {
@@ -362,9 +362,8 @@ export default function Signup() {
                 onChange={onInputChange}
                 helperText={nickname.error}
               />
-              {nicknameSuccess && (
-                <StyledFormHelperText>{nicknameSuccess}</StyledFormHelperText>
-              )}
+
+              <StyledFormHelperText>{nicknameSuccess}</StyledFormHelperText>
             </WrapInput>
             <WrapImageUpload>
               <Label>증명서</Label>

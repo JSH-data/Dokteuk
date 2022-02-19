@@ -87,9 +87,7 @@ export default function Google() {
     if (jobSector.error) {
       return true;
     } else {
-      //return !(nicknameBtnChecked && imageOcrChecked);
-      // 임시로 ocr 체크는 빼놓음
-      return !nicknameBtnChecked;
+      return !(nicknameBtnChecked && imageOcrChecked);
     }
   };
   const SignUpSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -583,15 +581,6 @@ const StyledCircularProgress = styled(CircularProgress)`
     color: ${({ theme }: any) => theme.mainColorBlue};
     margin-left: 10px;
     margin-top: 15px;
-  }
-`;
-
-const StyledDialog = styled(Dialog)`
-  color: ${({ theme }: any) => theme.mainColorViolet};
-
-  @media (prefers-color-scheme: dark) {
-    color: ${({ theme }: any) => theme.mainColorBlue};
-    background: rgb(17, 17, 19);
   }
 `;
 
