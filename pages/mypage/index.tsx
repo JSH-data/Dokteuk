@@ -44,7 +44,7 @@ const MyPage: NextPage = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        <Container style={{ paddingBottom: '100px' }}>
+        <Container style={{ paddingBottom: '100px', maxWidth: '680px' }}>
           <MyPageProfile email={email} nickname={nickname} />
         </Container>
       </Layout>

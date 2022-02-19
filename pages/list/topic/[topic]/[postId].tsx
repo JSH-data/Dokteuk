@@ -216,7 +216,7 @@ export default function TopicPost({
   };
   return (
     <Layout>
-      <Container sx={{ maxWidth: '680px' }}>
+      <Container sx={{ maxWidth: '680px', justifyContent: 'center' }}>
         {editOpen ? (
           <EditPostForm
             setEditOpen={setEditOpen}
@@ -226,7 +226,13 @@ export default function TopicPost({
             setUpdateTime={setUpdateTime}
           />
         ) : (
-          <Box sx={{ minWidth: 120, mt: 6 }}>
+          <Box
+            sx={{
+              mt: 6,
+              maxWidth: '680px',
+              margin: 'auto',
+            }}
+          >
             <CustomSeparator menu={post} />
             <Typography
               variant="h4"
@@ -354,7 +360,7 @@ export default function TopicPost({
       {editOpen ? (
         ''
       ) : (
-        <Container sx={{ maxWidth: '680px' }}>
+        <Container>
           <Comment
             postData={{
               id: post.postId,

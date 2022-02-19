@@ -374,7 +374,7 @@ const PostForm = ({ from }: { from: string }) => {
   return (
     <Layout>
       {uid === 'noUser' ? (
-        <ContainerStyled maxWidth="sm">
+        <ContainerStyled style={{ maxWidth: '680px' }}>
           <Box sx={{ minWidth: 120, mt: 6 }}>
             <Box sx={{ mt: 6 }}>
               <Stack spacing={2}>
@@ -416,7 +416,7 @@ const PostForm = ({ from }: { from: string }) => {
           </Box>
         </ContainerStyled>
       ) : (
-        <ContainerStyled maxWidth="sm">
+        <ContainerStyled style={{ maxWidth: '680px' }}>
           <Box sx={{ minWidth: 120, mt: 6 }}>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">등록위치</InputLabel>

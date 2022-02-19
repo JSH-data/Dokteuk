@@ -286,7 +286,7 @@ const PostForm = (props: any) => {
   }
 
   return (
-    <ContainerStyled maxWidth="sm">
+    <ContainerStyled style={{ maxWidth: '680px' }}>
       <Box sx={{ minWidth: 120, mt: 6 }}>
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">등록위치</InputLabel>
@@ -371,6 +371,7 @@ const PostForm = (props: any) => {
           variant="standard"
           label="제목을 입력해주세요"
           sx={{ mt: 2 }}
+          multiline
           value={post.title}
           onChange={(e) => setPost({ ...post, title: e.target.value })}
         />

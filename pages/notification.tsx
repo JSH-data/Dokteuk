@@ -43,7 +43,7 @@ const Notification: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        <Container>
+        <Container style={{ maxWidth: '680px' }}>
           <div style={{ marginTop: '30px' }}>
             {data.length != 0 &&
               data.map((v: NotificationData, i: number) => (
