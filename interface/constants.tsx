@@ -9,9 +9,9 @@ export type UserInputData = {
 };
 
 export type OcrData = {
-  b_no: string;
-  start_dt: string;
-  p_nm: string;
+  bNo: string;
+  startDate: string;
+  pName: string;
 };
 
 export type UserInputDataAction = {

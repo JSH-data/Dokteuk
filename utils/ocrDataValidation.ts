@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 type OcrData = {
-  b_no: string;
-  start_dt: string;
-  p_nm: string;
+  bNo: string;
+  startDate: string;
+  pName: string;
 };
 export const getOcrData = async (imageUrl: string, imageExt: string) => {
   const timestamp = new Date().getTime();
@@ -39,7 +39,7 @@ const resultTxt = (data: any) => {
   const regDate = /([0-9]{4})년([0-1][0-9])월([0-3][0-9])일/;
   let startDTFilter;
   let nameFilterIdx;
-  let p_nm: string;
+  let pName: string;
 
   const filteredText: any = [];
   data.forEach((el: any, idx: number) => {
@@ -50,7 +50,7 @@ const resultTxt = (data: any) => {
   if (!res.match(regNum)) {
     return false;
   }
-  const b_no: string = res.match(regNum)[0].replaceAll('-', '');
+  const bNo: string = res.match(regNum)[0].replaceAll('-', '');
 
   if (res.indexOf('개업연월일:') > 0) {
     startDTFilter = res.substr(res.indexOf('개업연월일:'));
@@ -62,24 +62,31 @@ const resultTxt = (data: any) => {
   if (!startDTFilter.match(regDate)) {
     return false;
   }
-  const start_dt: string = startDTFilter.match(regDate)[0].replace(regex, '');
+  const startDate: string = startDTFilter.match(regDate)[0].replace(regex, '');
 
   if (res.indexOf('성명:') > 0) {
     nameFilterIdx = res.indexOf('성명:');
-    p_nm = res.substr(nameFilterIdx + 3, 3);
+    pName = res.substr(nameFilterIdx + 3, 3);
   } else if (res.indexOf('대표자:') > 0) {
     nameFilterIdx = res.indexOf('대표자:');
-    p_nm = res.substr(nameFilterIdx + 4, 3);
+    pName = res.substr(nameFilterIdx + 4, 3);
   } else {
     return false;
   }
 
-  return { b_no, start_dt, p_nm } as OcrData;
+  return { bNo, startDate, pName } as OcrData;
 };
 
 export const validateData = async (ocrData: OcrData) => {
+  const { bNo, startDate, pName } = ocrData;
   const validateData = {
-    businesses: [ocrData],
+    businesses: [
+      {
+        b_no: bNo,
+        start_dt: startDate,
+        p_nm: pName,
+      },
+    ],
   };
 
   try {

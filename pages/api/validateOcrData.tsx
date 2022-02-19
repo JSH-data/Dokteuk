@@ -12,12 +12,13 @@ export default async function handler(
     },
   };
   try {
+    const { bNo, startDate, pName } = req.body;
     const data = await axios.post(
       MY_VALIDATE_API_URL as string,
       req.body,
       headers,
     );
-
+    console.log(data.data.data[0]);
     return res.status(200).json({ message: data.data.data[0].status });
   } catch (e) {
     console.error(e);
